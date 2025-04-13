@@ -1,0 +1,338 @@
+# Overview
+TariffAlert.me is a dynamic web platform that helps consumers stay informed about tariff changes and their impact on product prices. The platform combines real-time tariff news with actionable product recommendations, helping users make informed purchasing decisions before potential price increases. By aggregating data from government sources, news outlets, and social media, while connecting it to relevant consumer products, we provide valuable insights that help users save money through timely purchases.
+
+Target Audience:
+- Cost-conscious consumers
+- Online shoppers interested in international products
+- Small business owners affected by tariff changes
+- Market analysts and retail professionals
+
+Value Proposition:
+- Real-time alerts about tariff changes affecting consumer goods
+- Actionable product recommendations before price increases
+- Non-political, fact-based analysis of tariff impacts
+- Historical price tracking and future price predictions
+
+# Core Features
+
+1. Tariff News Aggregation
+- Automated collection of tariff updates from government sources, news APIs, and Twitter
+- Real-time Twitter feed ticker showing latest updates
+- AI-powered blog post generation summarizing impacts
+- Country-specific impact analysis
+- Non-political, consumer-focused presentation
+
+2. Product Impact Directory
+- Curated product categories affected by tariff changes
+- Integration with major retailers (Amazon, Walmart, Target)
+- Historical price tracking and future price predictions
+- Trend-based product filtering (BPA-free, organic, etc.)
+- Multiple sorting options (by country, category, price impact)
+
+3. Smart Product Recommendations
+- AI-powered product selection based on tariff impacts
+- Cross-analysis of product popularity and consumer trends
+- Automated category assignment and trend matching
+- Price impact calculations and predictions
+- Affiliate link integration and tracking
+
+4. Price History Tracking
+- Historical price data visualization
+- Price trend analysis
+- Predicted price changes based on tariff impacts
+- Multiple retailer price comparison
+- Price alert notifications
+
+5. Automated Research System
+- Hourly checks for tariff updates
+- Integration with government APIs and news sources
+- Twitter API integration for real-time updates
+- AI-powered content generation
+- Automated trend analysis
+
+# User Experience
+
+User Personas:
+
+1. Cost-Conscious Consumer (Primary)
+- Wants to save money on everyday purchases
+- Interested in understanding price impacts
+- Needs clear, actionable recommendations
+- Values historical price data
+
+2. Informed Shopper
+- Researches before making purchases
+- Interested in product quality and trends
+- Wants detailed product information
+- Values comprehensive price history
+
+3. Small Business Owner
+- Monitors tariff impacts on inventory
+- Needs early warning of price changes
+- Interested in multiple product categories
+- Values country-specific impact analysis
+
+Key User Flows:
+
+1. News Discovery
+- Landing page shows latest tariff news
+- Twitter ticker displays real-time updates
+- Users can filter by country/category
+- One-click access to affected products
+
+2. Product Research
+- Browse by category or country
+- View detailed product information
+- Check historical prices
+- Compare across retailers
+- Click through to purchase
+
+3. Price Monitoring
+- Save products for tracking
+- Set price alerts
+- View price history charts
+- Receive notification of tariff impacts
+
+UI/UX Considerations:
+- Clean, modern interface with clear hierarchy
+- Mobile-first responsive design
+- Easy navigation between news and products
+- Clear visual indicators of price impacts
+- Intuitive country/category filtering
+- Prominent trend and feature badges
+- Seamless affiliate link integration
+
+# Technical Architecture
+
+System Components:
+
+1. Frontend Layer
+- Next.js 14 with App Router
+- TailwindCSS for styling
+- React Query for data management
+- Chart.js for price visualization
+- TypeScript for type safety
+
+2. Backend Services
+- Node.js with Express
+- Supabase for database and auth
+- Redis for caching
+- OpenAI API for content generation
+- Serverless functions for automation
+
+3. Data Layer
+- PostgreSQL (via Supabase)
+- Redis cache
+- Elasticsearch for product search
+- Time-series data for price history
+
+4. Integration Layer
+- Government API connectors
+- News API integrations
+- Twitter API client
+- E-commerce API clients
+- Price tracking services
+
+Data Models:
+
+1. News Items
+```typescript
+interface NewsItem {
+  id: string;
+  title: string;
+  content: string;
+  countries: string[];
+  categories: string[];
+  impactLevel: 'high' | 'medium' | 'low';
+  priceImpact: {
+    percentage: number;
+    direction: 'increase' | 'decrease';
+  };
+  sourceUrls: string[];
+  publishDate: Date;
+}
+```
+
+2. Products
+```typescript
+interface Product {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  country: string;
+  currentPrice: number;
+  predictedPrice: number;
+  priceHistory: PricePoint[];
+  keywords: string[];
+  affiliateLinks: Record<string, string>;
+  trends: string[];
+  impactedByTariffs: boolean;
+}
+```
+
+3. Categories
+```typescript
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  countries: string[];
+  trendKeywords: string[];
+  activeProducts: number;
+}
+```
+
+Infrastructure Requirements:
+- Vercel for frontend hosting
+- Supabase for backend services
+- Redis Labs for caching
+- Cloudflare for CDN
+- GitHub for version control
+- CI/CD pipeline
+
+# Development Roadmap
+
+Phase 1: Foundation (MVP)
+- Basic Next.js setup with TailwindCSS
+- Supabase integration
+- Simple news aggregation
+- Basic product directory
+- Essential API integrations
+- Core database schema
+- Basic affiliate link system
+
+Phase 2: Core Features
+- Twitter feed integration
+- Price history tracking
+- Product categorization
+- Country filtering
+- Basic automated content
+- Enhanced product search
+- User authentication
+
+Phase 3: Automation
+- AI content generation
+- Automated product selection
+- Price impact calculations
+- Trend analysis
+- Enhanced data collection
+- Automated categorization
+
+Phase 4: Enhancement
+- Advanced filtering
+- Price predictions
+- Mobile optimization
+- Performance improvements
+- Analytics integration
+- A/B testing framework
+
+# Logical Dependency Chain
+
+1. Foundation Layer
+- Database schema setup
+- Basic API structure
+- Authentication system
+- Core frontend framework
+
+2. Data Collection
+- Government API integration
+- News API integration
+- Basic product data
+- Price tracking system
+
+3. User Interface
+- News display
+- Product directory
+- Basic filtering
+- Price history charts
+
+4. Automation Systems
+- Content generation
+- Product selection
+- Price calculations
+- Trend analysis
+
+5. Enhancement Layer
+- Advanced search
+- Recommendations
+- Mobile optimization
+- Performance tuning
+
+# Risks and Mitigations
+
+Technical Challenges:
+1. Data Accuracy
+- Risk: Inconsistent or incorrect tariff information
+- Mitigation: Multiple data source validation, automated fact-checking
+
+2. API Reliability
+- Risk: API downtime or rate limits
+- Mitigation: Redundant data sources, robust caching
+
+3. Content Generation
+- Risk: AI-generated content quality
+- Mitigation: Human review process, quality templates
+
+4. Price Tracking
+- Risk: Inaccurate historical data
+- Mitigation: Multiple data sources, validation systems
+
+Resource Constraints:
+1. Data Processing
+- Risk: High computational needs
+- Mitigation: Efficient caching, serverless architecture
+
+2. Storage Costs
+- Risk: Large historical data volume
+- Mitigation: Data retention policies, compression
+
+3. API Costs
+- Risk: Expensive API calls
+- Mitigation: Smart caching, request batching
+
+MVP Strategy:
+1. Core Features
+- Focus on news aggregation first
+- Basic product directory
+- Essential price tracking
+- Manual content creation initially
+
+2. Gradual Automation
+- Implement automation incrementally
+- Start with high-impact features
+- Build on working foundation
+
+# Appendix
+
+Research Findings:
+1. Key Data Sources
+- USTR (United States Trade Representative)
+- International Trade Administration
+- World Trade Organization
+- Federal Register
+
+2. E-commerce Platforms
+- Amazon Product Advertising API
+- Walmart Marketplace API
+- Target API
+- Keepa API
+
+3. News Sources
+- Reuters API
+- Bloomberg API
+- Financial Times API
+- Twitter API v2
+
+Technical Specifications:
+1. API Requirements
+- Rate limits
+- Authentication methods
+- Data formats
+- Endpoint documentation
+
+2. Performance Targets
+- Page load time < 2s
+- API response time < 500ms
+- 99.9% uptime
+- Real-time updates < 5s delay 

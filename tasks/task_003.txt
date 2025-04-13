@@ -1,0 +1,88 @@
+# Task ID: 3
+# Title: Develop News Aggregation System
+# Status: done
+# Dependencies: 2
+# Priority: high
+# Description: Create the system to collect and process tariff news from government sources, news APIs, and Twitter
+# Details:
+Implement API clients for government sources (USTR, WTO, etc.). Integrate with news APIs (Reuters, Bloomberg). Set up Twitter API integration for real-time updates. Create data normalization layer to standardize information from different sources. Implement caching with Redis to reduce API calls. Develop scheduling system for regular data fetching. Create filtering system to identify tariff-related news. Store processed news in the database with proper categorization.
+
+# Test Strategy:
+Test API integrations with mock responses. Verify data normalization with different source formats. Confirm caching reduces API calls. Test scheduling with accelerated timeframes. Validate filtering accuracy with test data. Verify database storage with schema validation.
+
+# Subtasks:
+## 1. Implement Core API Client Framework [done]
+### Dependencies: None
+### Description: Build a flexible API client framework that will serve as the foundation for all external data source integrations
+### Details:
+Implementation details:
+1. Create a base ApiClient class with configurable request handling, error management, and rate limiting
+2. Implement authentication strategies (API keys, OAuth) as composable modules
+3. Build request/response transformation pipeline for data normalization
+4. Add logging and monitoring capabilities
+5. Implement retry logic and circuit breaker patterns
+6. Set up unit tests with mock responses
+7. Document the framework architecture for other developers
+
+Testing approach: Write unit tests for each component of the framework, focusing on error handling, authentication flows, and transformation capabilities.
+
+## 2. Integrate Government and News API Sources [done]
+### Dependencies: 3.1
+### Description: Implement specific API clients for government sources and news APIs using the core client framework
+### Details:
+Implementation details:
+1. Create specific client implementations for USTR and WTO APIs using the base framework
+2. Implement Reuters and Bloomberg API integrations
+3. Configure appropriate rate limits and authentication for each source
+4. Create source-specific data transformers to normalize data into a standard schema
+5. Implement source-specific error handling
+6. Set up configuration files for API endpoints and credentials
+7. Create comprehensive tests for each API integration
+
+Testing approach: Test each API client with real credentials in a staging environment, verify data retrieval, and validate normalization output against expected schemas.
+
+## 3. Develop Twitter Integration and Real-time Updates [done]
+### Dependencies: 3.1
+### Description: Set up Twitter API integration to collect real-time tariff-related updates from relevant accounts and hashtags
+### Details:
+Implementation details:
+1. Implement Twitter API client using the core framework
+2. Set up authentication with Twitter API v2
+3. Create filters for relevant hashtags, accounts, and keywords related to tariffs
+4. Implement streaming connection for real-time updates where applicable
+5. Build data transformation to extract and normalize relevant information from tweets
+6. Implement sentiment analysis for tweets
+7. Create monitoring for API rate limits and connection status
+
+Testing approach: Test with sandbox Twitter API credentials, verify filtering logic with sample tweets, and validate the transformation and sentiment analysis with diverse tweet samples.
+
+## 4. Implement Redis Caching and Data Storage [done]
+### Dependencies: 3.2, 3.3
+### Description: Set up Redis caching to optimize API usage and implement database storage for processed news items
+### Details:
+Implementation details:
+1. Configure Redis connection and client
+2. Implement cache strategies (TTL, invalidation policies) for different data sources
+3. Create caching middleware for API clients
+4. Design database schema for normalized news items with proper categorization
+5. Implement data access layer for storing and retrieving news items
+6. Set up indexes for efficient querying
+7. Create migration scripts for the database schema
+
+Testing approach: Benchmark API performance with and without caching, verify cache hit/miss rates, test database operations for performance and correctness, and validate data integrity across the pipeline.
+
+## 5. Build Scheduling and Filtering System [done]
+### Dependencies: 3.2, 3.3, 3.4
+### Description: Develop a system to schedule regular data fetching from all sources and implement intelligent filtering for tariff-related news
+### Details:
+Implementation details:
+1. Implement a job scheduler using a library like node-cron or Bull
+2. Create configurable schedules for different data sources
+3. Implement retry and failure handling for scheduled jobs
+4. Develop NLP-based filtering system to identify tariff-related content
+5. Create rules engine for categorizing news by tariff type, region, and industry
+6. Implement priority scoring for news items based on relevance
+7. Build admin interface to configure schedules and filtering rules
+
+Testing approach: Test scheduling with accelerated time, verify correct execution order and frequency, test filtering accuracy with a diverse set of news items, and validate categorization with pre-classified test data.
+

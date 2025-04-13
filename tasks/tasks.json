@@ -1,0 +1,654 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Setup Project Foundation",
+      "description": "Initialize the Next.js 14 project with TypeScript, TailwindCSS, and configure Supabase for database and authentication",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "details": "Create a new Next.js 14 project using App Router with TypeScript support. Configure TailwindCSS for styling. Set up Supabase project and initialize connection for database and authentication. Create basic project structure including layouts, components, and API routes. Setup environment variables for secure configuration management. Initialize GitHub repository with proper branching strategy.",
+      "testStrategy": "Verify successful project creation with functioning Next.js and TailwindCSS. Test Supabase connection by performing basic CRUD operations. Ensure environment variables are properly loaded. Confirm TypeScript compilation works without errors.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Initialize Next.js 14 project with TypeScript and set up repository",
+          "description": "Create a new Next.js 14 project with TypeScript support using the App Router, initialize the Git repository, and establish the basic project structure.",
+          "dependencies": [],
+          "details": "1. Use create-next-app to initialize a new project: `npx create-next-app@latest my-project-name --typescript --eslint --use-app-router`\n2. Confirm TypeScript configuration in tsconfig.json is appropriate for the project\n3. Set up the basic folder structure: app/, components/, lib/, types/, etc.\n4. Initialize Git repository: `git init`\n5. Create .gitignore file with appropriate entries (node_modules, .env files, etc.)\n6. Make initial commit\n7. Create GitHub repository and connect local repo\n8. Set up branching strategy (main/develop branches)\n9. Test the project runs locally with `npm run dev`",
+          "status": "done",
+          "parentTaskId": 1
+        },
+        {
+          "id": 2,
+          "title": "Configure TailwindCSS and basic styling foundations",
+          "description": "Set up TailwindCSS, configure theme customizations, and create base styling components and utilities.",
+          "dependencies": [
+            1
+          ],
+          "details": "1. Install TailwindCSS: `npm install -D tailwindcss postcss autoprefixer`\n2. Initialize TailwindCSS: `npx tailwindcss init -p`\n3. Configure tailwind.config.js with appropriate content paths\n4. Add Tailwind directives to global CSS file\n5. Create a theme.js file for custom colors, spacing, etc.\n6. Set up base component styles (buttons, inputs, cards)\n7. Create utility classes for common styling patterns\n8. Test styling by creating a sample styled component\n9. Ensure responsive design works properly",
+          "status": "done",
+          "parentTaskId": 1
+        },
+        {
+          "id": 3,
+          "title": "Set up Supabase project and database configuration",
+          "description": "Create a Supabase project, configure database tables, and set up the initial schema for the application.",
+          "dependencies": [
+            1
+          ],
+          "details": "1. Create a new Supabase project in the Supabase dashboard\n2. Design initial database schema (tables, relationships, constraints)\n3. Create necessary tables using Supabase interface or SQL editor\n4. Set up appropriate indexes for performance\n5. Configure row-level security policies for data access control\n6. Create database functions or triggers if needed\n7. Add sample data for development purposes\n8. Document the database schema\n9. Test database queries directly in Supabase dashboard",
+          "status": "done",
+          "parentTaskId": 1
+        },
+        {
+          "id": 4,
+          "title": "Implement Supabase client integration and authentication",
+          "description": "Set up Supabase client in the Next.js application, configure authentication methods, and create basic auth flows.",
+          "dependencies": [
+            1,
+            3
+          ],
+          "details": "1. Install Supabase client libraries: `npm install @supabase/supabase-js @supabase/auth-helpers-nextjs`\n2. Create a lib/supabase.ts file to initialize the Supabase client\n3. Set up environment variables (.env.local) for Supabase URL and anon key\n4. Configure authentication methods in Supabase dashboard (email, OAuth providers)\n5. Implement sign up, sign in, and sign out functionality\n6. Create protected routes using middleware\n7. Set up user profile management\n8. Implement session handling and refresh\n9. Test authentication flow end-to-end",
+          "status": "done",
+          "parentTaskId": 1
+        },
+        {
+          "id": 5,
+          "title": "Create core application layout and environment configuration",
+          "description": "Establish the main application layout structure, navigation, and finalize environment configuration for different deployment environments.",
+          "dependencies": [
+            1,
+            2,
+            4
+          ],
+          "details": "1. Create app/layout.tsx with common layout elements\n2. Implement responsive navigation/header component\n3. Set up footer component\n4. Create loading and error states\n5. Configure environment variables for different environments (dev, staging, prod)\n6. Set up .env.example file with required variables\n7. Document environment setup process\n8. Configure deployment-specific settings\n9. Test the complete application structure and navigation\n10. Ensure environment variables are properly loaded and accessible",
+          "status": "done",
+          "parentTaskId": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Implement Database Schema",
+      "description": "Design and implement the core database schema for news items, products, categories, and price history",
+      "status": "done",
+      "dependencies": [
+        1
+      ],
+      "priority": "high",
+      "details": "Create database tables in Supabase based on the data models specified in the PRD (NewsItem, Product, Category). Set up relationships between tables. Implement proper indexing for performance. Create time-series structure for price history data. Set up database triggers for automatic updates. Implement row-level security policies for data protection. Create database migrations for version control.",
+      "testStrategy": "Validate schema with test data insertion. Verify relationships with join queries. Test indexing performance with benchmark queries. Confirm security policies are functioning correctly. Verify migrations can be applied and rolled back successfully.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create Core Database Tables",
+          "description": "Set up the foundational tables for NewsItem, Product, Category, and PriceHistory in Supabase",
+          "dependencies": [],
+          "details": "Implementation details:\n1. Create the Category table with fields: id (primary key), name, description, created_at, updated_at\n2. Create the Product table with fields: id (primary key), name, description, current_price, category_id (foreign key to Category), image_url, created_at, updated_at\n3. Create the NewsItem table with fields: id (primary key), title, content, published_date, source_url, image_url, created_at, updated_at\n4. Create the PriceHistory table with fields: id (primary key), product_id (foreign key to Product), price, recorded_at\n5. Test each table creation by inserting and retrieving sample data\n6. Document the schema structure in the project documentation",
+          "status": "done",
+          "parentTaskId": 2
+        },
+        {
+          "id": 2,
+          "title": "Establish Table Relationships and Indexing",
+          "description": "Configure relationships between tables and implement proper indexing for query performance",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation details:\n1. Set up foreign key constraints between tables:\n   - Product.category_id references Category.id\n   - PriceHistory.product_id references Product.id\n   - Add junction table for many-to-many relationships if needed (e.g., Product_NewsItem)\n2. Create appropriate indexes for performance optimization:\n   - Index on Category.name for faster lookups\n   - Index on Product.name and Product.category_id\n   - Index on NewsItem.published_date\n   - Index on PriceHistory.recorded_at and PriceHistory.product_id\n3. Test query performance with and without indexes to verify improvements\n4. Document all relationships and indexes in the schema documentation",
+          "status": "done",
+          "parentTaskId": 2
+        },
+        {
+          "id": 3,
+          "title": "Implement Row-Level Security and Triggers",
+          "description": "Set up security policies and database triggers for automatic updates",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "Implementation details:\n1. Enable Row Level Security (RLS) for all tables\n2. Create security policies for each table:\n   - Public read access for Products, Categories, and NewsItems\n   - Authenticated user access for PriceHistory\n   - Admin-only write access for all tables\n3. Implement database triggers:\n   - Create trigger to update Product.updated_at when records change\n   - Create trigger to update Product.current_price when new entries are added to PriceHistory\n   - Create trigger to maintain referential integrity when deleting categories\n4. Test security policies by attempting access with different user roles\n5. Test triggers by performing operations that should activate them and verifying the expected outcomes",
+          "status": "done",
+          "parentTaskId": 2
+        },
+        {
+          "id": 4,
+          "title": "Create Database Migrations and Documentation",
+          "description": "Set up database migration files and comprehensive documentation",
+          "dependencies": [
+            1,
+            2,
+            3
+          ],
+          "details": "Implementation details:\n1. Create migration files for schema version control:\n   - Initial migration for table creation\n   - Migration for relationships and indexes\n   - Migration for security policies and triggers\n2. Implement up and down migration functions for each migration file\n3. Set up a migration tracking table to record applied migrations\n4. Create comprehensive schema documentation including:\n   - Entity-relationship diagram (ERD)\n   - Table descriptions and field details\n   - Indexing strategy\n   - Security policy overview\n   - Trigger functionality\n5. Test migrations by running them in a clean environment\n6. Create sample data insertion scripts for development and testing",
+          "status": "done",
+          "parentTaskId": 2
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Develop News Aggregation System",
+      "description": "Create the system to collect and process tariff news from government sources, news APIs, and Twitter",
+      "status": "done",
+      "dependencies": [
+        2
+      ],
+      "priority": "high",
+      "details": "Implement API clients for government sources (USTR, WTO, etc.). Integrate with news APIs (Reuters, Bloomberg). Set up Twitter API integration for real-time updates. Create data normalization layer to standardize information from different sources. Implement caching with Redis to reduce API calls. Develop scheduling system for regular data fetching. Create filtering system to identify tariff-related news. Store processed news in the database with proper categorization.",
+      "testStrategy": "Test API integrations with mock responses. Verify data normalization with different source formats. Confirm caching reduces API calls. Test scheduling with accelerated timeframes. Validate filtering accuracy with test data. Verify database storage with schema validation.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Core API Client Framework",
+          "description": "Build a flexible API client framework that will serve as the foundation for all external data source integrations",
+          "dependencies": [],
+          "details": "Implementation details:\n1. Create a base ApiClient class with configurable request handling, error management, and rate limiting\n2. Implement authentication strategies (API keys, OAuth) as composable modules\n3. Build request/response transformation pipeline for data normalization\n4. Add logging and monitoring capabilities\n5. Implement retry logic and circuit breaker patterns\n6. Set up unit tests with mock responses\n7. Document the framework architecture for other developers\n\nTesting approach: Write unit tests for each component of the framework, focusing on error handling, authentication flows, and transformation capabilities.",
+          "status": "done",
+          "parentTaskId": 3
+        },
+        {
+          "id": 2,
+          "title": "Integrate Government and News API Sources",
+          "description": "Implement specific API clients for government sources and news APIs using the core client framework",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation details:\n1. Create specific client implementations for USTR and WTO APIs using the base framework\n2. Implement Reuters and Bloomberg API integrations\n3. Configure appropriate rate limits and authentication for each source\n4. Create source-specific data transformers to normalize data into a standard schema\n5. Implement source-specific error handling\n6. Set up configuration files for API endpoints and credentials\n7. Create comprehensive tests for each API integration\n\nTesting approach: Test each API client with real credentials in a staging environment, verify data retrieval, and validate normalization output against expected schemas.",
+          "status": "done",
+          "parentTaskId": 3
+        },
+        {
+          "id": 3,
+          "title": "Develop Twitter Integration and Real-time Updates",
+          "description": "Set up Twitter API integration to collect real-time tariff-related updates from relevant accounts and hashtags",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation details:\n1. Implement Twitter API client using the core framework\n2. Set up authentication with Twitter API v2\n3. Create filters for relevant hashtags, accounts, and keywords related to tariffs\n4. Implement streaming connection for real-time updates where applicable\n5. Build data transformation to extract and normalize relevant information from tweets\n6. Implement sentiment analysis for tweets\n7. Create monitoring for API rate limits and connection status\n\nTesting approach: Test with sandbox Twitter API credentials, verify filtering logic with sample tweets, and validate the transformation and sentiment analysis with diverse tweet samples.",
+          "status": "done",
+          "parentTaskId": 3
+        },
+        {
+          "id": 4,
+          "title": "Implement Redis Caching and Data Storage",
+          "description": "Set up Redis caching to optimize API usage and implement database storage for processed news items",
+          "dependencies": [
+            2,
+            3
+          ],
+          "details": "Implementation details:\n1. Configure Redis connection and client\n2. Implement cache strategies (TTL, invalidation policies) for different data sources\n3. Create caching middleware for API clients\n4. Design database schema for normalized news items with proper categorization\n5. Implement data access layer for storing and retrieving news items\n6. Set up indexes for efficient querying\n7. Create migration scripts for the database schema\n\nTesting approach: Benchmark API performance with and without caching, verify cache hit/miss rates, test database operations for performance and correctness, and validate data integrity across the pipeline.",
+          "status": "done",
+          "parentTaskId": 3
+        },
+        {
+          "id": 5,
+          "title": "Build Scheduling and Filtering System",
+          "description": "Develop a system to schedule regular data fetching from all sources and implement intelligent filtering for tariff-related news",
+          "dependencies": [
+            2,
+            3,
+            4
+          ],
+          "details": "Implementation details:\n1. Implement a job scheduler using a library like node-cron or Bull\n2. Create configurable schedules for different data sources\n3. Implement retry and failure handling for scheduled jobs\n4. Develop NLP-based filtering system to identify tariff-related content\n5. Create rules engine for categorizing news by tariff type, region, and industry\n6. Implement priority scoring for news items based on relevance\n7. Build admin interface to configure schedules and filtering rules\n\nTesting approach: Test scheduling with accelerated time, verify correct execution order and frequency, test filtering accuracy with a diverse set of news items, and validate categorization with pre-classified test data.",
+          "status": "done",
+          "parentTaskId": 3
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Build Product Directory and E-commerce Integration",
+      "description": "Develop the product directory system and integrate with major e-commerce platforms",
+      "status": "done",
+      "dependencies": [
+        2
+      ],
+      "priority": "high",
+      "details": "Implement API clients for e-commerce platforms (Amazon, Walmart, Target). Create product data normalization system. Develop affiliate link generation and tracking. Build product categorization system based on tariff impacts. Implement country of origin detection. Create product storage and update system in the database. Set up basic search functionality for products. Implement price tracking system to record historical prices.",
+      "testStrategy": "Test e-commerce API integrations with sample products. Verify normalization across different platforms. Confirm affiliate link generation and tracking. Test categorization with sample products. Validate country detection accuracy. Verify database storage and retrieval. Test search functionality with various queries. Verify price history recording over time.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement E-commerce Platform API Clients",
+          "description": "Develop API client modules for Amazon, Walmart, and Target to fetch product data, pricing, and availability information",
+          "dependencies": [],
+          "details": "Implementation details:\n1. Create a base API client interface with common methods for product fetching\n2. Implement Amazon Product Advertising API client with authentication and rate limiting\n3. Implement Walmart Open API client with proper error handling\n4. Implement Target API client (or scraping alternative if no public API is available)\n5. Add logging for all API interactions\n6. Create unit tests for each client using mock responses\n7. Document API limitations and rate limits for each platform\n\nTesting approach:\n- Unit test each client with mock responses\n- Integration tests with sandbox environments where available\n- Test error handling and rate limiting functionality",
+          "status": "done",
+          "parentTaskId": 4
+        },
+        {
+          "id": 2,
+          "title": "Build Product Data Normalization System",
+          "description": "Create a system to normalize and standardize product data from different e-commerce platforms into a consistent format",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation details:\n1. Define a standard product data model with common fields (name, price, description, images, etc.)\n2. Create platform-specific adapters to transform API responses to the standard model\n3. Implement validation rules for required fields and data quality\n4. Build country of origin detection using product descriptions and metadata\n5. Create normalization pipelines for batch processing\n6. Add data cleansing for inconsistent formatting (units, sizes, etc.)\n7. Implement caching strategy for normalized data\n\nTesting approach:\n- Unit test each adapter with sample API responses\n- Test with edge cases (missing fields, unusual formats)\n- Validate normalized outputs match expected schema\n- Benchmark performance with large datasets",
+          "status": "done",
+          "parentTaskId": 4
+        },
+        {
+          "id": 3,
+          "title": "Develop Product Storage and Database Schema",
+          "description": "Design and implement the database schema and storage system for products with update mechanisms",
+          "dependencies": [
+            2
+          ],
+          "details": "Implementation details:\n1. Design database schema for products with all required fields\n2. Implement database migrations for the product tables\n3. Create data access layer with CRUD operations\n4. Build update mechanism to refresh product data periodically\n5. Implement price tracking system to record historical prices\n6. Add database indexes for optimized queries\n7. Create backup and recovery procedures\n8. Implement data versioning for product changes\n\nTesting approach:\n- Unit test CRUD operations\n- Test price history tracking with sample data\n- Performance testing for bulk operations\n- Verify update mechanisms with simulated changes\n- Test database indexes with large datasets",
+          "status": "done",
+          "parentTaskId": 4
+        },
+        {
+          "id": 4,
+          "title": "Implement Product Categorization and Tariff Impact System",
+          "description": "Build a system to categorize products and determine tariff impacts based on product data and country of origin",
+          "dependencies": [
+            2,
+            3
+          ],
+          "details": "Implementation details:\n1. Create product category taxonomy aligned with tariff codes\n2. Implement categorization algorithm using product metadata\n3. Build tariff calculation system based on country of origin\n4. Create admin interface for manual category adjustments\n5. Implement batch categorization for new products\n6. Add tariff impact visualization for products\n7. Create category-based navigation system\n8. Build reporting for tariff impact by category\n\nTesting approach:\n- Test categorization accuracy with sample products\n- Validate tariff calculations against known rates\n- Test edge cases with products spanning multiple categories\n- Performance testing for batch categorization\n- Usability testing of admin interface",
+          "status": "done",
+          "parentTaskId": 4
+        },
+        {
+          "id": 5,
+          "title": "Build Affiliate Link Generation and Search Functionality",
+          "description": "Implement affiliate link generation, tracking system, and search functionality for the product directory",
+          "dependencies": [
+            3,
+            4
+          ],
+          "details": "Implementation details:\n1. Integrate with affiliate programs for each e-commerce platform\n2. Create affiliate link generation service with tracking parameters\n3. Implement click tracking and attribution system\n4. Build basic search functionality with filters\n5. Add relevance ranking for search results\n6. Implement faceted search by category, price range, etc.\n7. Create product recommendation engine based on tariff impact\n8. Build analytics dashboard for affiliate performance\n\nTesting approach:\n- Verify affiliate links generate correctly for each platform\n- Test click tracking with simulated user interactions\n- Validate search results for accuracy and relevance\n- Performance testing for search with large product catalog\n- A/B testing for search result ranking algorithms",
+          "status": "done",
+          "parentTaskId": 4
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Develop Core Frontend UI Components",
+      "description": "Create the main UI components for news display, product directory, and basic navigation",
+      "status": "done",
+      "dependencies": [
+        1
+      ],
+      "priority": "medium",
+      "details": "Implement responsive layout with TailwindCSS. Create navigation components for main sections. Develop news card and detail components. Build product listing and detail components. Implement filtering UI for countries and categories. Create Twitter feed ticker component. Design and implement price history charts using Chart.js. Build responsive mobile navigation. Implement loading states and error handling components.",
+      "testStrategy": "Test responsive design across different screen sizes. Verify component rendering with sample data. Test navigation between different sections. Validate filtering functionality. Confirm chart rendering with sample data. Test mobile navigation usability. Verify loading states and error handling.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Base Layout and Navigation Components",
+          "description": "Create the responsive layout structure and navigation components that will serve as the foundation for the application",
+          "dependencies": [],
+          "details": "Implementation details:\n1. Set up a responsive container layout using TailwindCSS grid/flex\n2. Create main navigation bar component with responsive breakpoints\n3. Implement mobile navigation component with hamburger menu\n4. Build sidebar navigation for category filtering\n5. Add loading and error state placeholder components for reuse\n6. Implement navigation state management to track active sections\n7. Testing approach: Verify responsive behavior across multiple viewport sizes; test navigation state changes; ensure accessibility compliance",
+          "status": "done",
+          "parentTaskId": 5
+        },
+        {
+          "id": 2,
+          "title": "Develop News Display Components",
+          "description": "Create components for displaying news items in different formats including cards, lists, and detailed views",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation details:\n1. Create reusable NewsCard component with image, headline, date and summary\n2. Implement NewsDetail component for expanded article view\n3. Build NewsList component to display collections of news cards\n4. Add NewsPlaceholder component for loading states\n5. Implement NewsError component for failed fetches\n6. Create responsive image handling for different viewport sizes\n7. Testing approach: Test with various content lengths; verify responsive layouts; test placeholder and error states",
+          "status": "done",
+          "parentTaskId": 5
+        },
+        {
+          "id": 3,
+          "title": "Build Product Listing and Filtering Components",
+          "description": "Create components for displaying and filtering product listings with various display options",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation details:\n1. Create ProductCard component with image, name, price and basic info\n2. Implement ProductDetail component for expanded product information\n3. Build ProductGrid and ProductList components for different display options\n4. Create FilterPanel component with country and category filter options\n5. Implement filter state management using React context or state management library\n6. Add sorting controls for product listings\n7. Create empty state and loading placeholders for product listings\n8. Testing approach: Test filter combinations; verify sorting functionality; test with varying amounts of products; ensure mobile responsiveness",
+          "status": "done",
+          "parentTaskId": 5
+        },
+        {
+          "id": 4,
+          "title": "Implement Data Visualization Components",
+          "description": "Create Twitter feed ticker and chart components for displaying dynamic data",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation details:\n1. Build TwitterFeedTicker component with auto-scrolling functionality\n2. Implement PriceHistoryChart component using Chart.js\n3. Create chart configuration options for different data visualizations\n4. Add responsive behavior to charts for different screen sizes\n5. Implement chart loading states and error handling\n6. Create chart legend and information components\n7. Build chart filter controls for different time periods\n8. Testing approach: Test charts with various datasets; verify responsive behavior; test ticker scrolling performance; ensure accessibility of data visualizations",
+          "status": "done",
+          "parentTaskId": 5
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Implement User Authentication and Profiles",
+      "description": "Set up user authentication, profile management, and saved product tracking",
+      "status": "done",
+      "dependencies": [
+        1,
+        2
+      ],
+      "priority": "medium",
+      "details": "Configure Supabase authentication with email/password and social logins. Create user profile database schema. Implement user registration and login flows. Develop profile management UI. Create saved products functionality. Implement price alert settings. Build notification preferences system. Set up email notification templates. Create authentication middleware for protected routes. Implement session management.",
+      "testStrategy": "Test authentication flows with different methods. Verify profile creation and updates. Test saved product functionality. Validate price alert settings. Confirm notification preferences are saved correctly. Test email notification delivery. Verify protected routes require authentication. Test session expiration and renewal.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Configure Supabase Authentication and User Schema",
+          "description": "Set up Supabase authentication with email/password and social login options, and create the user profile database schema",
+          "dependencies": [],
+          "details": "Implementation steps:\n1. Configure Supabase project settings for authentication\n2. Enable email/password authentication in Supabase dashboard\n3. Set up OAuth providers (Google, Facebook) for social logins\n4. Create user profiles table in Supabase with fields: id (references auth.users), display_name, email, avatar_url, created_at, updated_at\n5. Set up Row Level Security (RLS) policies for the user profiles table\n6. Create saved_products junction table with fields: id, user_id, product_id, created_at, price_alert_threshold\n7. Set up RLS policies for the saved_products table\n8. Create notification_preferences table with fields: user_id, email_notifications, push_notifications, price_alerts\n9. Test authentication configuration by manually creating test users\n\nTesting approach:\n- Verify authentication providers are correctly configured in Supabase dashboard\n- Use Supabase client to test user creation\n- Confirm database schema using Supabase interface\n- Validate RLS policies work as expected",
+          "status": "done",
+          "parentTaskId": 6
+        },
+        {
+          "id": 2,
+          "title": "Implement User Registration and Login Flows",
+          "description": "Create the frontend and backend logic for user registration and login processes using Supabase authentication",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation steps:\n1. Set up Supabase client in the application\n2. Create registration form component with fields for email, password, and display name\n3. Implement form validation for registration fields\n4. Connect registration form to Supabase auth.signUp() method\n5. Create login form component with email and password fields\n6. Implement form validation for login fields\n7. Connect login form to Supabase auth.signIn() method\n8. Implement social login buttons for configured providers\n9. Create authentication context to manage user state across the application\n10. Implement session persistence using Supabase session management\n11. Add password reset functionality\n12. Create email verification flow\n\nTesting approach:\n- Test registration with valid and invalid inputs\n- Verify login works with correct credentials and fails with incorrect ones\n- Test social login functionality with each provider\n- Verify session persistence across page refreshes\n- Test password reset flow\n- Validate email verification process",
+          "status": "done",
+          "parentTaskId": 6
+        },
+        {
+          "id": 3,
+          "title": "Build Profile Management UI and Protected Routes",
+          "description": "Develop the user profile management interface and implement route protection for authenticated users",
+          "dependencies": [
+            2
+          ],
+          "details": "Implementation steps:\n1. Create authentication middleware to protect routes that require login\n2. Implement redirect logic for unauthenticated users\n3. Create profile page component with user information display\n4. Build profile edit form with fields for display name and avatar\n5. Connect profile edit form to Supabase update functions\n6. Implement avatar upload functionality using Supabase storage\n7. Create account settings section for email and password changes\n8. Add UI for notification preferences (email, push, price alerts)\n9. Connect notification preferences UI to the database\n10. Implement user account deletion functionality\n11. Create navigation components that change based on authentication state\n\nTesting approach:\n- Verify protected routes redirect unauthenticated users\n- Test profile information display and editing\n- Validate avatar upload and display\n- Test notification preference changes are saved correctly\n- Verify account settings changes work as expected\n- Test navigation components show correct options based on auth state",
+          "status": "done",
+          "parentTaskId": 6
+        },
+        {
+          "id": 4,
+          "title": "Implement Saved Products and Notification System",
+          "description": "Create functionality for users to save products, set price alerts, and manage notification preferences",
+          "dependencies": [
+            3
+          ],
+          "details": "Implementation steps:\n1. Create UI components for saving/unsaving products\n2. Implement save product functionality using the saved_products table\n3. Build saved products page to display all saved items\n4. Add price alert threshold input for saved products\n5. Implement price alert settings storage in the database\n6. Create email notification templates for price alerts and other notifications\n7. Set up server-side function to check price changes and trigger alerts\n8. Implement notification center UI to display recent notifications\n9. Create database triggers for notification events\n10. Add functionality to mark notifications as read\n11. Implement email sending functionality for notifications\n12. Create notification preference management in user settings\n\nTesting approach:\n- Test saving and unsaving products\n- Verify saved products page displays correct items\n- Test price alert threshold setting and storage\n- Validate email notification templates render correctly\n- Test price change detection and alert triggering\n- Verify notification center displays appropriate notifications\n- Test email delivery for different notification types\n- Validate notification preferences affect delivery correctly",
+          "status": "done",
+          "parentTaskId": 6
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Develop Data Visualization and Price History",
+      "description": "Implement comprehensive price history tracking and visualization components",
+      "status": "done",
+      "dependencies": [
+        4,
+        5
+      ],
+      "priority": "medium",
+      "details": "Enhance price history data collection from multiple sources. Implement time-series data storage optimization. Create advanced Chart.js visualizations for price trends. Develop price comparison across retailers. Build price prediction algorithms based on tariff impacts. Implement interactive chart controls. Create data export functionality. Design visual indicators for price impacts. Develop historical price range indicators.",
+      "testStrategy": "Test data collection from multiple sources. Verify time-series data storage and retrieval. Validate chart rendering with different data patterns. Test retailer comparison accuracy. Evaluate prediction algorithm accuracy with historical data. Test interactive controls. Verify data export formats. Confirm visual indicators accurately reflect data.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Enhance Price Data Collection and Storage System",
+          "description": "Implement a robust system for collecting price data from multiple sources and optimize time-series data storage",
+          "dependencies": [],
+          "details": "Implementation steps:\n1. Create data fetchers for multiple retail APIs (Amazon, Walmart, Target, etc.)\n2. Implement a standardized data format to normalize price data from different sources\n3. Design and implement a time-series database schema optimized for price history storage\n4. Create data indexing for efficient retrieval by time ranges, products, and retailers\n5. Implement data validation and cleaning processes\n6. Set up scheduled jobs for regular price data collection\n7. Add logging and monitoring for data collection processes\n\nTesting approach:\n- Unit tests for each data fetcher\n- Integration tests for the data normalization pipeline\n- Performance tests for data storage and retrieval operations\n- End-to-end tests for the complete data collection workflow",
+          "status": "done",
+          "parentTaskId": 7
+        },
+        {
+          "id": 2,
+          "title": "Build Chart.js Visualization Components",
+          "description": "Create reusable Chart.js visualization components for displaying price trends and historical data",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation steps:\n1. Set up Chart.js integration with the application framework\n2. Create a base chart component with common configuration options\n3. Implement specialized chart types for different price visualizations:\n   - Line charts for price trends over time\n   - Bar charts for price comparisons across retailers\n   - Candlestick charts for price ranges (high/low/average)\n4. Add responsive design features to charts for different screen sizes\n5. Implement color schemes and styling consistent with application design\n6. Create chart legends and tooltips with detailed price information\n7. Optimize chart rendering performance for large datasets\n\nTesting approach:\n- Visual regression tests for chart components\n- Unit tests for chart data transformations\n- Browser compatibility tests\n- Performance tests with large datasets",
+          "status": "done",
+          "parentTaskId": 7
+        },
+        {
+          "id": 3,
+          "title": "Develop Interactive Chart Controls and Data Export",
+          "description": "Implement interactive controls for chart manipulation and functionality to export price history data",
+          "dependencies": [
+            2
+          ],
+          "details": "Implementation steps:\n1. Create time range selectors (day, week, month, year, custom)\n2. Implement zoom and pan functionality for detailed exploration\n3. Add filters for specific retailers or product categories\n4. Create toggles for different visualization modes\n5. Implement data point highlighting and selection\n6. Build data export functionality in multiple formats (CSV, JSON, Excel)\n7. Create shareable chart URLs with preserved settings\n8. Implement print-friendly chart views\n9. Add visual indicators for significant price changes\n\nTesting approach:\n- User interaction tests for all controls\n- Validation of exported data formats\n- Cross-browser testing of interactive features\n- Accessibility testing for all interactive elements",
+          "status": "done",
+          "parentTaskId": 7
+        },
+        {
+          "id": 4,
+          "title": "Implement Price Comparison and Prediction Features",
+          "description": "Develop advanced price comparison across retailers and prediction algorithms based on historical data and tariff impacts",
+          "dependencies": [
+            1,
+            2,
+            3
+          ],
+          "details": "Implementation steps:\n1. Create side-by-side retailer price comparison views\n2. Implement percentage difference calculations and visualizations\n3. Develop historical price range indicators (lowest/highest/average)\n4. Build a price prediction model using historical data patterns\n5. Integrate tariff impact data into the prediction algorithm\n6. Create visual indicators for predicted price trends\n7. Implement confidence intervals for predictions\n8. Add alerts for significant predicted price changes\n9. Create A/B testing framework to evaluate prediction accuracy\n\nTesting approach:\n- Unit tests for comparison and prediction algorithms\n- Validation against historical data for prediction accuracy\n- Performance testing of prediction algorithms\n- User testing of comparison features and prediction visualizations\n- Automated regression tests for the complete feature set",
+          "status": "done",
+          "parentTaskId": 7
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Implement AI-Powered Content Generation",
+      "description": "Develop the AI system for blog post generation, product recommendations, and impact analysis",
+      "status": "done",
+      "dependencies": [
+        3,
+        4
+      ],
+      "priority": "medium",
+      "details": "Integrate OpenAI API for content generation. Create templates for tariff impact blog posts. Develop product recommendation algorithms based on tariff data. Implement country-specific impact analysis generation. Build trend analysis system. Create automated category assignment for products. Develop content quality validation system. Implement content scheduling and publishing. Create content personalization based on user interests.",
+      "testStrategy": "Test OpenAI API integration with sample prompts. Verify blog post generation quality. Validate recommendation relevance with test scenarios. Test impact analysis accuracy with historical data. Evaluate trend analysis with sample data. Verify category assignment accuracy. Test content validation with edge cases. Confirm scheduling and publishing functionality. Test personalization with different user profiles.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Integrate OpenAI API for Content Generation",
+          "description": "Set up the connection to OpenAI's API and implement the core service for generating text content based on different prompts and templates.",
+          "dependencies": [],
+          "details": "Implementation steps:\n1. Create an API service class to handle communication with OpenAI\n2. Implement authentication and API key management with proper security\n3. Create a content generation service with methods for different types of content (blog posts, product descriptions, impact analysis)\n4. Implement prompt engineering techniques with templating system\n5. Add error handling, rate limiting, and retry logic\n6. Create a caching mechanism to avoid redundant API calls\n\nTesting approach:\n- Unit tests for API connection and response handling\n- Integration tests with mock responses\n- Test different prompt structures and evaluate output quality",
+          "status": "done",
+          "parentTaskId": 8
+        },
+        {
+          "id": 2,
+          "title": "Develop Templates and Generation System for Tariff Blog Posts",
+          "description": "Create a template-based system for generating blog posts about tariff changes and their impacts on different industries and products.",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation steps:\n1. Design a schema for blog post templates with placeholders for tariff data\n2. Create at least 5 different blog post templates for various scenarios (tariff increases, decreases, new regulations)\n3. Implement a template selection algorithm based on the tariff data context\n4. Develop a system to inject relevant tariff data, statistics, and examples into templates\n5. Build a post-processing system to ensure coherence and readability\n6. Implement a review workflow for generated content before publishing\n\nTesting approach:\n- Validate generated blog posts against quality criteria\n- Test with various tariff scenarios to ensure appropriate template selection\n- Perform readability and grammar checks on generated content",
+          "status": "done",
+          "parentTaskId": 8
+        },
+        {
+          "id": 3,
+          "title": "Implement Product Recommendation and Categorization System",
+          "description": "Develop algorithms to automatically categorize products and generate relevant product recommendations based on tariff data and user interests.",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation steps:\n1. Design a product categorization system using AI classification\n2. Implement automated tagging of products based on descriptions and tariff codes\n3. Create a recommendation engine that considers tariff impacts on product pricing\n4. Develop algorithms to identify substitute products in case of high tariffs\n5. Implement user interest tracking to personalize recommendations\n6. Build an API endpoint to serve recommendations to the frontend\n\nTesting approach:\n- Evaluate categorization accuracy against manually categorized products\n- Test recommendation relevance with different user profiles\n- Benchmark performance with large product datasets\n- A/B test different recommendation algorithms",
+          "status": "done",
+          "parentTaskId": 8
+        },
+        {
+          "id": 4,
+          "title": "Build Country-Specific Impact Analysis Generation",
+          "description": "Create a system that generates detailed analyses of how tariff changes impact specific countries, industries, and trade relationships.",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "Implementation steps:\n1. Develop data models to represent country-specific tariff impacts\n2. Implement algorithms to calculate financial impact of tariff changes on trade between countries\n3. Create visualization data generation for charts and graphs\n4. Build natural language generation for impact summaries and key insights\n5. Implement comparative analysis between different countries\n6. Develop historical trend integration to provide context for current changes\n\nTesting approach:\n- Validate calculations against known economic models\n- Test with historical tariff change data to verify accuracy\n- Review generated analyses with domain experts\n- Test performance with large datasets covering multiple countries",
+          "status": "done",
+          "parentTaskId": 8
+        },
+        {
+          "id": 5,
+          "title": "Develop Content Validation, Scheduling and Publishing System",
+          "description": "Create a system to validate generated content quality, schedule content publication, and manage the content lifecycle.",
+          "dependencies": [
+            2,
+            3,
+            4
+          ],
+          "details": "Implementation steps:\n1. Implement content quality validation using NLP techniques (coherence, readability, factual consistency)\n2. Create a content approval workflow with human-in-the-loop validation\n3. Develop a scheduling system for timed content publication\n4. Build analytics integration to track content performance\n5. Implement feedback loop to improve future content generation\n6. Create a content management interface for administrators\n\nTesting approach:\n- Validate quality checks against expert-written content\n- Test scheduling system with various time zones and publication rules\n- Perform user acceptance testing on the admin interface\n- Test integration with publishing platforms and social media",
+          "status": "done",
+          "parentTaskId": 8
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Build Advanced Search and Filtering",
+      "description": "Implement comprehensive search, filtering, and sorting capabilities for products and news",
+      "status": "done",
+      "dependencies": [
+        3,
+        4,
+        5
+      ],
+      "priority": "low",
+      "details": "Implement Elasticsearch for advanced search capabilities. Create faceted search for product attributes. Develop filtering by country, category, and price impact. Implement trend-based filtering (BPA-free, organic, etc.). Build sorting options with multiple parameters. Create saved search functionality. Implement search analytics to improve results. Develop type-ahead suggestions. Create search result highlighting. Implement relevance scoring based on tariff impacts.",
+      "testStrategy": "Test Elasticsearch integration with complex queries. Verify faceted search with multiple attributes. Test filtering combinations for expected results. Validate trend-based filtering accuracy. Test sorting with different parameters. Verify saved search functionality. Analyze search analytics data. Test type-ahead suggestions response time. Verify result highlighting. Evaluate relevance scoring with test queries.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Elasticsearch Core Integration",
+          "description": "Set up and integrate Elasticsearch with the application to enable advanced search capabilities for products and news",
+          "dependencies": [],
+          "details": "Implementation details:\n1. Install and configure Elasticsearch server\n2. Create index mappings for products and news data\n3. Implement data synchronization between database and Elasticsearch\n4. Build basic search API endpoints that connect to Elasticsearch\n5. Implement relevance scoring configuration based on tariff impacts\n6. Set up search result highlighting for matched terms\n7. Create reusable search service layer for future extensions\n\nTesting approach:\n- Verify Elasticsearch connection and proper indexing\n- Test basic search functionality with various queries\n- Validate that indexed data matches the database\n- Benchmark search performance and response times",
+          "status": "done",
+          "parentTaskId": 9
+        },
+        {
+          "id": 2,
+          "title": "Develop Faceted Search and Filtering System",
+          "description": "Implement faceted search capabilities for product attributes and core filtering functionality by country, category, and price impact",
+          "dependencies": [
+            1
+          ],
+          "details": "Implementation details:\n1. Extend Elasticsearch mappings to support faceted search\n2. Implement aggregations for product attributes (category, country, price range)\n3. Create filter components in the UI for each facet type\n4. Build API endpoints that support filtering by multiple parameters\n5. Implement price impact range filtering with min/max values\n6. Develop country-specific filtering with geo-location awareness\n7. Add category hierarchy filtering with parent-child relationships\n\nTesting approach:\n- Test each filter type independently and in combination\n- Verify facet counts match actual result counts\n- Test edge cases like empty result sets\n- Validate filter persistence across search sessions",
+          "status": "done",
+          "parentTaskId": 9
+        },
+        {
+          "id": 3,
+          "title": "Build Trend-Based Filtering and Sorting Options",
+          "description": "Implement specialized filtering for product trends (BPA-free, organic, etc.) and comprehensive sorting capabilities with multiple parameters",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "Implementation details:\n1. Define and implement trend-based attributes in Elasticsearch (BPA-free, organic, sustainable, etc.)\n2. Create specialized filters for trend attributes with appropriate UI components\n3. Implement multi-parameter sorting logic (relevance, price, date, impact level)\n4. Build sort direction toggles (ascending/descending)\n5. Create compound sorting with primary and secondary sort parameters\n6. Implement default sorting rules based on user context\n7. Add sorting persistence across search sessions\n\nTesting approach:\n- Verify trend filters correctly include/exclude products\n- Test sorting with various parameters and directions\n- Validate compound sorting works correctly\n- Test performance with large result sets and complex sorting",
+          "status": "done",
+          "parentTaskId": 9
+        },
+        {
+          "id": 4,
+          "title": "Implement Advanced Search Features and Analytics",
+          "description": "Add user-focused advanced search features including saved searches, type-ahead suggestions, and search analytics",
+          "dependencies": [
+            1,
+            2,
+            3
+          ],
+          "details": "Implementation details:\n1. Create saved search functionality with user accounts integration\n2. Implement CRUD operations for saved searches\n3. Build type-ahead suggestion system using Elasticsearch completion suggester\n4. Implement search term analytics collection and storage\n5. Create admin dashboard for viewing popular searches and zero-result searches\n6. Implement search improvement algorithms based on analytics\n7. Add personalized search results based on user history (if available)\n\nTesting approach:\n- Test saved search functionality with various user scenarios\n- Verify type-ahead suggestions work with partial inputs\n- Validate analytics data is correctly collected and stored\n- Test search improvements based on collected analytics",
+          "status": "done",
+          "parentTaskId": 9
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Optimize Performance and Deploy MVP",
+      "description": "Perform final optimizations, testing, and deploy the Minimum Viable Product",
+      "status": "done",
+      "dependencies": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "priority": "low",
+      "details": "Implement Redis caching for API responses. Optimize database queries with proper indexing. Set up Cloudflare CDN for static assets. Configure serverless functions for background tasks. Implement image optimization pipeline. Set up monitoring and alerting. Create CI/CD pipeline for automated deployment. Perform load testing and optimize bottlenecks. Implement error tracking and reporting. Configure analytics for user behavior tracking. Create documentation for API endpoints and components.",
+      "testStrategy": "Measure performance improvements with benchmarking tools. Verify caching reduces response times. Test CDN configuration with global requests. Validate serverless function execution. Measure image loading performance. Test monitoring alerts with simulated issues. Verify CI/CD pipeline with test deployments. Conduct load testing with simulated traffic. Test error tracking with forced errors. Confirm analytics data collection. Review documentation for completeness.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Caching and Database Optimizations",
+          "description": "Set up Redis caching for API responses and optimize database performance through proper indexing and query optimization to reduce response times and improve scalability.",
+          "dependencies": [],
+          "details": "1. Install and configure Redis for the application environment\n2. Identify high-traffic API endpoints for caching implementation\n3. Implement Redis caching middleware with appropriate TTL values based on data volatility\n4. Add cache invalidation triggers for data mutations\n5. Analyze database query performance using EXPLAIN ANALYZE\n6. Create necessary indexes on frequently queried columns and foreign keys\n7. Optimize complex queries by rewriting or using database-specific optimizations\n8. Implement query result pagination where appropriate\n9. Set up database connection pooling to handle concurrent requests efficiently\n10. Testing: Measure response time improvements using benchmarking tools and verify data consistency between cache and database",
+          "status": "done",
+          "parentTaskId": 10
+        },
+        {
+          "id": 2,
+          "title": "Configure CDN and Implement Asset Optimization",
+          "description": "Set up Cloudflare CDN for static assets and implement an image optimization pipeline to reduce load times and bandwidth usage across the application.",
+          "dependencies": [],
+          "details": "1. Create a Cloudflare account and configure DNS settings for the application domain\n2. Set up Cloudflare CDN for static assets (JS, CSS, images, fonts)\n3. Configure appropriate cache policies and TTL values for different asset types\n4. Implement cache busting strategy for versioned assets\n5. Create an image optimization pipeline using tools like Sharp or Imagemin\n6. Set up automated WebP conversion for modern browsers with fallbacks\n7. Implement responsive images with srcset and size attributes\n8. Configure lazy loading for below-the-fold images\n9. Minify and bundle JavaScript and CSS files\n10. Testing: Use Lighthouse or WebPageTest to measure performance improvements and verify assets are being served from CDN",
+          "status": "done",
+          "parentTaskId": 10
+        },
+        {
+          "id": 3,
+          "title": "Set Up Serverless Functions and Background Processing",
+          "description": "Configure serverless functions for background tasks to handle resource-intensive operations asynchronously, improving application responsiveness and scalability.",
+          "dependencies": [
+            1
+          ],
+          "details": "1. Identify CPU-intensive or time-consuming operations suitable for background processing\n2. Set up serverless infrastructure using AWS Lambda, Vercel Functions, or similar platform\n3. Implement serverless functions for image processing, data exports, and email sending\n4. Create a message queue system for reliable task processing (e.g., SQS, RabbitMQ)\n5. Implement retry logic and dead-letter queues for failed operations\n6. Set up event triggers for scheduled tasks and database changes\n7. Create API endpoints to check background task status\n8. Implement webhook capabilities for third-party integrations\n9. Configure appropriate timeout and memory allocation for serverless functions\n10. Testing: Verify background tasks execute correctly by monitoring task completion and checking for error conditions",
+          "status": "done",
+          "parentTaskId": 10
+        },
+        {
+          "id": 4,
+          "title": "Implement Monitoring, Error Tracking, and Analytics",
+          "description": "Set up comprehensive monitoring, error tracking, and analytics to gain insights into application performance, identify issues quickly, and understand user behavior.",
+          "dependencies": [
+            1,
+            2,
+            3
+          ],
+          "details": "1. Set up application performance monitoring (APM) using New Relic, Datadog, or similar tool\n2. Configure server and infrastructure monitoring for CPU, memory, and disk usage\n3. Implement error tracking with Sentry or similar service to capture and categorize errors\n4. Set up alerting thresholds and notification channels (email, Slack, PagerDuty)\n5. Create custom dashboards for key performance metrics\n6. Implement structured logging with appropriate log levels\n7. Configure analytics tracking for user behavior using Google Analytics, Mixpanel, or similar\n8. Set up event tracking for key user actions and conversion funnels\n9. Implement custom metrics for business KPIs\n10. Testing: Verify alerts trigger correctly for simulated error conditions and confirm analytics events are being captured accurately",
+          "status": "done",
+          "parentTaskId": 10
+        },
+        {
+          "id": 5,
+          "title": "Create CI/CD Pipeline and Deploy MVP",
+          "description": "Implement a continuous integration and continuous deployment pipeline, perform load testing, optimize bottlenecks, and deploy the MVP to production with proper documentation.",
+          "dependencies": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "details": "1. Set up CI/CD pipeline using GitHub Actions, CircleCI, or Jenkins\n2. Configure automated testing for unit, integration, and end-to-end tests\n3. Implement code quality checks and security scanning\n4. Create staging and production environments with infrastructure-as-code\n5. Configure blue-green deployment strategy to minimize downtime\n6. Perform load testing using tools like k6, JMeter, or Locust\n7. Identify and optimize performance bottlenecks revealed during load testing\n8. Create comprehensive API documentation using Swagger/OpenAPI\n9. Document component usage and architecture decisions\n10. Deploy MVP to production with monitoring in place\n11. Testing: Conduct final smoke tests in production and verify all monitoring systems are operational",
+          "status": "done",
+          "parentTaskId": 10
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "projectName": "TariffAlert.me Implementation",
+    "totalTasks": 10,
+    "sourceFile": "scripts/PRD.txt",
+    "generatedAt": "2023-11-22"
+  }
+}

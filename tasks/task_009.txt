@@ -1,0 +1,89 @@
+# Task ID: 9
+# Title: Build Advanced Search and Filtering
+# Status: done
+# Dependencies: 3, 4, 5
+# Priority: low
+# Description: Implement comprehensive search, filtering, and sorting capabilities for products and news
+# Details:
+Implement Elasticsearch for advanced search capabilities. Create faceted search for product attributes. Develop filtering by country, category, and price impact. Implement trend-based filtering (BPA-free, organic, etc.). Build sorting options with multiple parameters. Create saved search functionality. Implement search analytics to improve results. Develop type-ahead suggestions. Create search result highlighting. Implement relevance scoring based on tariff impacts.
+
+# Test Strategy:
+Test Elasticsearch integration with complex queries. Verify faceted search with multiple attributes. Test filtering combinations for expected results. Validate trend-based filtering accuracy. Test sorting with different parameters. Verify saved search functionality. Analyze search analytics data. Test type-ahead suggestions response time. Verify result highlighting. Evaluate relevance scoring with test queries.
+
+# Subtasks:
+## 1. Implement Elasticsearch Core Integration [done]
+### Dependencies: None
+### Description: Set up and integrate Elasticsearch with the application to enable advanced search capabilities for products and news
+### Details:
+Implementation details:
+1. Install and configure Elasticsearch server
+2. Create index mappings for products and news data
+3. Implement data synchronization between database and Elasticsearch
+4. Build basic search API endpoints that connect to Elasticsearch
+5. Implement relevance scoring configuration based on tariff impacts
+6. Set up search result highlighting for matched terms
+7. Create reusable search service layer for future extensions
+
+Testing approach:
+- Verify Elasticsearch connection and proper indexing
+- Test basic search functionality with various queries
+- Validate that indexed data matches the database
+- Benchmark search performance and response times
+
+## 2. Develop Faceted Search and Filtering System [done]
+### Dependencies: 9.1
+### Description: Implement faceted search capabilities for product attributes and core filtering functionality by country, category, and price impact
+### Details:
+Implementation details:
+1. Extend Elasticsearch mappings to support faceted search
+2. Implement aggregations for product attributes (category, country, price range)
+3. Create filter components in the UI for each facet type
+4. Build API endpoints that support filtering by multiple parameters
+5. Implement price impact range filtering with min/max values
+6. Develop country-specific filtering with geo-location awareness
+7. Add category hierarchy filtering with parent-child relationships
+
+Testing approach:
+- Test each filter type independently and in combination
+- Verify facet counts match actual result counts
+- Test edge cases like empty result sets
+- Validate filter persistence across search sessions
+
+## 3. Build Trend-Based Filtering and Sorting Options [done]
+### Dependencies: 9.1, 9.2
+### Description: Implement specialized filtering for product trends (BPA-free, organic, etc.) and comprehensive sorting capabilities with multiple parameters
+### Details:
+Implementation details:
+1. Define and implement trend-based attributes in Elasticsearch (BPA-free, organic, sustainable, etc.)
+2. Create specialized filters for trend attributes with appropriate UI components
+3. Implement multi-parameter sorting logic (relevance, price, date, impact level)
+4. Build sort direction toggles (ascending/descending)
+5. Create compound sorting with primary and secondary sort parameters
+6. Implement default sorting rules based on user context
+7. Add sorting persistence across search sessions
+
+Testing approach:
+- Verify trend filters correctly include/exclude products
+- Test sorting with various parameters and directions
+- Validate compound sorting works correctly
+- Test performance with large result sets and complex sorting
+
+## 4. Implement Advanced Search Features and Analytics [done]
+### Dependencies: 9.1, 9.2, 9.3
+### Description: Add user-focused advanced search features including saved searches, type-ahead suggestions, and search analytics
+### Details:
+Implementation details:
+1. Create saved search functionality with user accounts integration
+2. Implement CRUD operations for saved searches
+3. Build type-ahead suggestion system using Elasticsearch completion suggester
+4. Implement search term analytics collection and storage
+5. Create admin dashboard for viewing popular searches and zero-result searches
+6. Implement search improvement algorithms based on analytics
+7. Add personalized search results based on user history (if available)
+
+Testing approach:
+- Test saved search functionality with various user scenarios
+- Verify type-ahead suggestions work with partial inputs
+- Validate analytics data is correctly collected and stored
+- Test search improvements based on collected analytics
+

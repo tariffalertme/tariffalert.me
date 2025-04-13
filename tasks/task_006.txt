@@ -1,0 +1,113 @@
+# Task ID: 6
+# Title: Implement User Authentication and Profiles
+# Status: done
+# Dependencies: 1, 2
+# Priority: medium
+# Description: Set up user authentication, profile management, and saved product tracking
+# Details:
+Configure Supabase authentication with email/password and social logins. Create user profile database schema. Implement user registration and login flows. Develop profile management UI. Create saved products functionality. Implement price alert settings. Build notification preferences system. Set up email notification templates. Create authentication middleware for protected routes. Implement session management.
+
+# Test Strategy:
+Test authentication flows with different methods. Verify profile creation and updates. Test saved product functionality. Validate price alert settings. Confirm notification preferences are saved correctly. Test email notification delivery. Verify protected routes require authentication. Test session expiration and renewal.
+
+# Subtasks:
+## 1. Configure Supabase Authentication and User Schema [done]
+### Dependencies: None
+### Description: Set up Supabase authentication with email/password and social login options, and create the user profile database schema
+### Details:
+Implementation steps:
+1. Configure Supabase project settings for authentication
+2. Enable email/password authentication in Supabase dashboard
+3. Set up OAuth providers (Google, Facebook) for social logins
+4. Create user profiles table in Supabase with fields: id (references auth.users), display_name, email, avatar_url, created_at, updated_at
+5. Set up Row Level Security (RLS) policies for the user profiles table
+6. Create saved_products junction table with fields: id, user_id, product_id, created_at, price_alert_threshold
+7. Set up RLS policies for the saved_products table
+8. Create notification_preferences table with fields: user_id, email_notifications, push_notifications, price_alerts
+9. Test authentication configuration by manually creating test users
+
+Testing approach:
+- Verify authentication providers are correctly configured in Supabase dashboard
+- Use Supabase client to test user creation
+- Confirm database schema using Supabase interface
+- Validate RLS policies work as expected
+
+## 2. Implement User Registration and Login Flows [done]
+### Dependencies: 6.1
+### Description: Create the frontend and backend logic for user registration and login processes using Supabase authentication
+### Details:
+Implementation steps:
+1. Set up Supabase client in the application
+2. Create registration form component with fields for email, password, and display name
+3. Implement form validation for registration fields
+4. Connect registration form to Supabase auth.signUp() method
+5. Create login form component with email and password fields
+6. Implement form validation for login fields
+7. Connect login form to Supabase auth.signIn() method
+8. Implement social login buttons for configured providers
+9. Create authentication context to manage user state across the application
+10. Implement session persistence using Supabase session management
+11. Add password reset functionality
+12. Create email verification flow
+
+Testing approach:
+- Test registration with valid and invalid inputs
+- Verify login works with correct credentials and fails with incorrect ones
+- Test social login functionality with each provider
+- Verify session persistence across page refreshes
+- Test password reset flow
+- Validate email verification process
+
+## 3. Build Profile Management UI and Protected Routes [done]
+### Dependencies: 6.2
+### Description: Develop the user profile management interface and implement route protection for authenticated users
+### Details:
+Implementation steps:
+1. Create authentication middleware to protect routes that require login
+2. Implement redirect logic for unauthenticated users
+3. Create profile page component with user information display
+4. Build profile edit form with fields for display name and avatar
+5. Connect profile edit form to Supabase update functions
+6. Implement avatar upload functionality using Supabase storage
+7. Create account settings section for email and password changes
+8. Add UI for notification preferences (email, push, price alerts)
+9. Connect notification preferences UI to the database
+10. Implement user account deletion functionality
+11. Create navigation components that change based on authentication state
+
+Testing approach:
+- Verify protected routes redirect unauthenticated users
+- Test profile information display and editing
+- Validate avatar upload and display
+- Test notification preference changes are saved correctly
+- Verify account settings changes work as expected
+- Test navigation components show correct options based on auth state
+
+## 4. Implement Saved Products and Notification System [done]
+### Dependencies: 6.3
+### Description: Create functionality for users to save products, set price alerts, and manage notification preferences
+### Details:
+Implementation steps:
+1. Create UI components for saving/unsaving products
+2. Implement save product functionality using the saved_products table
+3. Build saved products page to display all saved items
+4. Add price alert threshold input for saved products
+5. Implement price alert settings storage in the database
+6. Create email notification templates for price alerts and other notifications
+7. Set up server-side function to check price changes and trigger alerts
+8. Implement notification center UI to display recent notifications
+9. Create database triggers for notification events
+10. Add functionality to mark notifications as read
+11. Implement email sending functionality for notifications
+12. Create notification preference management in user settings
+
+Testing approach:
+- Test saving and unsaving products
+- Verify saved products page displays correct items
+- Test price alert threshold setting and storage
+- Validate email notification templates render correctly
+- Test price change detection and alert triggering
+- Verify notification center displays appropriate notifications
+- Test email delivery for different notification types
+- Validate notification preferences affect delivery correctly
+

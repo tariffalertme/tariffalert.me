@@ -1,0 +1,79 @@
+# Task ID: 2
+# Title: Implement Database Schema
+# Status: done
+# Dependencies: 1
+# Priority: high
+# Description: Design and implement the core database schema for news items, products, categories, and price history
+# Details:
+Create database tables in Supabase based on the data models specified in the PRD (NewsItem, Product, Category). Set up relationships between tables. Implement proper indexing for performance. Create time-series structure for price history data. Set up database triggers for automatic updates. Implement row-level security policies for data protection. Create database migrations for version control.
+
+# Test Strategy:
+Validate schema with test data insertion. Verify relationships with join queries. Test indexing performance with benchmark queries. Confirm security policies are functioning correctly. Verify migrations can be applied and rolled back successfully.
+
+# Subtasks:
+## 1. Create Core Database Tables [done]
+### Dependencies: None
+### Description: Set up the foundational tables for NewsItem, Product, Category, and PriceHistory in Supabase
+### Details:
+Implementation details:
+1. Create the Category table with fields: id (primary key), name, description, created_at, updated_at
+2. Create the Product table with fields: id (primary key), name, description, current_price, category_id (foreign key to Category), image_url, created_at, updated_at
+3. Create the NewsItem table with fields: id (primary key), title, content, published_date, source_url, image_url, created_at, updated_at
+4. Create the PriceHistory table with fields: id (primary key), product_id (foreign key to Product), price, recorded_at
+5. Test each table creation by inserting and retrieving sample data
+6. Document the schema structure in the project documentation
+
+## 2. Establish Table Relationships and Indexing [done]
+### Dependencies: 2.1
+### Description: Configure relationships between tables and implement proper indexing for query performance
+### Details:
+Implementation details:
+1. Set up foreign key constraints between tables:
+   - Product.category_id references Category.id
+   - PriceHistory.product_id references Product.id
+   - Add junction table for many-to-many relationships if needed (e.g., Product_NewsItem)
+2. Create appropriate indexes for performance optimization:
+   - Index on Category.name for faster lookups
+   - Index on Product.name and Product.category_id
+   - Index on NewsItem.published_date
+   - Index on PriceHistory.recorded_at and PriceHistory.product_id
+3. Test query performance with and without indexes to verify improvements
+4. Document all relationships and indexes in the schema documentation
+
+## 3. Implement Row-Level Security and Triggers [done]
+### Dependencies: 2.1, 2.2
+### Description: Set up security policies and database triggers for automatic updates
+### Details:
+Implementation details:
+1. Enable Row Level Security (RLS) for all tables
+2. Create security policies for each table:
+   - Public read access for Products, Categories, and NewsItems
+   - Authenticated user access for PriceHistory
+   - Admin-only write access for all tables
+3. Implement database triggers:
+   - Create trigger to update Product.updated_at when records change
+   - Create trigger to update Product.current_price when new entries are added to PriceHistory
+   - Create trigger to maintain referential integrity when deleting categories
+4. Test security policies by attempting access with different user roles
+5. Test triggers by performing operations that should activate them and verifying the expected outcomes
+
+## 4. Create Database Migrations and Documentation [done]
+### Dependencies: 2.1, 2.2, 2.3
+### Description: Set up database migration files and comprehensive documentation
+### Details:
+Implementation details:
+1. Create migration files for schema version control:
+   - Initial migration for table creation
+   - Migration for relationships and indexes
+   - Migration for security policies and triggers
+2. Implement up and down migration functions for each migration file
+3. Set up a migration tracking table to record applied migrations
+4. Create comprehensive schema documentation including:
+   - Entity-relationship diagram (ERD)
+   - Table descriptions and field details
+   - Indexing strategy
+   - Security policy overview
+   - Trigger functionality
+5. Test migrations by running them in a clean environment
+6. Create sample data insertion scripts for development and testing
+
