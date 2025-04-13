@@ -569,3 +569,55 @@ Can you analyze the complexity of our tasks to help me understand which ones nee
 ```
 Can you show me the complexity report in a more readable format?
 ```
+
+# TariffAlert.me
+
+## Environment Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/tariffalert.me.git
+cd tariffalert.me
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+   - Copy `.env.example` to `.env.local`:
+     ```bash
+     cp .env.example .env.local
+     ```
+   - Update the following variables in `.env.local`:
+     - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+     - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+     - `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase service role key
+     - Other optional variables as needed (see `.env.example` for all options)
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+The application will be available at http://localhost:3000
+
+## Deployment
+
+### Vercel Setup
+1. Connect your GitHub repository to Vercel
+2. Add all required environment variables in Vercel's project settings
+3. Deploy the project
+
+### Environment Variables
+- **Required Variables:**
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY`
+
+- **Optional Variables:**
+  - Analytics: `NEXT_PUBLIC_ANALYTICS_ID`
+  - Error tracking: `NEXT_PUBLIC_SENTRY_DSN`
+  - Authentication: `NEXT_PUBLIC_GOOGLE_CLIENT_ID`, `NEXT_PUBLIC_FACEBOOK_APP_ID`
+  - API Keys: `OPENAI_API_KEY`
