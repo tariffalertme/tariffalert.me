@@ -16,11 +16,11 @@ export class NewsSchedulerService {
 
     // Initialize API clients
     const ustrClient = new UstrApiClient({
-      auth: { type: 'none' },
+      apiKey: '',
       logger: new Logger('UstrApiClient')
     });
     const wtoClient = new WtoApiClient({
-      auth: { type: 'none' },
+      apiKey: '',
       logger: new Logger('WtoApiClient')
     });
 

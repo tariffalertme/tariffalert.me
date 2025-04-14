@@ -1,5 +1,5 @@
 import { BaseApiClient } from '../../src/lib/api/BaseApiClient';
-import { ApiClientConfig } from '@/types/api';
+import { ApiClientConfig } from '../../src/types/api';
 import { Logger } from '../../src/lib/utils/logger';
 import crypto from 'crypto';
 

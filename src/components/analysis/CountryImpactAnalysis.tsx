@@ -51,8 +51,21 @@ export function CountryImpactAnalysis({
       }
     }
 
+    const fetchData = async () => {
+      try {
+        const data = await impactService.getCountryImpact(countryCode);
+        setAnalysis(data);
+      } catch (error) {
+        console.error('Error fetching country impact data:', error);
+      }
+    };
+
+    if (countryCode) {
+      fetchData();
+    }
+
     loadAnalysis();
-  }, [countryCode, timeframe]);
+  }, [countryCode, timeframe, impactService]);
 
   if (loading) {
     return (

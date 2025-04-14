@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import type { UserProfile } from '../../../types/database';
+import Image from 'next/image';
 
 interface ProfileFormProps {
   profile: UserProfile;
@@ -52,10 +53,12 @@ export function ProfileForm({ profile, onSave }: ProfileFormProps) {
           {profile.avatar_url && (
             <div>
               <h3 className="text-sm font-medium text-gray-500">Avatar</h3>
-              <img
+              <Image
                 src={profile.avatar_url}
                 alt="Profile avatar"
-                className="mt-1 h-20 w-20 rounded-full"
+                width={100}
+                height={100}
+                className="rounded-full"
               />
             </div>
           )}

@@ -94,7 +94,7 @@ export function SavedProducts() {
       <div className="text-center py-8">
         <h3 className="text-lg font-medium text-gray-900 mb-2">No Saved Products</h3>
         <p className="text-gray-500">
-          You haven't saved any products yet. Browse our products and click the heart icon to save them for later.
+          You haven&apos;t saved any products yet. Browse our products and click the heart icon to save them for later.
         </p>
       </div>
     );

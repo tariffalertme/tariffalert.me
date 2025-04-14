@@ -4,42 +4,29 @@ import withBundleAnalyzer from '@next/bundle-analyzer'
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['images.unsplash.com', 'images-na.ssl-images-amazon.com', 'i5.walmartimages.com'],
-    // Enable image optimization
-    unoptimized: false,
-    // Configure image loader for CDN
-    loader: 'default',
-    // Configure image formats with priority order
-    formats: ['image/avif', 'image/webp', 'image/png', 'image/jpeg'],
-    // Configure image caching
-    minimumCacheTTL: 60 * 60 * 24, // 24 hours
-    // Configure image sizes
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // Enable remote patterns for CDN
+    domains: ['images.unsplash.com', 'via.placeholder.com'],
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**.cloudfront.net',
+        hostname: '**.unsplash.com',
       },
       {
         protocol: 'https',
-        hostname: '**.amazonaws.com',
-      }
+        hostname: '**.placeholder.com',
+      },
     ],
   },
   // Enable compression
   compress: true,
   // Enable static optimization
   experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['@heroicons/react', 'recharts', 'lucide-react'],
-    // Enable modern JavaScript features
-    legacyBrowsers: false,
-    // Enable React Server Components
-    serverComponents: true,
-    // Enable App Directory
-    appDir: true,
+    instrumentationHook: true,
+  },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
   },
   // Configure headers for caching
   async headers() {

@@ -22,11 +22,10 @@ export interface AuthConfig {
  */
 export interface ApiClientConfig {
   baseUrl: string;
-  auth: AuthConfig;
-  retryConfig?: RetryConfig;
-  rateLimit?: RateLimitConfig;
+  apiKey: string;
   timeout?: number;
-  headers?: RawAxiosRequestHeaders;
+  retries?: number;
+  headers?: Record<string, string>;
 }
 
 /**
@@ -97,10 +96,11 @@ export interface NormalizedNewsItem {
   id: string;
   title: string;
   content: string;
-  publishedDate: string;
-  sourceUrl: string;
-  imageUrl?: string;
-  category?: string;
+  source: string;
+  url: string;
+  publishedAt: Date;
+  relevanceScore: number;
+  categories: string[];
 }
 
 /**
@@ -116,9 +116,58 @@ export interface NewsSourceConfig extends ApiClientConfig {
   };
 }
 
-export type Product = Database['public']['Tables']['products']['Row'];
-export type Category = Database['public']['Tables']['categories']['Row'];
-export type UserProfile = Database['public']['Tables']['user_profiles']['Row'];
-export type UserPreferences = Database['public']['Tables']['user_preferences']['Row'];
-export type PriceHistory = Database['public']['Tables']['price_history']['Row'];
-export type SavedProduct = Database['public']['Tables']['saved_products']['Row']; 
+export interface Product {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  currency: string;
+  source: string;
+  sourceId: string;
+  url: string;
+  imageUrl?: string;
+  category?: string;
+  tariffCode?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  description?: string;
+  parentId?: string;
+  tariffCode?: string;
+}
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  name?: string;
+  preferences?: UserPreferences;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UserPreferences {
+  emailNotifications: boolean;
+  priceAlertThreshold: number;
+  currency: string;
+}
+
+export interface PriceHistory {
+  id: string;
+  productId: string;
+  price: number;
+  currency: string;
+  timestamp: Date;
+}
+
+export interface SavedProduct {
+  id: string;
+  userId: string;
+  productId: string;
+  createdAt: Date;
+  alertEnabled: boolean;
+  priceThreshold?: number;
+} 

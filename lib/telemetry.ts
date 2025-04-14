@@ -2,7 +2,7 @@ import { telemetry } from './services/TelemetryService';
 
 export async function initTelemetry() {
   if (process.env.NODE_ENV !== 'test') {
-    await telemetry.start();
+    await telemetry.init();
   }
 }
 

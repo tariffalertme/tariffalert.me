@@ -1,7 +1,40 @@
 import Handlebars from 'handlebars';
 import { ContentTemplate, TemplateVariable } from './templates';
+import { Logger } from '@/lib/utils/logger';
+import { Product, Category, UserProfile, UserPreferences } from '@/types/api';
+
+export interface TemplateData {
+  [key: string]: any;
+}
+
+interface TemplateContext {
+  product?: Product;
+  category?: Category;
+  user?: UserProfile;
+  preferences?: UserPreferences;
+  variables: Record<string, string | number | boolean>;
+}
+
+interface TemplateFunction {
+  (context: TemplateContext): string;
+}
+
+interface Template {
+  name: string;
+  content: string;
+  variables: string[];
+  render: TemplateFunction;
+}
 
 export class TemplateEngine {
+  private readonly logger: Logger;
+  private templates: Map<string, Template>;
+
+  constructor() {
+    this.logger = new Logger('TemplateEngine');
+    this.templates = new Map();
+  }
+
   private validateVariables(
     template: ContentTemplate,
     variables: Record<string, any>
@@ -129,5 +162,105 @@ export class TemplateEngine {
     } catch (error) {
       return `Error formatting output: ${error instanceof Error ? error.message : 'Unknown error'}`;
     }
+  }
+
+  public generatePrompt(templateId: string, data: TemplateData): string {
+    try {
+      // Get template based on ID
+      const template = this.getTemplate(templateId);
+      return this.processTemplate(template, data);
+    } catch (error) {
+      this.logger.error('Error generating prompt:', { error, templateId });
+      throw error;
+    }
+  }
+
+  private getTemplate(templateId: string): string {
+    const templates: Record<string, string> = {
+      countryImpactRecommendations: `
+        Analyze the impact of tariff changes and trade relationships for {{countryCode}}:
+        
+        Trade Statistics:
+        - Imports: {{tradeStatistics.imports}}
+        - Exports: {{tradeStatistics.exports}}
+        - Average Tariff Rate: {{tradeStatistics.averageTariffRate}}
+        
+        Recent Tariff Changes:
+        {{#each tariffChanges}}
+        - From {{previousRate}}% to {{newRate}}% (Effective: {{effectiveDate}})
+          Affected Categories: {{affectedCategories}}
+        {{/each}}
+        
+        Consumer Segments:
+        {{#each consumerSegments}}
+        - {{name}}: {{description}}
+          Affected Categories: {{affectedCategories}}
+        {{/each}}
+        
+        Trade Relationships:
+        {{#each relationships}}
+        - {{sourceCountry}} -> {{targetCountry}}: {{relationshipType}} (Impact: {{impactCorrelation}})
+        {{/each}}
+        
+        Overall Impact Score: {{impactScore}}
+        
+        Based on this data, provide strategic recommendations for businesses and stakeholders.
+      `
+    };
+
+    const template = templates[templateId];
+    if (!template) {
+      throw new Error(`Template not found: ${templateId}`);
+    }
+
+    return template;
+  }
+
+  private parseVariables(content: string): string[] {
+    const matches = content.match(/\{\{([^}]+)\}\}/g) || [];
+    return matches.map(match => match.slice(2, -2).trim());
+  }
+
+  registerTemplate(name: string, content: string): void {
+    const variables = this.parseVariables(content);
+    const template: Template = {
+      name,
+      content,
+      variables,
+      render: (context: TemplateContext) => {
+        return this.renderTemplate(content, context);
+      }
+    };
+    this.templates.set(name, template);
+  }
+
+  private getVariableValue(path: string, context: TemplateContext): string | number | boolean {
+    const parts = path.split('.');
+    let value: unknown = context;
+    
+    for (const part of parts) {
+      if (value && typeof value === 'object' && part in value) {
+        value = (value as Record<string, unknown>)[part];
+      } else {
+        return '';
+      }
+    }
+
+    return value as string | number | boolean;
+  }
+
+  private renderTemplate(content: string, context: TemplateContext): string {
+    return content.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
+      const value = this.getVariableValue(path.trim(), context);
+      return String(value);
+    });
+  }
+
+  render(templateName: string, context: TemplateContext): string {
+    const template = this.templates.get(templateName);
+    if (!template) {
+      throw new Error(`Template "${templateName}" not found`);
+    }
+    return template.render(context);
   }
 } 

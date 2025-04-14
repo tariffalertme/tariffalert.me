@@ -7,11 +7,11 @@
   "crons": [
     {
       "path": "/api/cron/update-prices",
-      "schedule": "0 */6 * * *"
+      "schedule": "0 0 * * *"
     },
     {
       "path": "/api/cron/update-news",
-      "schedule": "0 */4 * * *"
+      "schedule": "0 12 * * *"
     }
   ],
   "functions": {
@@ -19,9 +19,6 @@
       "memory": 1024,
       "maxDuration": 60
     }
-  },
-  "env": {
-    "CRON_SECRET_KEY": "@cron_secret_key"
   },
   "headers": [
     {

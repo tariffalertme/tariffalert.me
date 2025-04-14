@@ -69,4 +69,64 @@ export interface UserProductAlert {
   product_id: string;
   price_threshold: number | null;
   created_at: string;
+}
+
+export interface Country {
+  code: string;
+  name: string;
+  region: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TradeStatistics {
+  id: string;
+  country_code: string;
+  period: string;
+  imports: number;
+  exports: number;
+  average_tariff_rate: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IndustryStatistics {
+  id: string;
+  country_code: string;
+  name: string;
+  category: string;
+  trade_volume: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TariffChange {
+  id: string;
+  country_code: string;
+  previous_rate: number;
+  new_rate: number;
+  effective_date: string;
+  affected_categories: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ConsumerSegment {
+  id: string;
+  country_code: string;
+  name: string;
+  description: string;
+  affected_categories: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CountryRelationship {
+  id: string;
+  source_country: string;
+  target_country: string;
+  relationship_type: 'competitor' | 'trading_partner';
+  impact_correlation: number;
+  created_at: string;
+  updated_at: string;
 } 

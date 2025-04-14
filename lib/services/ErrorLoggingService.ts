@@ -69,8 +69,8 @@ class ErrorLoggingService {
     if (typeof window !== 'undefined') {
       import('logrocket').then((LogRocket) => {
         LogRocket.identify(user.id, {
-          email: user.email,
-          name: user.name,
+          email: user.email || '',
+          name: user.name || '',
         });
       });
     }
