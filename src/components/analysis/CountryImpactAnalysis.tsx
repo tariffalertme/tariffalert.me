@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { CountryImpactService, ImpactAnalysis } from '@/lib/services/CountryImpactService';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -34,7 +34,8 @@ export function CountryImpactAnalysis({
   const [analysis, setAnalysis] = useState<ImpactAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const impactService = new CountryImpactService();
+  
+  const impactService = useMemo(() => new CountryImpactService(), []);
 
   useEffect(() => {
     async function loadAnalysis() {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { ProductRecommendation } from '@/lib/services/ProductRecommendationService';
 import { ProductRecommendationService } from '@/lib/services/ProductRecommendationService';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -16,14 +16,15 @@ export function ProductRecommendations({ productId, category, countryCode }: Pro
   const [recommendations, setRecommendations] = useState<ProductRecommendation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const recommendationService = new ProductRecommendationService();
+  
+  const recommendationService = useMemo(() => new ProductRecommendationService(), []);
 
   useEffect(() => {
     async function loadRecommendations() {
       try {
         setLoading(true);
         setError(null);
-
+        
         if (productId) {
           const recommendation = await recommendationService.generateRecommendations(productId, {
             userPreferences: {
@@ -47,7 +48,7 @@ export function ProductRecommendations({ productId, category, countryCode }: Pro
     }
 
     loadRecommendations();
-  }, [productId, category, countryCode]);
+  }, [productId, category, countryCode, recommendationService]);
 
   if (loading) {
     return (
