@@ -3,9 +3,92 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL") // Used for direct database access (migrations/introspection)
+}
+
+model Country {
+  id                String              @id @default(uuid())
+  name              String              @unique
+  code              String              @unique
+  tradeStatistics   TradeStatistics[]
+  tariffChanges     TariffChange[]
+  consumerSegments  ConsumerSegment[]
+  relationships     CountryRelationship[]
+  impactScores      ImpactScore[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model TradeStatistics {
+  id              String    @id @default(uuid())
+  countryId       String
+  country         Country   @relation(fields: [countryId], references: [id])
+  importVolume    Float
+  exportVolume    Float
+  tradeBalance    Float
+  year            Int
+  quarter         Int
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([countryId, year, quarter])
+}
+
+model TariffChange {
+  id              String    @id @default(uuid())
+  countryId       String
+  country         Country   @relation(fields: [countryId], references: [id])
+  productCode     String
+  oldRate         Float
+  newRate         Float
+  effectiveDate   DateTime
+  description     String
+  impact          String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model ConsumerSegment {
+  id              String    @id @default(uuid())
+  countryId       String
+  country         Country   @relation(fields: [countryId], references: [id])
+  name            String
+  size            Int
+  purchasingPower Float
+  preferences     Json
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([countryId, name])
+}
+
+model CountryRelationship {
+  id              String    @id @default(uuid())
+  countryId       String
+  country         Country   @relation(fields: [countryId], references: [id])
+  partnerCountry  String
+  type            String    // e.g., "ally", "competitor", "neutral"
+  strength        Float     // Scale of 0-1
+  tradeVolume     Float
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([countryId, partnerCountry])
+}
+
+model ImpactScore {
+  id              String    @id @default(uuid())
+  countryId       String
+  country         Country   @relation(fields: [countryId], references: [id])
+  score           Float
+  factors         Json
+  timestamp       DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 } 

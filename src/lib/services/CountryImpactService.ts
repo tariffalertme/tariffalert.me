@@ -4,6 +4,8 @@ import { Logger } from '@/lib/utils/logger';
 import { OpenAIService } from './OpenAIService';
 import { TemplateEngine } from '../ai/templateEngine';
 import { PostgrestError } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
+import { config } from '@/lib/config';
 
 export interface TradeStatistics {
   imports: number;
@@ -42,17 +44,50 @@ export interface CountryImpactAnalysis {
   recommendations: string[];
 }
 
+export interface ImpactAnalysis {
+  summary: string;
+  keyFindings: string[];
+  financialImpact: {
+    totalValue: number;
+    breakdown: Array<{
+      category: string;
+      value: number;
+    }>;
+  };
+  visualizationData: {
+    timeSeriesData: {
+      labels: string[];
+      datasets: Array<{
+        label: string;
+        data: number[];
+      }>;
+    };
+  };
+  recommendations: {
+    shortTerm: string[];
+    longTerm: string[];
+  };
+  relatedCountries: Array<{
+    countryCode: string;
+    relationshipType: 'competitor' | 'partner' | 'supplier';
+    impactCorrelation: number;
+  }>;
+}
+
 export class CountryImpactService {
   private readonly logger: Logger;
   private readonly openAIService: OpenAIService;
   private readonly templateEngine: TemplateEngine;
+  private supabase;
 
-  constructor(
-    private readonly supabase: SupabaseClient<Database>
-  ) {
+  constructor() {
     this.logger = new Logger('CountryImpactService');
     this.openAIService = new OpenAIService();
     this.templateEngine = new TemplateEngine();
+    this.supabase = createClient<Database>(
+      config.supabase.url,
+      config.supabase.anonKey
+    );
   }
 
   /**
@@ -239,5 +274,78 @@ export class CountryImpactService {
       this.logger.error('Failed to generate country impact analysis:', { error, countryCode });
       throw error;
     }
+  }
+
+  async getCountryImpact(countryCode: string): Promise<ImpactAnalysis> {
+    const { data, error } = await this.supabase
+      .from('country_impact')
+      .select('*')
+      .eq('country_code', countryCode)
+      .single();
+
+    if (error) throw error;
+    return data as unknown as ImpactAnalysis;
+  }
+
+  async generateCountryImpactAnalysis(
+    countryCode: string,
+    timeframe: { start: string; end: string }
+  ): Promise<ImpactAnalysis> {
+    // This is a mock implementation. In production, this would call your actual analysis logic
+    return {
+      summary: `Analysis for ${countryCode} from ${timeframe.start} to ${timeframe.end}`,
+      keyFindings: [
+        'Significant tariff changes observed',
+        'Strong correlation with partner countries',
+        'Positive trade balance trend'
+      ],
+      financialImpact: {
+        totalValue: 1500000,
+        breakdown: [
+          { category: 'Direct Impact', value: 800000 },
+          { category: 'Indirect Impact', value: 500000 },
+          { category: 'Secondary Effects', value: 200000 }
+        ]
+      },
+      visualizationData: {
+        timeSeriesData: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [
+            {
+              label: 'Import Volume',
+              data: [100, 120, 115, 130, 140, 135]
+            },
+            {
+              label: 'Export Volume',
+              data: [90, 100, 110, 120, 125, 130]
+            }
+          ]
+        }
+      },
+      recommendations: {
+        shortTerm: [
+          'Monitor upcoming tariff changes',
+          'Adjust pricing strategy',
+          'Review supplier agreements'
+        ],
+        longTerm: [
+          'Diversify supply chain',
+          'Develop new market entry strategies',
+          'Build strategic partnerships'
+        ]
+      },
+      relatedCountries: [
+        {
+          countryCode: 'USA',
+          relationshipType: 'partner',
+          impactCorrelation: 0.85
+        },
+        {
+          countryCode: 'CHN',
+          relationshipType: 'competitor',
+          impactCorrelation: -0.65
+        }
+      ]
+    };
   }
 } 
