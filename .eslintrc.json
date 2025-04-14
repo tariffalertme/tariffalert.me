@@ -10,7 +10,8 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-var-requires": "error"
+    "@typescript-eslint/no-var-requires": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "overrides": [
     {
@@ -21,6 +22,13 @@
       "rules": {
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["src/**/*.ts", "src/**/*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "warn",
+        "react-hooks/exhaustive-deps": "warn"
       }
     }
   ]
