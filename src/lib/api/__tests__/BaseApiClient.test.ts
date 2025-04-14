@@ -30,7 +30,7 @@ jest.doMock('axios', () => ({
 }));
 
 // Import axios after mocking
-const axios = require('axios').default;
+import axios from 'axios';
 
 describe('BaseApiClient', () => {
   let client: BaseApiClient;

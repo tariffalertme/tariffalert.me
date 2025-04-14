@@ -1,191 +1,144 @@
-import { BaseEcommerceClient, type EcommerceProduct, type ProductSearchParams } from './BaseEcommerceClient';
+import { BaseApiClient } from '../../src/lib/api/BaseApiClient';
+import { ApiClientConfig } from '../../src/types/api';
+import { Logger } from '../../src/lib/utils/logger';
 
-interface WalmartApiConfig {
-  baseUrl: string;
-  apiKey: string;
-  publisherId: string;
-  rateLimit: number;
-  rateLimitPeriod: number;
+interface LogMetadata {
+  [key: string]: unknown;
 }
 
-export class WalmartApiClient extends BaseEcommerceClient {
-  private readonly publisherId: string;
+export interface WalmartProduct {
+  itemId: string;
+  name: string;
+  salePrice: number;
+  categoryPath: string;
+  brandName?: string;
+  thumbnailImage?: string;
+  mediumImage?: string;
+  largeImage?: string;
+  productUrl: string;
+  stock: string;
+  addToCartUrl?: string;
+  affiliateAddToCartUrl?: string;
+  freeShippingOver35Dollars: boolean;
+  giftOptions: boolean;
+  imageEntities?: Array<{
+    thumbnailImage: string;
+    mediumImage: string;
+    largeImage: string;
+    entityType: string;
+  }>;
+}
 
-  constructor(config: WalmartApiConfig) {
+interface WalmartApiResponse {
+  data: {
+    items: WalmartProduct[];
+  };
+}
+
+interface WalmartSearchParams {
+  query: string;
+  categoryId?: string;
+  sort?: 'price' | 'bestseller' | 'rating' | 'title' | 'new';
+  order?: 'asc' | 'desc';
+  numItems?: number;
+  start?: number;
+  responseGroup?: string;
+  facet?: boolean;
+}
+
+export class WalmartApiClient extends BaseApiClient {
+  private readonly apiKey: string;
+  private readonly logger: Logger;
+
+  constructor(config: Omit<ApiClientConfig, 'baseUrl'> & {
+    apiKey: string;
+    baseUrl?: string;
+    logger: Logger;
+  }) {
+    const baseUrl = config.baseUrl || 'https://api.walmart.com/v3';
+    
     super({
-      baseUrl: config.baseUrl,
-      apiKey: config.apiKey,
-      rateLimit: config.rateLimit,
-      rateLimitPeriod: config.rateLimitPeriod
+      ...config,
+      baseUrl,
+      rateLimit: {
+        requestsPerSecond: 5
+      },
+      headers: {
+        ...config.headers,
+        'WM_SEC.KEY_VERSION': '1',
+        'WM_CONSUMER.ID': config.apiKey,
+        'Content-Type': 'application/json'
+      }
     });
 
-    this.publisherId = config.publisherId;
+    this.apiKey = config.apiKey;
+    this.logger = config.logger;
   }
 
-  /**
-   * Search for products using Walmart's Search API
-   */
-  public async searchProducts(params: ProductSearchParams): Promise<EcommerceProduct[]> {
+  async searchProducts(params: WalmartSearchParams): Promise<WalmartProduct[]> {
     try {
-      const response = await this.client.get('/v1/search', {
+      const response = await this.request<WalmartApiResponse>({
+        method: 'GET',
+        url: '/search',
         params: {
           query: params.query,
-          categoryId: params.category,
-          priceMin: params.minPrice,
-          priceMax: params.maxPrice,
-          brand: params.brand,
-          limit: params.limit || 10,
-          offset: params.offset || 0,
-          sort: this.mapSortBy(params.sortBy)
-        },
-        headers: {
-          'WM_SEC.KEY_VERSION': '1',
-          'WM_CONSUMER.ID': this.publisherId
+          categoryId: params.categoryId,
+          sort: params.sort,
+          order: params.order,
+          numItems: params.numItems || 25,
+          start: params.start || 1,
+          responseGroup: params.responseGroup || 'base',
+          facet: params.facet || false
         }
       });
 
-      return this.normalizeProducts(response.data.items);
+      return response.data.items;
     } catch (error) {
-      this.handleError(error, 'Walmart product search');
+      this.logger.error('Failed to search Walmart products', { error: String(error) });
+      return [];
     }
   }
 
-  /**
-   * Get detailed information about a specific product
-   */
-  public async getProduct(productId: string): Promise<EcommerceProduct> {
+  async getProductById(itemId: string): Promise<WalmartProduct | null> {
     try {
-      const response = await this.client.get(`/v1/items/${productId}`, {
-        headers: {
-          'WM_SEC.KEY_VERSION': '1',
-          'WM_CONSUMER.ID': this.publisherId
-        }
+      const response = await this.request<{ data: WalmartProduct }>({
+        method: 'GET',
+        url: `/items/${itemId}`
       });
-
-      return this.normalizeProduct(response.data);
+      return response.data;
     } catch (error) {
-      this.handleError(error, 'Walmart product fetch');
+      this.logger.error('Failed to get Walmart product details', { error: String(error), itemId });
+      return null;
     }
   }
 
-  /**
-   * Get multiple products by their IDs
-   */
-  public async getProducts(productIds: string[]): Promise<EcommerceProduct[]> {
+  async getTrendingProducts(categoryId?: string): Promise<WalmartProduct[]> {
     try {
-      const response = await this.client.get('/v1/items', {
+      const response = await this.request<WalmartApiResponse>({
+        method: 'GET',
+        url: '/trends',
         params: {
-          ids: productIds.join(',')
-        },
-        headers: {
-          'WM_SEC.KEY_VERSION': '1',
-          'WM_CONSUMER.ID': this.publisherId
+          categoryId,
+          numItems: 20
         }
       });
-
-      return this.normalizeProducts(response.data.items);
+      return response.data.items;
     } catch (error) {
-      this.handleError(error, 'Walmart products fetch');
+      this.logger.error('Failed to get trending Walmart products', { error: String(error) });
+      return [];
     }
   }
 
-  /**
-   * Get product price history (Note: Walmart doesn't provide historical prices)
-   */
-  public async getPriceHistory(productId: string, days: number): Promise<Array<{
-    date: Date;
-    price: number;
-    currency: string;
-  }>> {
-    // This would need to be implemented using our own price tracking database
-    // as Walmart doesn't provide historical price data through their API
-    throw new Error('Price history not available through Walmart API');
-  }
-
-  /**
-   * Generate affiliate URL for Walmart product
-   */
-  protected generateAffiliateUrl(productUrl: string): string {
-    const url = new URL(productUrl);
-    url.searchParams.set('publisherId', this.publisherId);
-    return url.toString();
-  }
-
-  /**
-   * Extract country of origin from Walmart product data
-   */
-  protected extractCountryOfOrigin(productData: any): string | undefined {
-    // Try to extract from product specifications
-    const specs = productData.specifications || [];
-    const originSpec = specs.find((spec: any) => 
-      spec.name.toLowerCase().includes('country of origin') ||
-      spec.name.toLowerCase().includes('made in')
-    );
-
-    if (originSpec) {
-      return originSpec.value.trim();
+  async getProductRecommendations(itemId: string): Promise<WalmartProduct[]> {
+    try {
+      const response = await this.request<WalmartApiResponse>({
+        method: 'GET',
+        url: `/nbp/${itemId}`
+      });
+      return response.data.items;
+    } catch (error) {
+      this.logger.error('Failed to get Walmart product recommendations', { error: String(error), itemId });
+      return [];
     }
-
-    return undefined;
-  }
-
-  /**
-   * Normalize Walmart categories to standard format
-   */
-  protected normalizeCategories(categoryPath: string): string[] {
-    return categoryPath.split('/').map(cat => cat.trim());
-  }
-
-  /**
-   * Map our sort parameters to Walmart's sort values
-   */
-  private mapSortBy(sortBy?: ProductSearchParams['sortBy']): string {
-    switch (sortBy) {
-      case 'price_asc':
-        return 'price_low';
-      case 'price_desc':
-        return 'price_high';
-      case 'relevance':
-      default:
-        return 'best_match';
-    }
-  }
-
-  /**
-   * Normalize a single Walmart product to our standard format
-   */
-  private normalizeProduct(item: any): EcommerceProduct {
-    return {
-      id: item.itemId,
-      title: item.name,
-      description: item.shortDescription || '',
-      brand: item.brand,
-      currentPrice: item.salePrice || item.price,
-      currency: 'USD', // Walmart US only returns prices in USD
-      imageUrl: item.largeImage,
-      url: this.generateAffiliateUrl(item.productUrl),
-      countryOfOrigin: this.extractCountryOfOrigin(item),
-      categories: this.normalizeCategories(item.categoryPath),
-      availability: this.mapAvailability(item.stock),
-      merchant: 'Walmart',
-      merchantId: 'walmart',
-      lastUpdated: new Date()
-    };
-  }
-
-  /**
-   * Normalize multiple Walmart products
-   */
-  private normalizeProducts(items: any[]): EcommerceProduct[] {
-    return items.map(item => this.normalizeProduct(item));
-  }
-
-  /**
-   * Map Walmart availability to our standard format
-   */
-  private mapAvailability(stock: string): EcommerceProduct['availability'] {
-    if (stock === 'Available') return 'in_stock';
-    if (stock === 'Limited Supply') return 'limited';
-    return 'out_of_stock';
   }
 } 

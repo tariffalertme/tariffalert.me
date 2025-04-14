@@ -1,3 +1,58 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export interface Database {
+  public: {
+    Tables: {
+      products: {
+        Row: Product
+        Insert: Omit<Product, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>
+      }
+      price_history: {
+        Row: PriceHistory
+        Insert: Omit<PriceHistory, 'id'>
+        Update: Partial<Omit<PriceHistory, 'id'>>
+      }
+      categories: {
+        Row: Category
+        Insert: Omit<Category, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Category, 'id' | 'created_at' | 'updated_at'>>
+      }
+      tariff_news: {
+        Row: TariffNews
+        Insert: Omit<TariffNews, 'id' | 'created_at'>
+        Update: Partial<Omit<TariffNews, 'id' | 'created_at'>>
+      }
+      users: {
+        Row: User
+        Insert: Omit<User, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<User, 'id' | 'created_at' | 'updated_at'>>
+      }
+      user_product_alerts: {
+        Row: UserProductAlert
+        Insert: Omit<UserProductAlert, 'id' | 'created_at'>
+        Update: Partial<Omit<UserProductAlert, 'id' | 'created_at'>>
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      impact_level: 'high' | 'medium' | 'low'
+      price_direction: 'increase' | 'decrease'
+    }
+  }
+}
+
 export type ImpactLevel = 'high' | 'medium' | 'low';
 export type PriceDirection = 'increase' | 'decrease';
 

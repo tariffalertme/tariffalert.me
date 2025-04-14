@@ -20,6 +20,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowUpIcon, ArrowDownIcon, MinusIcon } from '@heroicons/react/24/solid';
+import { Database } from '@/types/supabase';
 
 interface PricePredictionProps {
   productId: string;

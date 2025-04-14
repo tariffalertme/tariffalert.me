@@ -3,8 +3,8 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatCurrency } from '../../lib/utils/formatters';
-import type { Product } from '../../../types/database';
+import { formatCurrency } from '@/lib/utils/formatters';
+import type { Product } from '@/types/database';
 
 interface ProductCardProps {
   product: Product;
@@ -18,8 +18,8 @@ export function ProductCard({ product, onSaveClick, isSaved = false }: ProductCa
       {/* Product Image */}
       <div className="relative h-48 w-full">
         <Image
-          src={product.image_url || '/images/placeholder-product.png'}
-          alt={product.name}
+          src={'/images/placeholder-product.png'}
+          alt={product.title}
           fill
           className="object-cover"
         />
@@ -29,13 +29,13 @@ export function ProductCard({ product, onSaveClick, isSaved = false }: ProductCa
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
           <Link href={`/products/${product.id}`} className="hover:text-indigo-600">
-            {product.name}
+            {product.title}
           </Link>
         </h3>
 
         <div className="flex items-center justify-between mb-4">
           <span className="text-2xl font-bold text-gray-900">
-            {formatCurrency(product.current_price)}
+            {formatCurrency(product.current_price || 0)}
           </span>
           <button
             onClick={onSaveClick}
@@ -74,7 +74,7 @@ export function ProductCard({ product, onSaveClick, isSaved = false }: ProductCa
             View details
           </Link>
           <span className="text-sm text-gray-500">
-            Category: {product.category_id}
+            Category: {product.category}
           </span>
         </div>
       </div>

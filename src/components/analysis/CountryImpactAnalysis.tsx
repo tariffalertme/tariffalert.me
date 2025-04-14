@@ -221,14 +221,14 @@ export function CountryImpactAnalysis({
                     {country.relationshipType.replace('_', ' ')}
                   </Badge>
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-muted-foreground">
                   Impact Correlation: {(country.impactCorrelation * 100).toFixed(1)}%
                 </div>
-                <Button variant="outline" size="sm" className="w-full" asChild>
-                  <a href={`/analysis/country/${country.countryCode}`}>
+                <a href={`/analysis/country/${country.countryCode}`}>
+                  <Button variant="outline" size="sm" className="w-full">
                     View Analysis
-                  </a>
-                </Button>
+                  </Button>
+                </a>
               </div>
             ))}
           </div>

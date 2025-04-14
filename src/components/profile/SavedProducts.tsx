@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSupabase } from '../../lib/supabase/client';
 import { ProductCard } from '../products/ProductCard';
-import type { Product } from '../../../types/database';
+import { Product } from '@/types/database';
 
 interface SavedProductResult {
   product_id: string;

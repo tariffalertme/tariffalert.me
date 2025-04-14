@@ -1,4 +1,4 @@
-import { Product } from '@/types/product';
+import { Product } from '@/types/database';
 import { ProductCard } from './ProductCard';
 
 interface ProductGridProps {
@@ -29,7 +29,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         <ProductCard
           key={product.id}
           product={product}
-          onSave={onSaveProduct}
+          onSaveClick={() => onSaveProduct?.(product.id)}
           isSaved={savedProductIds.has(product.id)}
         />
       ))}

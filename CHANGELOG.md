@@ -48,6 +48,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Configured SSL mode for enhanced security
   - Updated connection string format and credentials
   - Fixed database connectivity issues in deployment
+- Updated path aliases in tsconfig.json to point to src/ directory:
+  - Changed `@/*` to point to `./src/*`
+  - Changed `@/components/*` to point to `./src/components/*`
+  - Changed `@/lib/*` to point to `./src/lib/*`
+  - Ensures consistent import paths across the project
 
 ### Security
 - Enabled SSL mode for database connections

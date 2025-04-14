@@ -1,260 +1,148 @@
-import type { EcommerceProduct } from '../api/BaseEcommerceClient';
-import { Logger } from '../../../lib/utils/logger';
-import { AmazonApiClient } from '../api/AmazonApiClient';
-import { WalmartApiClient } from '../api/WalmartApiClient';
+import { AmazonApiClient, AmazonProduct } from '../api/AmazonApiClient';
+import { WalmartApiClient, WalmartProduct } from '../api/WalmartApiClient';
+import { Logger } from '../../src/lib/utils/logger';
 
 export interface NormalizedProduct {
   id: string;
-  platformId: string;
-  platform: string;
-  title: string;
+  source: 'amazon' | 'walmart';
+  name: string;
   description: string;
   brand?: string;
   price: {
-    current: number;
+    amount: number;
     currency: string;
-    lastUpdated: Date;
   };
   images: {
-    primary: string;
-    additional?: string[];
+    thumbnail: string;
+    main: string;
   };
   url: string;
-  affiliateUrl: string;
-  origin: {
-    country?: string;
-    confidence: 'high' | 'medium' | 'low';
-  };
-  categories: {
-    raw: string[];
-    normalized: string[];
-    tariffCodes?: string[];
-  };
-  availability: {
-    status: 'in_stock' | 'out_of_stock' | 'limited';
-    quantity?: number;
-  };
-  specifications: Record<string, string>;
-  metadata: {
-    lastChecked: Date;
-    firstSeen: Date;
-    platform: string;
-    platformId: string;
-  };
+  categories: string[];
+  lastUpdated: Date;
 }
 
 export class ProductNormalizationService {
   private readonly logger: Logger;
-  private readonly amazonClient?: AmazonApiClient;
-  private readonly walmartClient?: WalmartApiClient;
-  private categoryMappings: Map<string, string[]>;
-  private readonly confidenceThresholds = {
-    high: 0.8,
-    medium: 0.5
-  };
 
-  constructor(amazonClient?: AmazonApiClient, walmartClient?: WalmartApiClient) {
-    this.logger = new Logger('ProductNormalizationService');
-    this.amazonClient = amazonClient;
-    this.walmartClient = walmartClient;
-    this.categoryMappings = new Map();
-    this.initializeCategoryMappings();
+  constructor(
+    private readonly amazonClient: AmazonApiClient,
+    private readonly walmartClient: WalmartApiClient,
+    logger?: Logger
+  ) {
+    this.logger = logger || new Logger('ProductNormalizationService');
   }
 
-  /**
-   * Check if a specific platform integration is available
-   */
-  public isPlatformAvailable(platform: string): boolean {
-    switch (platform.toLowerCase()) {
-      case 'amazon':
-        return !!this.amazonClient;
-      case 'walmart':
-        return !!this.walmartClient;
-      default:
-        return false;
-    }
+  private normalizeAmazonProduct(product: AmazonProduct): NormalizedProduct {
+    return {
+      id: `amazon-${product.ASIN}`,
+      source: 'amazon',
+      name: product.title,
+      description: '',
+      brand: product.brand,
+      price: product.price || {
+        amount: 0,
+        currency: 'USD'
+      },
+      images: {
+        thumbnail: '',
+        main: ''
+      },
+      url: product.DetailPageURL,
+      categories: [product.productGroup || 'uncategorized'],
+      lastUpdated: new Date()
+    };
   }
 
-  /**
-   * Get available platforms
-   */
-  public getAvailablePlatforms(): string[] {
-    const platforms = [];
-    if (this.amazonClient) platforms.push('amazon');
-    if (this.walmartClient) platforms.push('walmart');
-    return platforms;
+  private normalizeWalmartProduct(product: WalmartProduct): NormalizedProduct {
+    return {
+      id: `walmart-${product.itemId}`,
+      source: 'walmart',
+      name: product.name,
+      description: '',
+      brand: product.brandName,
+      price: {
+        amount: product.salePrice,
+        currency: 'USD'
+      },
+      images: {
+        thumbnail: product.thumbnailImage || '',
+        main: product.largeImage || product.mediumImage || product.thumbnailImage || ''
+      },
+      url: product.productUrl,
+      categories: [product.categoryPath],
+      lastUpdated: new Date()
+    };
   }
 
-  /**
-   * Normalize a product from any supported e-commerce platform
-   */
-  public normalizeProduct(product: EcommerceProduct): NormalizedProduct {
+  async searchProducts(query: string, limit: number = 20): Promise<NormalizedProduct[]> {
     try {
-      return {
-        id: this.generateGlobalId(product),
-        platformId: product.id,
-        platform: product.merchant.toLowerCase(),
-        title: this.normalizeTitle(product.title),
-        description: this.normalizeDescription(product.description),
-        brand: product.brand,
-        price: {
-          current: product.currentPrice,
-          currency: product.currency,
-          lastUpdated: new Date()
-        },
-        images: {
-          primary: product.imageUrl
-        },
-        url: product.url,
-        affiliateUrl: product.url, // Already affiliate URL from the API client
-        origin: this.normalizeOrigin(product),
-        categories: this.normalizeCategories(product.categories, product.merchant),
-        availability: {
-          status: product.availability,
-          quantity: this.extractQuantity(product)
-        },
-        specifications: this.extractSpecifications(product),
-        metadata: {
-          lastChecked: new Date(),
-          firstSeen: new Date(), // This should be updated from database if product exists
-          platform: product.merchant.toLowerCase(),
-          platformId: product.id
-        }
-      };
+      const [amazonProducts, walmartProducts] = await Promise.all([
+        this.amazonClient.searchProducts({ keywords: query, limit }),
+        this.walmartClient.searchProducts({ query, numItems: limit })
+      ]);
+
+      const normalizedProducts = [
+        ...amazonProducts.map(p => this.normalizeAmazonProduct(p)),
+        ...walmartProducts.map(p => this.normalizeWalmartProduct(p))
+      ];
+
+      return normalizedProducts.slice(0, limit);
     } catch (error) {
-      this.logger.error('Failed to normalize product:', {
-        error,
-        productId: product.id,
-        platform: product.merchant
-      });
-      throw new Error(`Product normalization failed: ${error.message}`);
+      this.logger.error('Failed to search products', { error: String(error), query });
+      return [];
     }
   }
 
-  /**
-   * Normalize multiple products
-   */
-  public normalizeProducts(products: EcommerceProduct[]): NormalizedProduct[] {
-    return products.map(product => {
-      try {
-        return this.normalizeProduct(product);
-      } catch (error) {
-        this.logger.error('Failed to normalize product in batch:', {
-          error,
-          productId: product.id,
-          platform: product.merchant
-        });
-        return null;
+  async getProductsByCategory(category: string, limit: number = 20): Promise<NormalizedProduct[]> {
+    try {
+      const [amazonProducts, walmartProducts] = await Promise.all([
+        this.amazonClient.getProductsByCategory(category, limit),
+        this.walmartClient.searchProducts({ query: category, numItems: limit })
+      ]);
+
+      const normalizedProducts = [
+        ...amazonProducts.map(p => this.normalizeAmazonProduct(p)),
+        ...walmartProducts.map(p => this.normalizeWalmartProduct(p))
+      ];
+
+      return normalizedProducts.slice(0, limit);
+    } catch (error) {
+      this.logger.error('Failed to get products by category', { error: String(error), category });
+      return [];
+    }
+  }
+
+  async getProductDetails(source: 'amazon' | 'walmart', productId: string): Promise<NormalizedProduct | null> {
+    try {
+      if (source === 'amazon') {
+        const product = await this.amazonClient.getProductDetails(productId);
+        return product ? this.normalizeAmazonProduct(product) : null;
+      } else {
+        const product = await this.walmartClient.getProductById(productId);
+        return product ? this.normalizeWalmartProduct(product) : null;
       }
-    }).filter((product): product is NormalizedProduct => product !== null);
-  }
-
-  /**
-   * Generate a global unique ID for a product
-   */
-  private generateGlobalId(product: EcommerceProduct): string {
-    return `${product.merchant.toLowerCase()}_${product.id}`;
-  }
-
-  /**
-   * Normalize product title
-   */
-  private normalizeTitle(title: string): string {
-    return title
-      .trim()
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-      .replace(/[^\w\s-]/g, ''); // Remove special characters except spaces and hyphens
-  }
-
-  /**
-   * Normalize product description
-   */
-  private normalizeDescription(description: string): string {
-    return description
-      .trim()
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-      .replace(/(<([^>]+)>)/gi, ''); // Remove HTML tags
-  }
-
-  /**
-   * Normalize country of origin information
-   */
-  private normalizeOrigin(product: EcommerceProduct): NormalizedProduct['origin'] {
-    if (!product.countryOfOrigin) {
-      return { confidence: 'low' };
+    } catch (error) {
+      this.logger.error('Failed to get product details', { error: String(error), source, productId });
+      return null;
     }
-
-    const country = product.countryOfOrigin.trim().toUpperCase();
-    const confidence = this.determineOriginConfidence(country);
-
-    return {
-      country,
-      confidence
-    };
   }
 
-  /**
-   * Determine confidence in country of origin data
-   */
-  private determineOriginConfidence(
-    country: string
-  ): NormalizedProduct['origin']['confidence'] {
-    // This is a simplified version. In reality, we would have more sophisticated
-    // confidence determination based on multiple factors.
-    if (country.length === 2) return 'high'; // ISO country code
-    if (country.length === 3) return 'high'; // ISO-3 country code
-    if (country.includes('MADE IN')) return 'medium';
-    return 'low';
-  }
+  async getTrendingProducts(limit: number = 20): Promise<NormalizedProduct[]> {
+    try {
+      const [amazonProducts, walmartProducts] = await Promise.all([
+        this.amazonClient.getTrendingProducts(limit),
+        this.walmartClient.getTrendingProducts()
+      ]);
 
-  /**
-   * Initialize category mappings from standard categories to tariff codes
-   */
-  private initializeCategoryMappings(): void {
-    // This would typically load from a database or configuration file
-    this.categoryMappings.set('electronics', ['85', '84']);
-    this.categoryMappings.set('clothing', ['61', '62']);
-    this.categoryMappings.set('food', ['16', '17', '18', '19', '20', '21']);
-    // Add more mappings as needed
-  }
+      const normalizedProducts = [
+        ...amazonProducts.map(p => this.normalizeAmazonProduct(p)),
+        ...walmartProducts.map(p => this.normalizeWalmartProduct(p))
+      ];
 
-  /**
-   * Normalize product categories and map to tariff codes
-   */
-  private normalizeCategories(
-    categories: string[],
-    platform: string
-  ): NormalizedProduct['categories'] {
-    const normalized = categories.map(category => 
-      category.toLowerCase().trim()
-    );
-
-    const tariffCodes = normalized.flatMap(category => 
-      this.categoryMappings.get(category) || []
-    );
-
-    return {
-      raw: categories,
-      normalized,
-      tariffCodes: tariffCodes.length > 0 ? tariffCodes : undefined
-    };
-  }
-
-  /**
-   * Extract quantity information from availability
-   */
-  private extractQuantity(product: EcommerceProduct): number | undefined {
-    // This would need to be implemented based on platform-specific data
-    // as quantity information varies by platform
-    return undefined;
-  }
-
-  /**
-   * Extract product specifications
-   */
-  private extractSpecifications(product: EcommerceProduct): Record<string, string> {
-    // This would need to be implemented based on platform-specific data
-    // as specification format varies by platform
-    return {};
+      return normalizedProducts.slice(0, limit);
+    } catch (error) {
+      this.logger.error('Failed to get trending products', { error: String(error) });
+      return [];
+    }
   }
 } 

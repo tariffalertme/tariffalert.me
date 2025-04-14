@@ -168,9 +168,14 @@ export function ProductRecommendations({ productId, category, countryCode }: Pro
                           </p>
                         )}
                       </div>
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={`/product/${alt.productId}`}>View Product</a>
-                      </Button>
+                      <div className="text-sm text-muted-foreground">
+                        {alt.reason}
+                      </div>
+                      <a href={`/product/${alt.productId}`}>
+                        <Button variant="outline" size="sm">
+                          View Product
+                        </Button>
+                      </a>
                     </div>
                   ))}
                 </div>

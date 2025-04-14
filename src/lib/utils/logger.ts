@@ -1,37 +1,21 @@
-type LogLevel = 'info' | 'warn' | 'error' | 'debug';
-
-interface LogMetadata {
-  [key: string]: unknown;
-}
-
 export class Logger {
-  private readonly context: string;
+  constructor(private context: string) {}
 
-  constructor(context: string) {
-    this.context = context;
+  info(message: string, ...args: any[]) {
+    console.log(`[${this.context}] ${message}`, ...args);
   }
 
-  private formatMessage(level: LogLevel, message: string, metadata?: LogMetadata): string {
-    const timestamp = new Date().toISOString();
-    const metadataStr = metadata ? ` ${JSON.stringify(metadata)}` : '';
-    return `[${timestamp}] ${level.toUpperCase()} [${this.context}] ${message}${metadataStr}`;
+  error(message: string, error?: any) {
+    console.error(`[${this.context}] ${message}`, error);
   }
 
-  info(message: string, metadata?: LogMetadata): void {
-    console.info(this.formatMessage('info', message, metadata));
+  warn(message: string, ...args: any[]) {
+    console.warn(`[${this.context}] ${message}`, ...args);
   }
 
-  warn(message: string, metadata?: LogMetadata): void {
-    console.warn(this.formatMessage('warn', message, metadata));
-  }
-
-  error(message: string, metadata?: LogMetadata): void {
-    console.error(this.formatMessage('error', message, metadata));
-  }
-
-  debug(message: string, metadata?: LogMetadata): void {
-    if (process.env.NODE_ENV !== 'production') {
-      console.debug(this.formatMessage('debug', message, metadata));
+  debug(message: string, ...args: any[]) {
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(`[${this.context}] ${message}`, ...args);
     }
   }
 } 

@@ -1,139 +1,107 @@
-import { BaseNewsApiClient, NewsApiConfig } from './BaseNewsApiClient';
-import type { NormalizedNewsItem } from '@/types/api';
+import { BaseApiClient } from '../../src/lib/api/BaseApiClient';
+import { ApiClientConfig } from '../../src/types/api';
+import { Logger } from '../../src/lib/utils/logger';
+
+interface LogMetadata {
+  [key: string]: unknown;
+}
 
 interface WtoNewsItem {
   title: string;
-  description: string;
-  publicationDate: string;
-  documentUrl: string;
-  type: string;
-  members: string[];
-  subjects: string[];
+  content: string;
+  publishedDate: string;
+  sourceUrl: string;
+  category?: string;
 }
 
-export class WtoApiClient extends BaseNewsApiClient {
-  constructor(config: Omit<NewsApiConfig, 'sourceId' | 'sourceName' | 'sourceType'>) {
+interface WtoApiResponse {
+  data: {
+    items: WtoNewsItem[];
+  };
+}
+
+interface WtoSearchParams {
+  query?: string;
+  startDate?: string;
+  endDate?: string;
+  category?: string;
+  page?: number;
+  limit?: number;
+}
+
+export class WtoApiClient extends BaseApiClient {
+  private readonly logger: Logger;
+
+  constructor(config: Omit<ApiClientConfig, 'baseUrl'> & {
+    baseUrl?: string;
+    logger: Logger;
+  }) {
+    const baseUrl = config.baseUrl || 'https://api.wto.org/v1';
+    
     super({
       ...config,
-      sourceId: 'wto',
-      sourceName: 'World Trade Organization',
-      sourceType: 'government'
+      baseUrl,
+      rateLimit: {
+        requestsPerSecond: 2
+      },
+      headers: {
+        ...config.headers,
+        'Content-Type': 'application/json'
+      }
     });
+
+    this.logger = config.logger;
   }
 
-  protected normalizeNewsItem(item: WtoNewsItem): NormalizedNewsItem {
-    const normalizedItem: NormalizedNewsItem = {
-      title: item.title,
-      content: item.description,
-      publishedDate: new Date(item.publicationDate),
-      sourceUrl: item.documentUrl,
-      source: this.sourceName,
-      categories: [...item.subjects, ...this.extractCategories({ 
-        title: item.title,
-        content: item.description,
-        publishedDate: new Date(item.publicationDate),
-        sourceUrl: item.documentUrl,
-        source: this.sourceName,
-        categories: item.subjects,
-        metadata: {
-          type: item.type,
-          members: item.members
-        }
-      })],
-      metadata: {
-        type: item.type,
-        members: item.members
-      }
-    };
-
-    // Add impact analysis if it's tariff related
-    if (this.isTariffRelated(normalizedItem)) {
-      normalizedItem.impact = {
-        level: this.analyzeImpactLevel(normalizedItem),
-        description: `This ${item.type.toLowerCase()} may affect trade between ${item.members.join(', ')}`
-      };
+  async getLatestNews(): Promise<WtoNewsItem[]> {
+    try {
+      const response = await this.request<WtoApiResponse>({
+        method: 'GET',
+        url: '/news'
+      });
+      return response.data.items;
+    } catch (error) {
+      this.logger.error('Failed to fetch WTO news', { error: String(error) });
+      return [];
     }
-
-    return normalizedItem;
   }
 
-  public async getLatestNews(limit: number = 20): Promise<NormalizedNewsItem[]> {
-    const response = await this.request<WtoNewsItem[]>({
-      method: 'GET',
-      url: '/news',
-      params: {
-        limit,
-        sort: 'publicationDate:desc'
-      }
-    });
-
-    return response.map(item => this.normalizeNewsItem(item));
+  async searchNews(params: WtoSearchParams = {}): Promise<WtoNewsItem[]> {
+    try {
+      const response = await this.request<WtoApiResponse>({
+        method: 'GET',
+        url: '/news/search',
+        params: {
+          q: params.query,
+          start_date: params.startDate,
+          end_date: params.endDate,
+          category: params.category,
+          page: params.page || 1,
+          limit: params.limit || 10
+        }
+      });
+      return response.data.items;
+    } catch (error) {
+      this.logger.error('Failed to search WTO news', { error: String(error) });
+      return [];
+    }
   }
 
-  public async searchNews(query: string, limit: number = 20): Promise<NormalizedNewsItem[]> {
-    const response = await this.request<WtoNewsItem[]>({
-      method: 'GET',
-      url: '/news/search',
-      params: {
-        q: query,
-        limit,
-        sort: 'relevance'
-      }
-    });
+  async getLatestTariffNews(): Promise<WtoNewsItem[]> {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    return response.map(item => this.normalizeNewsItem(item));
+    return this.searchNews({
+      query: 'tariff OR tariffs OR trade',
+      startDate: thirtyDaysAgo.toISOString().split('T')[0],
+      limit: 20
+    });
   }
 
-  public async getNewsByDateRange(
-    startDate: Date,
-    endDate: Date,
-    limit: number = 20
-  ): Promise<NormalizedNewsItem[]> {
-    const response = await this.request<WtoNewsItem[]>({
-      method: 'GET',
-      url: '/news',
-      params: {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        limit,
-        sort: 'publicationDate:desc'
-      }
+  async getNewsByCategory(category: string): Promise<WtoNewsItem[]> {
+    return this.searchNews({
+      category,
+      limit: 20
     });
-
-    return response.map(item => this.normalizeNewsItem(item));
-  }
-
-  /**
-   * Get news items specific to a country or region
-   */
-  public async getNewsByMember(member: string, limit: number = 20): Promise<NormalizedNewsItem[]> {
-    const response = await this.request<WtoNewsItem[]>({
-      method: 'GET',
-      url: '/news',
-      params: {
-        member,
-        limit,
-        sort: 'publicationDate:desc'
-      }
-    });
-
-    return response.map(item => this.normalizeNewsItem(item));
-  }
-
-  /**
-   * Get news items by specific trade topics
-   */
-  public async getNewsBySubject(subject: string, limit: number = 20): Promise<NormalizedNewsItem[]> {
-    const response = await this.request<WtoNewsItem[]>({
-      method: 'GET',
-      url: '/news',
-      params: {
-        subject,
-        limit,
-        sort: 'publicationDate:desc'
-      }
-    });
-
-    return response.map(item => this.normalizeNewsItem(item));
   }
 } 

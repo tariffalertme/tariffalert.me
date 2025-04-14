@@ -1,260 +1,249 @@
-import { BaseEcommerceClient, type EcommerceProduct, type ProductSearchParams } from './BaseEcommerceClient';
-import { createHmac } from 'crypto';
+import { BaseApiClient } from '../../src/lib/api/BaseApiClient';
+import { ApiClientConfig } from '../../src/types/api';
+import { Logger } from '../../src/lib/utils/logger';
+import crypto from 'crypto';
 
-interface AmazonApiConfig {
-  baseUrl: string;
-  apiKey: string;
-  secretKey: string;
-  partnerId: string;
-  rateLimit: number;
-  rateLimitPeriod: number;
-  marketplace?: string;
+export interface AmazonProduct {
+  ASIN: string;
+  DetailPageURL: string;
+  title: string;
+  brand?: string;
+  productGroup?: string;
+  price?: {
+    amount: number;
+    currency: string;
+  };
 }
 
-export class AmazonApiClient extends BaseEcommerceClient {
-  private readonly secretKey: string;
-  private readonly partnerId: string;
-  private readonly marketplace: string;
+interface AmazonSearchParams {
+  keywords: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sortBy?: string;
+  page?: number;
+  itemsPerPage?: number;
+  limit?: number;
+}
 
-  constructor(config: AmazonApiConfig) {
+interface AmazonApiResponse {
+  data: {
+    SearchResult: {
+      Items: Array<{
+        ASIN: string;
+        DetailPageURL: string;
+        ItemInfo: {
+          Title: { DisplayValue: string };
+          ByLineInfo?: { Brand?: { DisplayValue: string } };
+          Classifications?: { ProductGroup?: { DisplayValue: string } };
+        };
+        Offers?: {
+          Listings: Array<{
+            Price: { Amount: number; Currency: string };
+          }>;
+        };
+      }>;
+    };
+  };
+}
+
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+}
+
+interface ProductsResponse {
+  products: AmazonProduct[];
+}
+
+interface ProductResponse {
+  product: AmazonProduct;
+}
+
+interface LogMetadata {
+  [key: string]: unknown;
+}
+
+export class AmazonApiClient extends BaseApiClient {
+  private readonly accessKey: string;
+  private readonly secretKey: string;
+  private readonly associateTag: string;
+  private readonly region: string;
+  private readonly baseUrl: string;
+  private readonly apiKey: string;
+  private readonly logger: Logger;
+
+  constructor(config: Omit<ApiClientConfig, 'baseUrl'> & {
+    accessKey: string;
+    secretKey: string;
+    associateTag: string;
+    region?: string;
+    apiKey: string;
+    baseUrl?: string;
+    logger: Logger;
+  }) {
+    const region = config.region || 'com';
+    const baseUrl = config.baseUrl || `https://webservices.amazon.${region}/paapi5/1`;
+    
     super({
-      baseUrl: config.baseUrl,
-      apiKey: config.apiKey,
-      rateLimit: config.rateLimit,
-      rateLimitPeriod: config.rateLimitPeriod
+      ...config,
+      baseUrl,
+      rateLimit: {
+        requestsPerSecond: 1
+      },
+      headers: {
+        ...config.headers,
+        'Content-Type': 'application/json',
+        'X-Amz-Target': 'com.amazon.paapi5.v1.ProductAdvertisingAPIv1',
+        'Host': `webservices.amazon.${region}`
+      }
     });
 
+    this.accessKey = config.accessKey;
     this.secretKey = config.secretKey;
-    this.partnerId = config.partnerId;
-    this.marketplace = config.marketplace || 'US';
+    this.associateTag = config.associateTag;
+    this.region = region;
+    this.baseUrl = baseUrl;
+    this.apiKey = config.apiKey;
+    this.logger = config.logger;
   }
 
-  /**
-   * Search for products using Amazon's Product Advertising API
-   */
-  public async searchProducts(params: ProductSearchParams): Promise<EcommerceProduct[]> {
-    try {
-      const timestamp = new Date().toISOString();
-      const signature = this.generateSignature('SearchItems', timestamp);
-
-      const response = await this.client.post('/paapi5/searchitems', {
-        Keywords: params.query,
-        SearchIndex: params.category || 'All',
-        MinPrice: params.minPrice,
-        MaxPrice: params.maxPrice,
-        Brand: params.brand,
-        ItemCount: params.limit || 10,
-        ItemPage: params.offset ? Math.floor(params.offset / (params.limit || 10)) + 1 : 1,
-        SortBy: this.mapSortBy(params.sortBy),
-        Marketplace: this.marketplace,
-        PartnerTag: this.partnerId,
-        PartnerType: 'Associates',
-        Resources: [
-          'ItemInfo.Title',
-          'ItemInfo.Features',
-          'ItemInfo.ProductInfo',
-          'Offers.Listings.Price',
-          'Images.Primary.Large'
-        ]
-      }, {
-        headers: {
-          'X-Amz-Date': timestamp,
-          'X-Amz-Signature': signature
-        }
-      });
-
-      return this.normalizeProducts(response.data.ItemsResult.Items);
-    } catch (error) {
-      this.handleError(error, 'Amazon product search');
-    }
-  }
-
-  /**
-   * Get detailed information about a specific product
-   */
-  public async getProduct(productId: string): Promise<EcommerceProduct> {
-    try {
-      const timestamp = new Date().toISOString();
-      const signature = this.generateSignature('GetItems', timestamp);
-
-      const response = await this.client.post('/paapi5/getitems', {
-        ItemIds: [productId],
-        Marketplace: this.marketplace,
-        PartnerTag: this.partnerId,
-        PartnerType: 'Associates',
-        Resources: [
-          'ItemInfo.Title',
-          'ItemInfo.Features',
-          'ItemInfo.ProductInfo',
-          'ItemInfo.ByLineInfo',
-          'Offers.Listings.Price',
-          'Images.Primary.Large',
-          'BrowseNodeInfo'
-        ]
-      }, {
-        headers: {
-          'X-Amz-Date': timestamp,
-          'X-Amz-Signature': signature
-        }
-      });
-
-      const product = response.data.ItemsResult.Items[0];
-      return this.normalizeProduct(product);
-    } catch (error) {
-      this.handleError(error, 'Amazon product fetch');
-    }
-  }
-
-  /**
-   * Get multiple products by their IDs
-   */
-  public async getProducts(productIds: string[]): Promise<EcommerceProduct[]> {
-    try {
-      const timestamp = new Date().toISOString();
-      const signature = this.generateSignature('GetItems', timestamp);
-
-      const response = await this.client.post('/paapi5/getitems', {
-        ItemIds: productIds,
-        Marketplace: this.marketplace,
-        PartnerTag: this.partnerId,
-        PartnerType: 'Associates',
-        Resources: [
-          'ItemInfo.Title',
-          'ItemInfo.Features',
-          'ItemInfo.ProductInfo',
-          'ItemInfo.ByLineInfo',
-          'Offers.Listings.Price',
-          'Images.Primary.Large',
-          'BrowseNodeInfo'
-        ]
-      }, {
-        headers: {
-          'X-Amz-Date': timestamp,
-          'X-Amz-Signature': signature
-        }
-      });
-
-      return this.normalizeProducts(response.data.ItemsResult.Items);
-    } catch (error) {
-      this.handleError(error, 'Amazon products fetch');
-    }
-  }
-
-  /**
-   * Get product price history (Note: Amazon doesn't provide historical prices directly)
-   */
-  public async getPriceHistory(productId: string, days: number): Promise<Array<{
-    date: Date;
-    price: number;
-    currency: string;
-  }>> {
-    // This would need to be implemented using our own price tracking database
-    // as Amazon doesn't provide historical price data through their API
-    throw new Error('Price history not available through Amazon API');
-  }
-
-  /**
-   * Generate affiliate URL for Amazon product
-   */
-  protected generateAffiliateUrl(productUrl: string): string {
-    const url = new URL(productUrl);
-    url.searchParams.set('tag', this.partnerId);
-    return url.toString();
-  }
-
-  /**
-   * Extract country of origin from Amazon product data
-   */
-  protected extractCountryOfOrigin(productData: any): string | undefined {
-    // Try to extract from product features or details
-    const features = productData.ItemInfo?.Features?.DisplayValues || [];
-    const originFeature = features.find((f: string) => 
-      f.toLowerCase().includes('made in') || 
-      f.toLowerCase().includes('country of origin')
-    );
-
-    if (originFeature) {
-      const match = originFeature.match(/made in ([\w\s]+)|country of origin:?\s*([\w\s]+)/i);
-      return match ? (match[1] || match[2]).trim() : undefined;
-    }
-
-    return undefined;
-  }
-
-  /**
-   * Normalize Amazon categories to standard format
-   */
-  protected normalizeCategories(browseNodes: any[]): string[] {
-    return browseNodes.map(node => node.DisplayName)
-      .filter((name): name is string => typeof name === 'string');
-  }
-
-  /**
-   * Generate signature for Amazon PA-API request
-   */
   private generateSignature(operation: string, timestamp: string): string {
     const stringToSign = [
       'POST',
-      this.config.baseUrl,
-      `/paapi5/${operation.toLowerCase()}`,
-      `X-Amz-Date:${timestamp}`
+      `webservices.amazon.${this.region}`,
+      '/paapi5/1',
+      operation,
+      this.accessKey,
+      timestamp,
+      this.associateTag
     ].join('\n');
 
-    return createHmac('sha256', this.secretKey)
+    return crypto
+      .createHmac('sha256', this.secretKey)
       .update(stringToSign)
-      .digest('hex');
+      .digest('base64');
   }
 
-  /**
-   * Map our sort parameters to Amazon's sort values
-   */
-  private mapSortBy(sortBy?: ProductSearchParams['sortBy']): string {
-    switch (sortBy) {
-      case 'price_asc':
-        return 'Price:LowToHigh';
-      case 'price_desc':
-        return 'Price:HighToLow';
-      case 'relevance':
-      default:
-        return 'Relevance';
+  async searchProducts(params: AmazonSearchParams): Promise<AmazonProduct[]> {
+    try {
+      const timestamp = new Date().toISOString();
+      const signature = this.generateSignature('SearchItems', timestamp);
+      
+      const queryParams = new URLSearchParams();
+      queryParams.append('Keywords', params.keywords);
+      
+      if (params.category) {
+        queryParams.append('SearchIndex', params.category);
+      }
+      if (params.minPrice) {
+        queryParams.append('MinPrice', params.minPrice.toString());
+      }
+      if (params.maxPrice) {
+        queryParams.append('MaxPrice', params.maxPrice.toString());
+      }
+      if (params.sortBy) {
+        queryParams.append('SortBy', params.sortBy);
+      }
+      if (params.page) {
+        queryParams.append('ItemPage', params.page.toString());
+      }
+      if (params.itemsPerPage) {
+        queryParams.append('ItemCount', params.itemsPerPage.toString());
+      }
+
+      queryParams.append('AssociateTag', this.associateTag);
+      queryParams.append('Operation', 'SearchItems');
+      queryParams.append('Signature', signature);
+      queryParams.append('Timestamp', timestamp);
+
+      const response = await this.request<AmazonApiResponse>({
+        method: 'GET',
+        url: `/search?${queryParams.toString()}`
+      });
+      
+      return response.data.SearchResult.Items.map((item) => ({
+        ASIN: item.ASIN,
+        DetailPageURL: item.DetailPageURL,
+        title: item.ItemInfo.Title.DisplayValue,
+        brand: item.ItemInfo.ByLineInfo?.Brand?.DisplayValue,
+        productGroup: item.ItemInfo.Classifications?.ProductGroup?.DisplayValue,
+        price: item.Offers?.Listings[0] ? {
+          amount: Number(item.Offers.Listings[0].Price.Amount),
+          currency: item.Offers.Listings[0].Price.Currency
+        } : undefined
+      }));
+    } catch (error) {
+      this.logger.error('Error searching Amazon products', { error: String(error) });
+      throw error;
     }
   }
 
-  /**
-   * Normalize a single Amazon product to our standard format
-   */
-  private normalizeProduct(item: any): EcommerceProduct {
-    return {
-      id: item.ASIN,
-      title: item.ItemInfo.Title.DisplayValue,
-      description: item.ItemInfo.Features?.DisplayValues.join('\n') || '',
-      brand: item.ItemInfo.ByLineInfo?.Brand?.DisplayValue,
-      currentPrice: parseFloat(item.Offers.Listings[0].Price.Amount),
-      currency: item.Offers.Listings[0].Price.Currency,
-      imageUrl: item.Images.Primary.Large.URL,
-      url: this.generateAffiliateUrl(item.DetailPageURL),
-      countryOfOrigin: this.extractCountryOfOrigin(item),
-      categories: this.normalizeCategories(item.BrowseNodeInfo.BrowseNodes),
-      availability: this.mapAvailability(item.Offers.Listings[0].Availability),
-      merchant: 'Amazon',
-      merchantId: 'amazon',
-      lastUpdated: new Date()
+  async getProductsByCategory(category: string, limit: number = 20): Promise<AmazonProduct[]> {
+    const params: AmazonSearchParams = {
+      keywords: category,
+      category,
+      limit,
+      sortBy: 'price_low_to_high'
     };
+    return this.searchProducts(params);
   }
 
-  /**
-   * Normalize multiple Amazon products
-   */
-  private normalizeProducts(items: any[]): EcommerceProduct[] {
-    return items.map(item => this.normalizeProduct(item));
+  async getProductsByKeywords(keywords: string, limit: number = 20): Promise<AmazonProduct[]> {
+    const params: AmazonSearchParams = {
+      keywords,
+      limit,
+      sortBy: 'relevance'
+    };
+    return this.searchProducts(params);
   }
 
-  /**
-   * Map Amazon availability to our standard format
-   */
-  private mapAvailability(availability: string): EcommerceProduct['availability'] {
-    if (availability.includes('in stock')) return 'in_stock';
-    if (availability.includes('limited')) return 'limited';
-    return 'out_of_stock';
+  async getProductDetails(asin: string): Promise<AmazonProduct | null> {
+    try {
+      const response = await this.request<ApiResponse<ProductResponse>>({
+        method: 'GET',
+        url: `/products/${asin}`
+      });
+      return response.data.product;
+    } catch (error) {
+      this.logger.error('Failed to get Amazon product details', { error: String(error), asin });
+      return null;
+    }
+  }
+
+  async getTrendingProducts(limit: number = 20): Promise<AmazonProduct[]> {
+    try {
+      const params: AmazonSearchParams = {
+        keywords: 'trending',
+        limit,
+        sortBy: 'relevance'
+      };
+      return this.searchProducts(params);
+    } catch (error) {
+      this.logger.error('Failed to get trending Amazon products', { error });
+      return [];
+    }
+  }
+
+  async getProductsByPriceRange(min: number, max: number, limit: number = 20): Promise<AmazonProduct[]> {
+    const params: AmazonSearchParams = {
+      keywords: '*',
+      minPrice: min,
+      maxPrice: max,
+      itemsPerPage: limit,
+      sortBy: 'price-asc'
+    };
+    return this.searchProducts(params);
+  }
+
+  generateAffiliateUrl(productUrl: string): string {
+    const affiliateTag = process.env.AMAZON_AFFILIATE_TAG;
+    if (!affiliateTag) {
+      this.logger.warn('Amazon affiliate tag not found in environment variables');
+      return productUrl;
+    }
+    const url = new URL(productUrl);
+    url.searchParams.set('tag', affiliateTag);
+    return url.toString();
   }
 } 

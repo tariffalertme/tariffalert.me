@@ -1,6 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '../../../types/database';
-import { Logger } from '../../../lib/utils/logger';
+import { Database } from '@/types/database';
+import { Logger } from '@/lib/utils/logger';
 import { PostgrestError } from '@supabase/supabase-js';
 
 interface PricePrediction {
