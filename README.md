@@ -572,52 +572,72 @@ Can you show me the complexity report in a more readable format?
 
 # TariffAlert.me
 
-## Environment Setup
+A real-time tariff monitoring and alert system that helps users stay informed about international trade policies and tariff changes.
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/tariffalert.me.git
-cd tariffalert.me
-```
+## Features
 
+- Real-time tariff monitoring
+- Personalized alerts for tariff changes
+- Twitter feed integration for tariff-related news
+- User authentication and profile management
+- Saved product tracking
+- Email notifications for price and tariff changes
+
+## Tech Stack
+
+- **Frontend**: Next.js 14, React, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: Supabase
+- **Search**: Elasticsearch
+- **Caching**: Redis
+- **Monitoring**: OpenTelemetry, Honeycomb
+- **Error Tracking**: LogRocket
+
+## Getting Started
+
+1. Clone the repository
 2. Install dependencies:
-```bash
-npm install
-```
-
+   ```bash
+   npm install
+   ```
 3. Set up environment variables:
-   - Copy `.env.example` to `.env.local`:
-     ```bash
-     cp .env.example .env.local
-     ```
-   - Update the following variables in `.env.local`:
-     - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
-     - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
-     - `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase service role key
-     - Other optional variables as needed (see `.env.example` for all options)
+   - Copy `.env.example` to `.env.local`
+   - Fill in the required environment variables
 
-4. Start the development server:
-```bash
-npm run dev
-```
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-The application will be available at http://localhost:3000
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Environment Variables
+
+Required environment variables:
+
+- `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anonymous key
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key
+- `ELASTICSEARCH_URL`: Elasticsearch endpoint
+- `ELASTICSEARCH_API_KEY`: Elasticsearch API key
+- `REDIS_HOST`: Redis host
+- `REDIS_PASSWORD`: Redis password
+- `TWITTER_API_KEY`: Twitter API key
+- `TWITTER_API_SECRET`: Twitter API secret
+- `TWITTER_BEARER_TOKEN`: Twitter bearer token
 
 ## Deployment
 
-### Vercel Setup
-1. Connect your GitHub repository to Vercel
-2. Add all required environment variables in Vercel's project settings
-3. Deploy the project
+The project is deployed on Vercel. Each push to the main branch triggers an automatic deployment.
 
-### Environment Variables
-- **Required Variables:**
-  - `NEXT_PUBLIC_SUPABASE_URL`
-  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-  - `SUPABASE_SERVICE_ROLE_KEY`
+## Contributing
 
-- **Optional Variables:**
-  - Analytics: `NEXT_PUBLIC_ANALYTICS_ID`
-  - Error tracking: `NEXT_PUBLIC_SENTRY_DSN`
-  - Authentication: `NEXT_PUBLIC_GOOGLE_CLIENT_ID`, `NEXT_PUBLIC_FACEBOOK_APP_ID`
-  - API Keys: `OPENAI_API_KEY`
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

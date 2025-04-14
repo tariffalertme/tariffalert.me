@@ -1,198 +1,179 @@
-import { Client } from '@elastic/elasticsearch';
-import { Logger } from '../../../lib/utils/logger';
-import { SearchSuggest, SearchCompletionSuggestOption } from '@elastic/elasticsearch/lib/api/types';
+import { Client, type estypes } from '@elastic/elasticsearch';
+import { Logger } from '@/lib/utils/logger';
+import { createSpan, addSpanAttribute } from '@/lib/telemetry/tracer';
 
 interface SearchConfig {
-  index: string;
   query: string;
   fields?: string[];
   from?: number;
   size?: number;
-  sort?: Record<string, 'asc' | 'desc'>;
-  filters?: {
-    term?: Record<string, string | number | boolean>;
-    range?: Record<string, { gte?: number; lte?: number }>;
-    nested?: Array<{
-      path: string;
-      query: Record<string, any>;
-    }>;
-  };
-  aggregations?: Record<string, {
-    terms?: { field: string; size?: number };
-    range?: {
-      field: string;
-      ranges: Array<{ from?: number; to?: number }>;
-    };
-    nested?: {
-      path: string;
-      aggs: Record<string, any>;
-    };
-  }>;
 }
 
 interface SearchResult<T> {
   hits: T[];
   total: number;
   took: number;
-  aggregations?: Record<string, any>;
 }
 
-interface BulkOperation<T> {
-  index: {
-    _index: string;
-    _id?: string;
+interface BulkOperation {
+  index: string;
+  id: string;
+  document: Record<string, any>;
+}
+
+interface ElasticsearchError {
+  meta?: {
+    body?: {
+      error?: {
+        type?: string;
+        reason?: string;
+      };
+    };
   };
-  doc: T;
+  message?: string;
 }
 
 export class ElasticsearchService {
   private client: Client;
   private logger: Logger;
 
-  constructor(nodeUrl: string) {
-    this.client = new Client({ node: nodeUrl });
+  constructor(nodeUrl: string, apiKey: string) {
+    this.client = new Client({
+      node: nodeUrl,
+      auth: {
+        apiKey: apiKey
+      }
+    });
     this.logger = new Logger('ElasticsearchService');
   }
 
-  async createIndex(index: string, mappings: Record<string, any>): Promise<boolean> {
+  private async handleError(error: unknown, operation: string): Promise<never> {
+    const esError = error as ElasticsearchError;
+    const errorMessage = esError.meta?.body?.error?.reason || esError.message || 'Unknown error';
+    const errorType = esError.meta?.body?.error?.type || 'UnknownError';
+    
+    this.logger.error(`Error during ${operation}: ${errorType} - ${errorMessage}`);
+    throw new Error(`Elasticsearch error during ${operation}: ${errorType} - ${errorMessage}`);
+  }
+
+  async createIndex(index: string): Promise<void> {
     try {
       const exists = await this.client.indices.exists({ index });
-      if (exists) {
-        this.logger.info(`Index ${index} already exists`);
-        return true;
+      
+      if (!exists) {
+        await this.client.indices.create({
+          index,
+          mappings: {
+            properties: {
+              id: { type: 'keyword' },
+              name: { type: 'text' },
+              description: { type: 'text' },
+              price: { type: 'float' },
+              currency: { type: 'keyword' },
+              category: { type: 'keyword' },
+              brand: { type: 'keyword' },
+              url: { type: 'keyword' },
+              imageUrl: { type: 'keyword' },
+              source: { type: 'keyword' },
+              timestamp: { type: 'date' },
+              // Add completion suggester for autocomplete
+              suggest: {
+                type: 'completion',
+                analyzer: 'simple',
+                preserve_separators: true,
+                preserve_position_increments: true,
+                max_input_length: 50
+              }
+            }
+          },
+          settings: {
+            number_of_shards: 1,
+            number_of_replicas: 1,
+            'index.mapping.total_fields.limit': 2000
+          }
+        });
+        this.logger.info(`Created index: ${index}`);
       }
+    } catch (error) {
+      await this.handleError(error, `creating index ${index}`);
+    }
+  }
 
-      await this.client.indices.create({
+  async indexDocument<T extends Record<string, any>>(index: string, id: string, document: T): Promise<void> {
+    try {
+      await this.createIndex(index);
+      await this.client.index({
         index,
-        body: {
-          mappings,
-        },
+        id,
+        document: {
+          ...document,
+          timestamp: new Date().toISOString()
+        }
       });
-
-      this.logger.info(`Created index ${index}`);
-      return true;
+      this.logger.debug(`Indexed document ${id} in ${index}`);
     } catch (error) {
-      this.logger.error('Error creating index', { error, index });
-      return false;
+      await this.handleError(error, `indexing document ${id}`);
     }
   }
 
-  async indexDocument<T extends Record<string, any>>(
-    index: string,
-    document: T,
-    id?: string
-  ): Promise<boolean> {
+  async bulkIndex(operations: BulkOperation[]): Promise<void> {
     try {
-      const params = {
-        index,
-        body: document,
-        ...(id && { id }),
-      };
+      // Ensure all indices exist
+      const uniqueIndices = [...new Set(operations.map(op => op.index))];
+      await Promise.all(uniqueIndices.map(index => this.createIndex(index)));
 
-      await this.client.index(params);
-      this.logger.info(`Indexed document in ${index}`, { id });
-      return true;
-    } catch (error) {
-      this.logger.error('Error indexing document', { error, index, id });
-      return false;
-    }
-  }
-
-  async bulkIndex<T extends Record<string, any>>(
-    operations: BulkOperation<T>[]
-  ): Promise<boolean> {
-    try {
-      const body = operations.flatMap((item: BulkOperation<T>) => [
-        { index: item.index },
-        item.doc,
+      const body = operations.flatMap(op => [
+        { index: { _index: op.index, _id: op.id } },
+        { ...op.document, timestamp: new Date().toISOString() }
       ]);
 
-      const response = await this.client.bulk({ body });
+      const { items } = await this.client.bulk({ body });
       
-      if (response.errors) {
-        const errorItems = response.items.filter((item: any) => item.index.error);
-        this.logger.error('Bulk indexing had errors', { errors: errorItems });
-        return false;
-      }
+      // Log any errors that occurred during bulk indexing
+      items.forEach((item, i) => {
+        const operation = item.index || item.create || item.update || item.delete;
+        if (operation?.error) {
+          this.logger.error(`Error in bulk operation ${i}: ${operation.error.reason}`);
+        }
+      });
 
       this.logger.info(`Bulk indexed ${operations.length} documents`);
-      return true;
     } catch (error) {
-      this.logger.error('Error performing bulk index', { error });
-      return false;
+      await this.handleError(error, 'bulk indexing');
     }
   }
 
   async search<T>(config: SearchConfig): Promise<SearchResult<T>> {
     try {
       const { 
-        index, 
         query, 
         fields = ['*'], 
         from = 0, 
-        size = 10, 
-        sort,
-        filters,
-        aggregations 
+        size = 10 
       } = config;
 
-      const must = [{
-        multi_match: {
-          query,
-          fields,
-        }
-      }];
-
-      if (filters?.term) {
-        Object.entries(filters.term).forEach(([field, value]) => {
-          must.push({ term: { [field]: value } });
-        });
-      }
-
-      if (filters?.range) {
-        Object.entries(filters.range).forEach(([field, range]) => {
-          must.push({ range: { [field]: range } });
-        });
-      }
-
-      if (filters?.nested) {
-        filters.nested.forEach(nested => {
-          must.push({
-            nested: {
-              path: nested.path,
-              query: nested.query
-            }
-          });
-        });
-      }
-
-      const searchParams = {
-        index,
+      const response = await this.client.search({
+        index: 'your_index_name',
         body: {
           query: {
-            bool: {
-              must
+            multi_match: {
+              query,
+              fields,
             }
           },
           from,
           size,
-          ...(sort && { sort }),
-          ...(aggregations && { aggs: aggregations })
         },
-      };
-
-      const response = await this.client.search(searchParams);
+      });
       const hits = response.hits?.hits?.map((hit: any) => hit._source as T) || [];
       
       const result: SearchResult<T> = {
         hits,
         total: (response.hits?.total as { value: number })?.value || 0,
         took: response.took || 0,
-        ...(response.aggregations && { aggregations: response.aggregations })
       };
 
       this.logger.info(`Search completed`, {
-        index,
         total: result.total,
         took: result.took,
       });
@@ -209,39 +190,49 @@ export class ElasticsearchService {
   }
 
   async suggest<T>(index: string, field: string, prefix: string): Promise<T[]> {
-    try {
-      const response = await this.client.search({
-        index,
-        body: {
-          suggest: {
-            suggestions: {
-              prefix,
-              completion: {
-                field,
-                size: 5,
-                skip_duplicates: true,
-              },
-            },
-          },
-        },
-      });
+    return createSpan('elasticsearch.suggest', async () => {
+      try {
+        addSpanAttribute('elasticsearch.index', index);
+        addSpanAttribute('elasticsearch.field', field);
+        addSpanAttribute('elasticsearch.prefix', prefix);
 
-      const options = response.suggest?.suggestions?.[0]?.options || [];
-      const suggestions = (options as SearchCompletionSuggestOption<T>[]).map(
-        (option) => option._source as T
-      );
+        interface SuggestResponse extends estypes.SearchResponse<T> {
+          suggest?: {
+            suggestions?: Array<{
+              options?: Array<{
+                _source: T;
+              }>;
+            }>;
+          };
+        }
 
-      this.logger.info(`Suggestions fetched`, {
-        index,
-        field,
-        count: suggestions.length,
-      });
+        const response = await this.client.search<SuggestResponse>({
+          index,
+          body: {
+            suggest: {
+              suggestions: {
+                prefix,
+                completion: {
+                  field,
+                  size: 10,
+                  skip_duplicates: true,
+                  fuzzy: {
+                    fuzziness: 'AUTO'
+                  }
+                }
+              }
+            }
+          }
+        });
 
-      return suggestions;
-    } catch (error) {
-      this.logger.error('Error fetching suggestions', { error, index, field });
-      return [];
-    }
+        const suggestions = response.suggest?.suggestions?.[0]?.options || [];
+        addSpanAttribute('elasticsearch.suggestions.count', suggestions.length);
+        return suggestions.map(option => option._source);
+      } catch (error) {
+        await this.handleError(error, `getting suggestions for ${prefix}`);
+        return [];
+      }
+    });
   }
 
   async deleteIndex(index: string): Promise<boolean> {

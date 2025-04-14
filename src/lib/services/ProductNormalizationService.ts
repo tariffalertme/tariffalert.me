@@ -1,5 +1,7 @@
 import type { EcommerceProduct } from '../api/BaseEcommerceClient';
 import { Logger } from '../../../lib/utils/logger';
+import { AmazonApiClient } from '../api/AmazonApiClient';
+import { WalmartApiClient } from '../api/WalmartApiClient';
 
 export interface NormalizedProduct {
   id: string;
@@ -43,16 +45,44 @@ export interface NormalizedProduct {
 
 export class ProductNormalizationService {
   private readonly logger: Logger;
+  private readonly amazonClient?: AmazonApiClient;
+  private readonly walmartClient?: WalmartApiClient;
   private categoryMappings: Map<string, string[]>;
   private readonly confidenceThresholds = {
     high: 0.8,
     medium: 0.5
   };
 
-  constructor() {
+  constructor(amazonClient?: AmazonApiClient, walmartClient?: WalmartApiClient) {
     this.logger = new Logger('ProductNormalizationService');
+    this.amazonClient = amazonClient;
+    this.walmartClient = walmartClient;
     this.categoryMappings = new Map();
     this.initializeCategoryMappings();
+  }
+
+  /**
+   * Check if a specific platform integration is available
+   */
+  public isPlatformAvailable(platform: string): boolean {
+    switch (platform.toLowerCase()) {
+      case 'amazon':
+        return !!this.amazonClient;
+      case 'walmart':
+        return !!this.walmartClient;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Get available platforms
+   */
+  public getAvailablePlatforms(): string[] {
+    const platforms = [];
+    if (this.amazonClient) platforms.push('amazon');
+    if (this.walmartClient) platforms.push('walmart');
+    return platforms;
   }
 
   /**

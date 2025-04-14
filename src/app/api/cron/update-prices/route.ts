@@ -12,25 +12,49 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // Initialize API clients
 const logger = new Logger('PriceUpdateCron');
-const amazonClient = new AmazonApiClient({
-  accessKey: process.env.AMAZON_ACCESS_KEY!,
-  secretKey: process.env.AMAZON_SECRET_KEY!,
-  associateTag: process.env.AMAZON_ASSOCIATE_TAG!,
-  apiKey: process.env.AMAZON_API_KEY!,
-  logger,
-  auth: { type: 'none' }
-});
 
-const walmartClient = new WalmartApiClient({
-  apiKey: process.env.WALMART_API_KEY!,
-  logger,
-  auth: { type: 'none' }
-});
+// Initialize API clients only if credentials are available
+let amazonClient: AmazonApiClient | undefined;
+let walmartClient: WalmartApiClient | undefined;
 
-const normalizationService = new ProductNormalizationService(amazonClient, walmartClient, logger);
+if (process.env.AMAZON_ACCESS_KEY && process.env.AMAZON_SECRET_KEY) {
+  amazonClient = new AmazonApiClient({
+    accessKey: process.env.AMAZON_ACCESS_KEY,
+    secretKey: process.env.AMAZON_SECRET_KEY,
+    associateTag: process.env.AMAZON_ASSOCIATE_TAG,
+    apiKey: process.env.AMAZON_API_KEY,
+    logger,
+    auth: { type: 'none' }
+  });
+}
+
+if (process.env.WALMART_API_KEY) {
+  walmartClient = new WalmartApiClient({
+    apiKey: process.env.WALMART_API_KEY,
+    logger,
+    auth: { type: 'none' }
+  });
+}
+
+const normalizationService = new ProductNormalizationService(amazonClient, walmartClient);
 
 export async function GET(request: Request) {
   try {
+    // Get available platforms
+    const availablePlatforms = normalizationService.getAvailablePlatforms();
+    
+    if (availablePlatforms.length === 0) {
+      logger.info('No e-commerce platforms are configured. Skipping price updates.');
+      return NextResponse.json({ 
+        status: 'success',
+        message: 'No platforms configured',
+        updatedProducts: 0
+      });
+    }
+
+    // Log which platforms are available
+    logger.info('Running price updates for platforms:', { platforms: availablePlatforms });
+
     // Verify the request is from a trusted source
     const authHeader = request.headers.get('authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET_KEY}`) {
@@ -112,13 +136,18 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json({
-      success: true,
+      status: 'success',
+      message: 'Price update completed',
+      platforms: availablePlatforms,
       totalProducts: trackedProducts.length,
       successfulUpdates,
       failedUpdates: trackedProducts.length - successfulUpdates
     });
   } catch (error) {
-    logger.error('Price update cron failed', { error: String(error) });
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    logger.error('Failed to update prices:', { error });
+    return NextResponse.json({ 
+      status: 'error',
+      message: error instanceof Error ? error.message : 'Unknown error occurred'
+    }, { status: 500 });
   }
 } 

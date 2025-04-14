@@ -12,7 +12,7 @@ services:
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
-      - elastic
+      - app_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200"]
       interval: 30s
@@ -29,17 +29,17 @@ services:
       elasticsearch:
         condition: service_healthy
     networks:
-      - elastic
+      - app_network
 
   redis:
     image: redis:7.2-alpine
-    command: redis-server --requirepass ${REDIS_PASSWORD:-your-redis-password}
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
-      - elastic
+      - app_network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -53,5 +53,5 @@ volumes:
     driver: local
 
 networks:
-  elastic:
+  app_network:
     driver: bridge 
