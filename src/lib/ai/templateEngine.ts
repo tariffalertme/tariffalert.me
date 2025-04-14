@@ -73,7 +73,7 @@ export class TemplateEngine {
     return compiledTemplate(variables);
   }
 
-  public processTemplate(
+  private processTemplate(
     template: ContentTemplate,
     variables: Record<string, any>
   ): { prompt: string; systemPrompt: string; params: any } | { error: string } {
@@ -81,7 +81,7 @@ export class TemplateEngine {
     const validation = this.validateVariables(template, variables);
     if (!validation.isValid) {
       return {
-        error: `Missing required variables: ${validation.missingVariables.join(', ')}`,
+        error: `Missing required variables: ${validation.missingVariables.join(', ')}`
       };
     }
 
@@ -97,11 +97,11 @@ export class TemplateEngine {
       return {
         prompt,
         systemPrompt,
-        params,
+        params
       };
     } catch (error) {
       return {
-        error: `Error processing template: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error: `Error processing template: ${error instanceof Error ? error.message : 'Unknown error'}`
       };
     }
   }
@@ -168,44 +168,74 @@ export class TemplateEngine {
     try {
       // Get template based on ID
       const template = this.getTemplate(templateId);
-      return this.processTemplate(template, data);
+      const result = this.processTemplate(template, data);
+      
+      if ('error' in result) {
+        throw new Error(result.error);
+      }
+      
+      return result.prompt;
     } catch (error) {
       this.logger.error('Error generating prompt:', { error, templateId });
       throw error;
     }
   }
 
-  private getTemplate(templateId: string): string {
-    const templates: Record<string, string> = {
-      countryImpactRecommendations: `
-        Analyze the impact of tariff changes and trade relationships for {{countryCode}}:
-        
-        Trade Statistics:
-        - Imports: {{tradeStatistics.imports}}
-        - Exports: {{tradeStatistics.exports}}
-        - Average Tariff Rate: {{tradeStatistics.averageTariffRate}}
-        
-        Recent Tariff Changes:
-        {{#each tariffChanges}}
-        - From {{previousRate}}% to {{newRate}}% (Effective: {{effectiveDate}})
-          Affected Categories: {{affectedCategories}}
-        {{/each}}
-        
-        Consumer Segments:
-        {{#each consumerSegments}}
-        - {{name}}: {{description}}
-          Affected Categories: {{affectedCategories}}
-        {{/each}}
-        
-        Trade Relationships:
-        {{#each relationships}}
-        - {{sourceCountry}} -> {{targetCountry}}: {{relationshipType}} (Impact: {{impactCorrelation}})
-        {{/each}}
-        
-        Overall Impact Score: {{impactScore}}
-        
-        Based on this data, provide strategic recommendations for businesses and stakeholders.
-      `
+  private getTemplate(templateId: string): ContentTemplate {
+    const templates: Record<string, ContentTemplate> = {
+      countryImpactRecommendations: {
+        userPromptTemplate: `
+          Analyze the impact of tariff changes and trade relationships for {{countryCode}}:
+          
+          Trade Statistics:
+          - Imports: {{tradeStatistics.imports}}
+          - Exports: {{tradeStatistics.exports}}
+          - Average Tariff Rate: {{tradeStatistics.averageTariffRate}}
+          
+          Recent Tariff Changes:
+          {{#each tariffChanges}}
+          - From {{previousRate}}% to {{newRate}}% (Effective: {{effectiveDate}})
+            Affected Categories: {{affectedCategories}}
+          {{/each}}
+          
+          Consumer Segments:
+          {{#each consumerSegments}}
+          - {{name}}: {{description}}
+            Affected Categories: {{affectedCategories}}
+          {{/each}}
+          
+          Trade Relationships:
+          {{#each relationships}}
+          - {{sourceCountry}} -> {{targetCountry}}: {{relationshipType}} (Impact: {{impactCorrelation}})
+          {{/each}}
+          
+          Overall Impact Score: {{impactScore}}
+          
+          Based on this data, provide strategic recommendations for businesses and stakeholders.
+        `,
+        systemPrompt: 'You are an expert trade analyst providing strategic recommendations.',
+        defaultParams: {},
+        variables: [
+          { name: 'countryCode', required: true },
+          { name: 'tradeStatistics', required: true },
+          { name: 'tariffChanges', required: false },
+          { name: 'consumerSegments', required: false },
+          { name: 'relationships', required: false },
+          { name: 'impactScore', required: true }
+        ],
+        outputFormat: {
+          structure: JSON.stringify({
+            recommendations: {
+              shortTerm: ['string'],
+              longTerm: ['string']
+            },
+            impactAnalysis: {
+              score: 'number',
+              factors: ['string']
+            }
+          })
+        }
+      }
     };
 
     const template = templates[templateId];
