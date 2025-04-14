@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig, AxiosResponse, RawAxiosRequestHeaders } from 'axios';
+import type { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { Database } from './database';
 
 /**
@@ -26,6 +26,7 @@ export interface ApiClientConfig {
   timeout?: number;
   retries?: number;
   headers?: Record<string, string>;
+  rateLimit?: RateLimitConfig;
 }
 
 /**
@@ -79,7 +80,7 @@ export class ApiError extends Error {
  * Interface for request transformers
  */
 export interface RequestTransformer {
-  transform(config: AxiosRequestConfig): Promise<AxiosRequestConfig>;
+  transform(config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig>;
 }
 
 /**

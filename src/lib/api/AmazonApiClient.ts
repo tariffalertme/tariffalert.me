@@ -1,6 +1,6 @@
-import { BaseApiClient } from '../../src/lib/api/BaseApiClient';
-import { ApiClientConfig } from '../../src/types/api';
-import { Logger } from '../../src/lib/utils/logger';
+import { BaseApiClient } from '@/lib/api/BaseApiClient';
+import { ApiClientConfig } from '@/types/api';
+import { Logger } from '@/lib/utils/logger';
 import crypto from 'crypto';
 
 export interface AmazonProduct {
