@@ -574,70 +574,48 @@ Can you show me the complexity report in a more readable format?
 
 A real-time tariff monitoring and alert system that helps users stay informed about international trade policies and tariff changes.
 
+## Project Overview
+
+TariffAlert.me is a web application that helps users track and monitor tariffs on products they're interested in. It provides real-time alerts when tariff rates change, helping businesses and individuals make informed decisions about international trade.
+
 ## Features
 
 - Real-time tariff monitoring
-- Personalized alerts for tariff changes
-- Twitter feed integration for tariff-related news
-- User authentication and profile management
-- Saved product tracking
-- Email notifications for price and tariff changes
+- User-customizable alerts
+- Product search and tracking
+- Historical tariff data
+- Email notifications for rate changes
+- User preference management
 
-## Tech Stack
+## Technical Stack
 
-- **Frontend**: Next.js 14, React, Tailwind CSS
-- **Backend**: Next.js API Routes
-- **Database**: Supabase
-- **Search**: Elasticsearch
-- **Caching**: Redis
-- **Monitoring**: OpenTelemetry, Honeycomb
-- **Error Tracking**: LogRocket
+- Next.js
+- Supabase
+- TypeScript
+- Tailwind CSS
+- Elasticsearch
+- Node.js
 
-## Getting Started
+## Development
+
+### Requirements
+
+- Node.js 14.0.0 or higher
+- npm or yarn
+- Supabase account
+- Elasticsearch instance
+
+### Setup
 
 1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up environment variables:
-   - Copy `.env.example` to `.env.local`
-   - Fill in the required environment variables
-
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## Environment Variables
-
-Required environment variables:
-
-- `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anonymous key
-- `SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key
-- `ELASTICSEARCH_URL`: Elasticsearch endpoint
-- `ELASTICSEARCH_API_KEY`: Elasticsearch API key
-- `REDIS_HOST`: Redis host
-- `REDIS_PASSWORD`: Redis password
-- `TWITTER_API_KEY`: Twitter API key
-- `TWITTER_API_SECRET`: Twitter API secret
-- `TWITTER_BEARER_TOKEN`: Twitter bearer token
-
-## Deployment
-
-The project is deployed on Vercel. Each push to the main branch triggers an automatic deployment.
+2. Install dependencies: `npm install`
+3. Copy `.env.example` to `.env` and fill in the required environment variables
+4. Run the development server: `npm run dev`
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
