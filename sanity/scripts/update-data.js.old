@@ -1,0 +1,289 @@
+import { createClient } from '@sanity/client';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import fetch from 'node-fetch';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load environment variables from .env file
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+// Validate required environment variables
+const requiredEnvVars = [
+  'NEXT_PUBLIC_SANITY_PROJECT_ID',
+  'NEXT_PUBLIC_SANITY_DATASET',
+  'NEXT_PUBLIC_SANITY_API_VERSION',
+  'SANITY_API_TOKEN'
+];
+
+const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingEnvVars.length > 0) {
+  console.error('Missing required environment variables:', missingEnvVars.join(', '));
+  process.exit(1);
+}
+
+// Initialize Sanity client
+let client;
+try {
+  client = createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+    apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION,
+    token: process.env.SANITY_API_TOKEN,
+    useCdn: false,
+  });
+} catch (error) {
+  console.error('Failed to initialize Sanity client:', error.message);
+  process.exit(1);
+}
+
+// Historical tariff data for US-China trade
+const historicalTariffs = [
+  {
+    _type: 'tariffUpdate',
+    _id: 'tariff.20180706.us-cn-round1',
+    imposingCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBk9j' }, // US
+    impactedCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBkNu' }, // China
+    effectiveDate: '2018-07-06',
+    type: 'new',
+    newRate: 25,
+    affectedCategories: [{ _ref: '3abf556c-ed8c-491c-964b-675262070d1e' }] // Electronics
+  },
+  {
+    _type: 'tariffUpdate',
+    _id: 'tariff.20180823.us-cn-round2',
+    imposingCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBk9j' },
+    impactedCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBkNu' },
+    effectiveDate: '2018-08-23',
+    type: 'modification',
+    newRate: 25,
+    affectedCategories: [{ _ref: '3abf556c-ed8c-491c-964b-675262070d1e' }]
+  },
+  {
+    _type: 'tariffUpdate',
+    _id: 'tariff.20180924.us-cn-round3',
+    imposingCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBk9j' },
+    impactedCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBkNu' },
+    effectiveDate: '2018-09-24',
+    type: 'modification',
+    newRate: 10,
+    affectedCategories: [{ _ref: '3abf556c-ed8c-491c-964b-675262070d1e' }]
+  },
+  {
+    _type: 'tariffUpdate',
+    _id: 'tariff.20190510.us-cn-round3-hike',
+    imposingCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBk9j' },
+    impactedCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBkNu' },
+    effectiveDate: '2019-05-10',
+    type: 'modification',
+    newRate: 25,
+    affectedCategories: [{ _ref: '3abf556c-ed8c-491c-964b-675262070d1e' }]
+  },
+  {
+    _type: 'tariffUpdate',
+    _id: 'tariff.20190901.us-cn-round4',
+    imposingCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBk9j' },
+    impactedCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBkNu' },
+    effectiveDate: '2019-09-01',
+    type: 'modification',
+    newRate: 15,
+    affectedCategories: [{ _ref: '3abf556c-ed8c-491c-964b-675262070d1e' }]
+  },
+  {
+    _type: 'tariffUpdate',
+    _id: 'tariff.20200214.us-cn-phase1',
+    imposingCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBk9j' },
+    impactedCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBkNu' },
+    effectiveDate: '2020-02-14',
+    type: 'modification',
+    newRate: 7.5,
+    affectedCategories: [{ _ref: '3abf556c-ed8c-491c-964b-675262070d1e' }]
+  },
+  // Future predictions
+  {
+    _type: 'tariffUpdate',
+    _id: 'tariff.20250411.us-cn-hike',
+    imposingCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBk9j' },
+    impactedCountry: { _ref: 'KC6KRTtNL6jVBSHZqXBkNu' },
+    effectiveDate: '2025-04-11',
+    type: 'modification',
+    newRate: 145,
+    affectedCategories: [{ _ref: '3abf556c-ed8c-491c-964b-675262070d1e' }]
+  }
+];
+
+// Updated product data with proper image handling
+const updatedProducts = [
+  {
+    _type: 'product',
+    _id: 'prod.0001',
+    name: 'Apple AirTag (4-Pack)',
+    affiliateUrl: 'https://amzn.to/airtag4pack',
+    imageUrl: 'https://m.media-amazon.com/images/I/71gY9E+cTaL._AC_SL1500_.jpg',
+    image: {
+      _type: 'image',
+      asset: {
+        _type: 'reference',
+        _ref: 'image-71gY9E+cTaL-AC_SL1500-jpg'
+      }
+    },
+    productCategories: [{ _ref: 'f0937c3f-f22b-447a-9cd5-086a6fcff6e0' }],
+    attributes: [],
+    relatedTariffUpdates: [
+      { _ref: 'tariff.20190901.us-cn-round4' },
+      { _ref: 'tariff.20250411.us-cn-hike' }
+    ]
+  },
+  {
+    _type: 'product',
+    _id: 'prod.0002',
+    name: 'Anker 733 Power Bank',
+    affiliateUrl: 'https://amzn.to/anker733',
+    imageUrl: 'https://m.media-amazon.com/images/I/71q-i5v2p5L._AC_SL1500_.jpg',
+    image: {
+      _type: 'image',
+      asset: {
+        _type: 'reference',
+        _ref: 'image-71q-i5v2p5L-AC_SL1500-jpg'
+      }
+    },
+    productCategories: [{ _ref: '3abf556c-ed8c-491c-964b-675262070d1e' }],
+    attributes: [],
+    relatedTariffUpdates: [
+      { _ref: 'tariff.20190901.us-cn-round4' },
+      { _ref: 'tariff.20250411.us-cn-hike' }
+    ]
+  },
+  {
+    _type: 'product',
+    _id: 'prod.0003',
+    name: 'Braun Series 9 Electric Shaver',
+    affiliateUrl: 'https://amzn.to/braunseries9',
+    imageUrl: 'https://m.media-amazon.com/images/I/81CDeHyb+EL._AC_SL1500_.jpg',
+    image: {
+      _type: 'image',
+      asset: {
+        _type: 'reference',
+        _ref: 'image-81CDeHyb+EL-AC_SL1500-jpg'
+      }
+    },
+    productCategories: [
+      { _ref: '3abf556c-ed8c-491c-964b-675262070d1e' },
+      { _ref: '77777777-aaaa-bbbb-cccc-888888888888' }
+    ],
+    attributes: [{ _ref: '33333333-aaaa-bbbb-cccc-444444444444' }],
+    relatedTariffUpdates: [
+      { _ref: 'tariff.20190901.us-cn-round4' }
+    ]
+  }
+];
+
+// Function to upload image asset to Sanity
+async function uploadImageAsset(imageUrl, client, retries = 3) {
+  let attempt = 0;
+  while (attempt < retries) {
+    try {
+      // Extract filename from URL
+      const filename = imageUrl.split('/').pop() || 'image';
+      
+      // Fetch image
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`);
+      }
+      
+      const buffer = await response.arrayBuffer();
+      
+      // Upload to Sanity
+      const asset = await client.assets.upload('image', Buffer.from(buffer), {
+        filename,
+        contentType: response.headers.get('content-type'),
+      });
+      
+      console.log(`Successfully uploaded image: ${filename}`);
+      return asset._id;
+    } catch (error) {
+      attempt++;
+      console.error(`Upload attempt ${attempt}/${retries} failed:`, error.message);
+      
+      if (attempt === retries) {
+        throw new Error(`Failed to upload image after ${retries} attempts: ${error.message}`);
+      }
+      
+      // Wait before retrying (exponential backoff)
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+    }
+  }
+}
+
+async function updateSanityData() {
+  try {
+    // Fetch existing products from Sanity
+    const existingProducts = await client.fetch('*[_type == "product"]');
+    console.log(`Found ${existingProducts.length} existing products in Sanity`);
+    
+    // Process each product
+    for (const product of updatedProducts) {
+      try {
+        // Check if product already exists
+        const existingProduct = existingProducts.find(p => p.productId === product.productId);
+        
+        // Upload image if it doesn't exist
+        if (product.imageUrl && (!product.image?.asset?._ref || !product.image?.asset?._ref.startsWith('image-'))) {
+          try {
+            const assetId = await uploadImageAsset(product.imageUrl, client);
+            product.image = {
+              _type: 'image',
+              asset: {
+                _type: 'reference',
+                _ref: assetId
+              }
+            };
+          } catch (imageError) {
+            console.error(`Failed to upload image for product ${product.productId}:`, imageError.message);
+            // Continue with product update even if image upload fails
+          }
+        }
+        
+        // Prepare mutation
+        const mutation = existingProduct
+          ? {
+              patch: {
+                id: existingProduct._id,
+                set: product
+              }
+            }
+          : {
+              create: {
+                _type: 'product',
+                ...product
+              }
+            };
+        
+        // Execute mutation
+        await client.transaction()
+          .createIfNotExists({_type: 'product', productId: product.productId})
+          .patch(
+            `*[_type == "product" && productId == "${product.productId}"][0]`,
+            { set: product }
+          )
+          .commit({autoGenerateArrayKeys: true});
+        
+        console.log(`Successfully ${existingProduct ? 'updated' : 'created'} product: ${product.productId}`);
+      } catch (productError) {
+        console.error(`Error processing product ${product.productId}:`, productError.message);
+        // Continue with next product
+      }
+    }
+    
+    console.log('Data update completed successfully');
+  } catch (error) {
+    console.error('Fatal error during data update:', error.message);
+    process.exit(1);
+  }
+}
+
+updateSanityData(); 

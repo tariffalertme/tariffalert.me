@@ -1,9 +1,3 @@
----
-description: Guidelines for creating and maintaining Cursor rules to ensure consistency and effectiveness.
-globs: .cursor/rules/*.mdc
-alwaysApply: true
----
-
 - **Required Rule Structure:**
   ```markdown
   ---
@@ -16,6 +10,15 @@ alwaysApply: true
     - Sub-points with details
     - Examples and explanations
   ```
+
+- **Essential Project Rules:**
+  - Every project should include a `tech_stack.mdc` rule that documents:
+    - Current technical stack with reasoning
+    - Deprecated technologies and migration paths
+    - Chronological decision log
+  - Reference [tech_stack.mdc](mdc:.cursor/rules/tech_stack.mdc) for template
+  - Update tech stack documentation whenever new technologies are introduced
+  - Ensure all team members review tech stack changes
 
 - **File References:**
   - Use `[filename](mdc:path/to/file)` ([filename](mdc:filename)) to reference files
@@ -38,16 +41,87 @@ alwaysApply: true
   - Show examples of correct implementation
   - Reference existing code when possible
   - Keep rules DRY by referencing other rules
+  - Reference [tech_stack.mdc](mdc:.cursor/rules/tech_stack.mdc) for technical decisions
 
 - **Rule Maintenance:**
   - Update rules when new patterns emerge
   - Add examples from actual codebase
   - Remove outdated patterns
   - Cross-reference related rules
+  - Review rules quarterly for relevance
 
 - **Best Practices:**
   - Use bullet points for clarity
   - Keep descriptions concise
   - Include both DO and DON'T examples
   - Reference actual code over theoretical examples
-  - Use consistent formatting across rules 
+  - Use consistent formatting across rules
+  - Document reasoning behind rules to aid understanding
+
+- **Task Focus and Scope:**
+  - Only work on explicitly requested tasks
+  - Do not make assumptions about next steps
+  - Wait for user confirmation before proceeding to related tasks
+  - If related improvements are identified:
+    - Note them in the response
+    - Wait for user's explicit request to implement
+  - Example:
+    ```typescript
+    // If user requests: "Update the user schema"
+    // ✅ DO: Focus only on schema changes
+    // ❌ DON'T: Automatically update related components
+    ``` 
+
+- **Strict Adherence to User Requests:**
+  - Only implement changes explicitly requested by the user
+  - Do not make assumptions about related changes needed
+  - If additional changes seem necessary:
+    - First complete the explicitly requested task
+    - Then explain why additional changes might be needed
+    - Wait for user confirmation before proceeding with any additional changes
+  - Document all changes made in responses to maintain transparency
+  - When in doubt, ask for clarification rather than making assumptions
+  
+    ```typescript
+    // If user requests: "Update the user schema"
+    // ✅ DO: Focus only on schema changes
+    // ❌ DON'T: Automatically update related components
+    ``` 
+
+- **Mandatory Testing and Verification:**
+  - Never claim task completion without thorough testing
+  - Required verification steps:
+    - Check if all new/modified files are properly created/updated
+    - Verify all imports and dependencies are properly resolved
+    - Test the actual functionality in the running application
+    - Check for 404s, console errors, and network errors
+    - Verify both positive and negative test cases
+  - Document testing steps and results in responses
+  - If any issues are found:
+    - Fix them before claiming completion
+    - Detail what was broken and how it was fixed
+  - Example:
+    ```typescript
+    // ✅ DO: Test thoroughly before reporting completion
+    // 1. Check file creation/modification
+    // 2. Verify imports and dependencies
+    // 3. Test in running application
+    // 4. Check for errors
+    // 5. Document results
+    
+    // ❌ DON'T: Assume it works without testing
+    // Don't claim "it's done" without verification
+    ```
+
+- **Automatic Server Reset Rule**
+  - Whenever a server reset is needed or suggested (e.g., after environment/config changes, dependency updates, or troubleshooting steps), perform the reset automatically.
+    - Do not prompt the user for confirmation before resetting servers.
+    - This applies to all development, build, and admin servers (e.g., Next.js, Sanity Studio, etc.).
+  - Clearly communicate in the response that the server is being reset and why.
+  - Example:
+    ```
+    // After patching environment variables
+    // ✅ DO: Restart the Next.js and Sanity Studio servers automatically
+    // ❌ DON'T: Ask the user if they want to restart the servers
+    ```
+  - This rule is global and takes precedence over any previous prompt/confirmation patterns for server resets.

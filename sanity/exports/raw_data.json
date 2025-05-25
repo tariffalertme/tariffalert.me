@@ -1,0 +1,432 @@
+{
+  "countries": [
+    {
+      "name": "United States",
+      "region": null,
+      "flagIconUrl": "https://flagcdn.com/h24/us.png",
+      "_id": "KC6KRTtNL6jVBSHZqXBk9j",
+      "code": "US",
+      "flagUrl": "https://flagcdn.com/h120/us.png",
+      "countryTags": null,
+      "majorExports": [
+        {
+          "_key": "2760c3b0daa2",
+          "_ref": "854f4186-15ea-4a64-a971-561b0e3657ba",
+          "_type": "reference"
+        }
+      ],
+      "productCategories": [
+        {
+          "_type": "reference",
+          "_key": "47e90d1ba13f",
+          "_ref": "7f457807-a1e7-434c-95fa-6d1d710bc397"
+        }
+      ]
+    },
+    {
+      "_id": "KC6KRTtNL6jVBSHZqXBkNu",
+      "name": "China",
+      "code": "CN",
+      "region": null,
+      "flagUrl": null,
+      "flagIconUrl": null,
+      "productCategories": null,
+      "countryTags": null,
+      "majorExports": null
+    },
+    {
+      "_id": "drafts.KC6KRTtNL6jVBSHZqXBkNu",
+      "code": "CN",
+      "countryTags": null,
+      "name": "China",
+      "region": null,
+      "flagUrl": "https://flagcdn.com/h120/cn.png",
+      "flagIconUrl": "https://flagcdn.com/h24/cn.png",
+      "majorExports": [
+        {
+          "_ref": "e3b22fc4-8bf1-44b6-9acc-81b034b4c195",
+          "_type": "reference",
+          "_key": "23f2ae4bb1b7"
+        }
+      ],
+      "productCategories": [
+        {
+          "_ref": "3abf556c-ed8c-491c-964b-675262070d1e",
+          "_type": "reference",
+          "_key": "a657283f97f7"
+        },
+        {
+          "_ref": "220a4e77-2302-4473-a30d-1266755f8353",
+          "_type": "reference",
+          "_key": "9e9c0256110b"
+        },
+        {
+          "_ref": "cb40fe75-d0bf-4722-b1a7-d347caeaf1a4",
+          "_type": "reference",
+          "_key": "29d1aea694f4"
+        },
+        {
+          "_ref": "b7a805af-bbf5-49b2-b487-7b6dc731952e",
+          "_type": "reference",
+          "_key": "bccd2e2d1d3f"
+        },
+        {
+          "_ref": "f0937c3f-f22b-447a-9cd5-086a6fcff6e0",
+          "_type": "reference",
+          "_key": "c998bff5f1e6"
+        }
+      ]
+    }
+  ],
+  "products": [
+    {
+      "affiliateUrl": "https://amzn.to/4iApJuo",
+      "currentPrice": null,
+      "productCategories": null,
+      "_id": "01e054c5-f89a-4d29-a253-eef5bd82164a",
+      "name": "Apple AirPods Pro 2 Wireless Earbuds, Bluetooth Headphones, Active Noise Cancellation, Hearing Aid Feature, Transparency, Personalized Spatial Audio, High-Fidelity Sound, H2 Chip, USB-C Charging",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "image-58fc8e7d6bca6ee3052a4bb3b982efc3f6da3773-1165x1500-jpg"
+        }
+      },
+      "attributes": null,
+      "relatedTariffUpdates": null,
+      "slug": null,
+      "description": null
+    },
+    {
+      "_id": "19d94572-d5a0-4ad2-81b7-5020d654934f",
+      "name": "Apple 2025 MacBook Air 15-inch Laptop with M4 chip: Built for Apple Intelligence, 15.3-inch Liquid Retina Display, 16GB Unified Memory, 512GB SSD Storage, 12MP Center Stage Camera, Touch ID; Silver",
+      "slug": null,
+      "description": null,
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_ref": "image-98e4228403917fd28658829b5196701860155598-1500x913-jpg",
+          "_type": "reference"
+        }
+      },
+      "currentPrice": null,
+      "relatedTariffUpdates": null,
+      "affiliateUrl": "https://amzn.to/4cHLd7c",
+      "productCategories": null,
+      "attributes": null
+    },
+    {
+      "name": "SAMSUNG Galaxy S24 FE AI Phone, 128GB Unlocked Android Smartphone, High-Res 50MP Camera, Long Battery Life, Brighter Display Screen, US Version, 2024, US 1 Yr Manufacturer Warranty, Mint",
+      "image": {
+        "_upload": {
+          "file": {
+            "name": "samsunggalaxys24feaiphone.jpg",
+            "type": "image/jpeg"
+          },
+          "progress": 100,
+          "previewImage": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCAB3AGUDASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAEDAgQF/8QALBAAAgECAgkFAAMBAAAAAAAAAAECAxEEMxITMUFRcYGxwSEyU5KiQkNSkf/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABgRAQEBAQEAAAAAAAAAAAAAAAARATES/9oADAMBAAIRAxEAPwD2PaYyr0oy0XL15Gu9nzZ0Kim46N+AH0lZr0sLLgc0ouFOKe5HYRLLgYzvUqOCejGKu2trNzz3arVLcF5C9HSgv5z+xNWt0p/Y6KYutRjODja2sld29x3qV/qf2NClqM9TH/U/sXUuKvTqSUt13dGgLWdWlPWU4y4oHGFyI9e4KrTezwzxlTTbjZR4WPdvZ5Z4ejrPWaTe64HohLTgpW2nRIpRiktiKEDD++fJeTcwWfU5LyTeLjooBloKAEUAGkc4XIj17gYXIj17go03s+XUjNVGpJ6V/wDp9TexZcAOKSapRUttjsAIGEc+pyXk2Mo59TkvJNXHYAIoUhQgACo5wuRHr3AwuRHr3BVab2A9rAQIAAMoZ9TkvJqZQz6nJeQNAAQoAABAAiYXIj17gYXIj17grTR7WQP3MBAAADKGfU5LyamMc6pyXkDUEBEqkBAikFybQLhciPXuBhciPXuCtu37mA/cwEAAAMoZ1TkvJqZQzqnJeQNGiaLKCakrn1CTZSWJWvOKocTpKxynxOy4kjPC5EevcDC5EevcFV2/cwH7mAgQAAZwzqnJeTQyhnVOS8gabynKKQxSFBItQ6WwgQw1zhciPXuBhciPXuDQ7ltukQAAAABjUjNVNOl6u1mnsYAE1tT4v0NbU+H9AAhranw/oa2p8P6AAa2p8P6DlXmrRgoLe73AA9FOKhTjFbkAAP/Z",
+          "updatedAt": "2025-04-23T04:45:28.235Z",
+          "createdAt": "2025-04-23T04:45:27.190Z"
+        },
+        "_type": "image"
+      },
+      "currentPrice": null,
+      "productCategories": null,
+      "attributes": null,
+      "_id": "232dc022-371a-40ab-8efa-fd5a7264d2a5",
+      "slug": null,
+      "description": null,
+      "affiliateUrl": "https://amzn.to/4jzMoYq",
+      "relatedTariffUpdates": null
+    },
+    {
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_ref": "image-87c0d9b2c9bbb306fa5cdab0740a7bd3ef02aa9c-1269x1500-jpg",
+          "_type": "reference"
+        }
+      },
+      "affiliateUrl": "https://amzn.to/3EuJTrz",
+      "currentPrice": null,
+      "productCategories": null,
+      "_id": "9e2ea7df-9e60-45c5-b33d-673ea0cd0544",
+      "name": "Apple Watch Ultra 2 [GPS + Cellular, 49mm] Black Titanium Case with Green Alpine Loop",
+      "slug": null,
+      "attributes": null,
+      "relatedTariffUpdates": [
+        {
+          "_ref": "9d299979-6701-49d2-9e40-45596b022e62",
+          "_type": "reference",
+          "_key": "f231791ea6ed"
+        }
+      ],
+      "description": null
+    },
+    {
+      "name": "Apple 2025 MacBook Air 15-inch Laptop with M4 chip: Built for Apple Intelligence, 15.3-inch Liquid Retina Display, 16GB Unified Memory, 512GB SSD Storage, 12MP Center Stage Camera, Touch ID; Silver",
+      "affiliateUrl": "https://amzn.to/4cHLd7c",
+      "currentPrice": null,
+      "productCategories": [
+        {
+          "_ref": "220a4e77-2302-4473-a30d-1266755f8353",
+          "_type": "reference",
+          "_key": "1ede3da8522a"
+        }
+      ],
+      "slug": null,
+      "description": null,
+      "image": null,
+      "attributes": [
+        {
+          "_ref": "11911f80-9c8c-4b8a-9ead-dcf33770523e",
+          "_type": "reference",
+          "_key": "cf91c55713c4"
+        },
+        {
+          "_ref": "94d32052-5bd8-45e2-8560-df5ad6b08d52",
+          "_type": "reference",
+          "_key": "689d6430de8f"
+        }
+      ],
+      "relatedTariffUpdates": [
+        {
+          "_ref": "9d299979-6701-49d2-9e40-45596b022e62",
+          "_type": "reference",
+          "_key": "d9490ef02b00"
+        }
+      ],
+      "_id": "drafts.19d94572-d5a0-4ad2-81b7-5020d654934f"
+    }
+  ],
+  "tags": [
+    {
+      "_id": "0825b829-bc09-4ef6-83ef-22b8b84ee79f",
+      "name": "Outdoor Furniture",
+      "type": "product_category"
+    },
+    {
+      "_id": "08469d44-781e-4ba4-9ebe-b502cad7cad6",
+      "name": "Canada",
+      "type": "country"
+    },
+    {
+      "_id": "11911f80-9c8c-4b8a-9ead-dcf33770523e",
+      "name": "Apple",
+      "type": "attribute"
+    },
+    {
+      "_id": "220a4e77-2302-4473-a30d-1266755f8353",
+      "name": "Laptops",
+      "type": "product_category"
+    },
+    {
+      "_id": "3a34bdf7-8d80-4424-8033-16817b8b620b",
+      "name": "Automotive Parts",
+      "type": "product_category"
+    },
+    {
+      "_id": "3abf556c-ed8c-491c-964b-675262070d1e",
+      "name": "Electronics",
+      "type": "product_category"
+    },
+    {
+      "_id": "3ed10f74-41d7-46e6-b4ca-fd4534799fe5",
+      "name": "Automotive",
+      "type": "industry"
+    },
+    {
+      "_id": "41e9f325-baf2-4320-bbe8-d645343af187",
+      "name": "Medications",
+      "type": "product_category"
+    },
+    {
+      "_id": "47c17076-34db-44c3-a127-535459191632",
+      "name": "Books",
+      "type": "product_category"
+    },
+    {
+      "_id": "5ce39ed5-8aad-4568-96de-847593b8481f",
+      "name": "United States",
+      "type": "country"
+    },
+    {
+      "_id": "6b1bdbfa-9d89-4ed3-afca-a2cf7c0e16e5",
+      "name": "Brazil",
+      "type": "country"
+    },
+    {
+      "_id": "77714afe-ba3e-4f4b-8fe0-4c0ca05653cc",
+      "name": "Power Tools",
+      "type": "product_category"
+    },
+    {
+      "_id": "7f457807-a1e7-434c-95fa-6d1d710bc397",
+      "name": "Cars",
+      "type": "product_category"
+    },
+    {
+      "_id": "8257b533-b22c-43d7-b51d-53eea9ba7fb8",
+      "name": "China",
+      "type": "country"
+    },
+    {
+      "_id": "84dd2cec-791c-4e81-a444-466e493feda3",
+      "name": " United Arab Emirates",
+      "type": "country"
+    },
+    {
+      "_id": "854f4186-15ea-4a64-a971-561b0e3657ba",
+      "name": "Agriculture",
+      "type": "industry"
+    },
+    {
+      "_id": "8ef7b6fc-e791-4509-af9c-33b0c6c048ca",
+      "name": "Japan",
+      "type": "country"
+    },
+    {
+      "_id": "94d32052-5bd8-45e2-8560-df5ad6b08d52",
+      "name": "On Sale",
+      "type": "attribute"
+    },
+    {
+      "_id": "9d8eba39-c703-4b37-9170-70a5c8d42fa5",
+      "name": "Furniture",
+      "type": "product_category"
+    },
+    {
+      "_id": "a8a4c0b7-5bb9-44ad-99f5-3374f19baa23",
+      "name": "Toys",
+      "type": "product_category"
+    },
+    {
+      "_id": "aeb89943-99b1-499e-b287-fd800b229c03",
+      "name": "Electrical Machinery and Equipment",
+      "type": "industry"
+    },
+    {
+      "_id": "b7a805af-bbf5-49b2-b487-7b6dc731952e",
+      "name": "Fashion",
+      "type": "product_category"
+    },
+    {
+      "_id": "baf4cf92-73e8-4105-9d0f-d6c78ff6363a",
+      "name": "Mexico",
+      "type": "country"
+    },
+    {
+      "_id": "bed53c3c-3672-4c2f-9656-19f286448341",
+      "name": "Apparel",
+      "type": "industry"
+    },
+    {
+      "_id": "c369bead-ab83-4e22-86b8-10df1b694493",
+      "name": "Kitchenware",
+      "type": "product_category"
+    },
+    {
+      "_id": "c4d37abb-7d5b-4480-91a6-59cde43cd3a7",
+      "name": "South Korea",
+      "type": "country"
+    },
+    {
+      "_id": "cb40fe75-d0bf-4722-b1a7-d347caeaf1a4",
+      "name": "Apparel and Footwear",
+      "type": "product_category"
+    },
+    {
+      "_id": "cfd60cfc-e9c6-47b9-b69f-31c1d050d51d",
+      "name": "Pharmaceuticals",
+      "type": "industry"
+    },
+    {
+      "_id": "d20671eb-f809-4cc1-80de-1539037cc4a5",
+      "name": "Plastics",
+      "type": "industry"
+    },
+    {
+      "_id": "da273afc-72d6-4df9-981e-5ef9f35b6845",
+      "name": "Aluminum",
+      "type": "industry"
+    },
+    {
+      "_id": "dba729f8-8e6c-4a53-a732-e1a2e5d88a8a",
+      "name": "Semiconductor",
+      "type": "industry"
+    },
+    {
+      "_id": "e02b8752-035b-4368-977f-6962f689dd67",
+      "name": "Wearables",
+      "type": "product_category"
+    },
+    {
+      "_id": "e3b22fc4-8bf1-44b6-9acc-81b034b4c195",
+      "name": "Electronics",
+      "type": "industry"
+    },
+    {
+      "_id": "e562ebb1-1d2d-4559-a97b-e353ef2d8c54",
+      "name": "Steel",
+      "type": "industry"
+    },
+    {
+      "_id": "f0937c3f-f22b-447a-9cd5-086a6fcff6e0",
+      "name": "Cell Phones & Accessories",
+      "type": "product_category"
+    },
+    {
+      "_id": "f6bed82b-fe65-4ca7-8be3-6864c09fe4d5",
+      "name": "Energy",
+      "type": "industry"
+    },
+    {
+      "_id": "f97ab301-cc51-457d-b878-670e478631cb",
+      "name": "Fertilizer",
+      "type": "product_category"
+    },
+    {
+      "_id": "fafcb05d-b62a-4f2e-9b1f-4b09ad6cc942",
+      "name": "Home Goods",
+      "type": "product_category"
+    },
+    {
+      "_id": "ff0c2726-15b0-4059-bcfc-e3a0a11ff32f",
+      "name": "Cookware",
+      "type": "product_category"
+    }
+  ],
+  "tariffUpdates": [
+    {
+      "newRate": 15,
+      "history": [
+        {
+          "date": "2022-04-15",
+          "rate": 10,
+          "_type": "rateHistory",
+          "_key": "db78e540db13"
+        }
+      ],
+      "_id": "9d299979-6701-49d2-9e40-45596b022e62",
+      "imposingCountry": {
+        "_id": "KC6KRTtNL6jVBSHZqXBk9j"
+      },
+      "impactedCountry": {
+        "_id": "KC6KRTtNL6jVBSHZqXBkNu"
+      },
+      "effectiveDate": "2019-09-01",
+      "type": "new",
+      "affectedCategories": [
+        {
+          "_id": "3abf556c-ed8c-491c-964b-675262070d1e"
+        },
+        {
+          "_id": "e3b22fc4-8bf1-44b6-9acc-81b034b4c195"
+        },
+        {
+          "_id": "e02b8752-035b-4368-977f-6962f689dd67"
+        }
+      ]
+    }
+  ]
+}

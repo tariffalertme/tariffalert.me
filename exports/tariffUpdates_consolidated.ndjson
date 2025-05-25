@@ -1,0 +1,12 @@
+{"_id": "tariff.us-cn-electronics", "_type": "tariffUpdate", "imposingCountry": {"_ref": "KC6KRTtNL6jVBSHZqXBk9j"}, "impactedCountry": {"_ref": "KC6KRTtNL6jVBSHZqXBkNu"}, "affectedCategories": [{"_ref": "3abf556c-ed8c-491c-964b-675262070d1e"}], "type": "new", "effectiveDate": "2018-07-06", "history": [
+  {"date": "2018-07-06", "rate": 25},
+  {"date": "2018-08-23", "rate": 25},
+  {"date": "2018-09-24", "rate": 10},
+  {"date": "2019-05-10", "rate": 25},
+  {"date": "2019-09-01", "rate": 15},
+  {"date": "2020-02-14", "rate": 7.5},
+  {"date": "2025-04-11", "rate": 145}
+]}
+{"_id": "tariff.us-de-delay", "_type": "tariffUpdate", "imposingCountry": {"_ref": "KC6KRTtNL6jVBSHZqXBk9j"}, "impactedCountry": {"_ref": "country.DE"}, "affectedCategories": [], "type": "modification", "effectiveDate": "2025-04-10", "history": [
+  {"date": "2025-04-10", "rate": 0}
+]} 

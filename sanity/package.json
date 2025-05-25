@@ -1,0 +1,49 @@
+{
+  "name": "tariffalert",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "package.json",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "deploy-graphql": "sanity graphql deploy"
+  },
+  "keywords": [
+    "sanity"
+  ],
+  "dependencies": {
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/util": "^3.85.1",
+    "@sanity/vision": "^3.85.1",
+    "csv-parser": "^3.2.0",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.7.4",
+    "next-sanity": "^9.10.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-is": "^19.1.0",
+    "sanity": "^3.85.1",
+    "slugify": "^1.6.6",
+    "styled-components": "^6.1.17"
+  },
+  "devDependencies": {
+    "@sanity/client": "^6.29.0",
+    "@sanity/eslint-config-studio": "^5.0.2",
+    "@types/csv-parse": "^1.1.12",
+    "@types/react": "^18.0.25",
+    "dotenv": "^16.5.0",
+    "eslint": "^9.9.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  },
+  "prettier": {
+    "semi": false,
+    "printWidth": 100,
+    "bracketSpacing": false,
+    "singleQuote": true
+  }
+}

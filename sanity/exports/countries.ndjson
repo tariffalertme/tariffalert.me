@@ -1,0 +1,12 @@
+{"_id": "country.US", "_type": "country", "name": "United States", "code": "US", "flagUrl": "https://flagcdn.com/h120/us.png", "flagIconUrl": "https://flagcdn.com/h24/us.png"}
+{"_id": "country.CN", "_type": "country", "name": "China", "code": "CN", "flagUrl": "https://flagcdn.com/h120/cn.png", "flagIconUrl": "https://flagcdn.com/h24/cn.png"}
+{"_id": "country.DE", "_type": "country", "name": "Germany", "code": "DE", "flagUrl": "https://flagcdn.com/h120/de.png", "flagIconUrl": "https://flagcdn.com/h24/de.png"}
+{"_id": "country.FR", "_type": "country", "name": "France", "code": "FR", "flagUrl": "https://flagcdn.com/h120/fr.png", "flagIconUrl": "https://flagcdn.com/h24/fr.png"}
+{"_id": "country.IT", "_type": "country", "name": "Italy", "code": "IT", "flagUrl": "https://flagcdn.com/h120/it.png", "flagIconUrl": "https://flagcdn.com/h24/it.png"}
+{"_id": "country.JP", "_type": "country", "name": "Japan", "code": "JP", "flagUrl": "https://flagcdn.com/h120/jp.png", "flagIconUrl": "https://flagcdn.com/h24/jp.png"}
+{"_id": "country.KR", "_type": "country", "name": "South Korea", "code": "KR", "flagUrl": "https://flagcdn.com/h120/kr.png", "flagIconUrl": "https://flagcdn.com/h24/kr.png"}
+{"_id": "country.VN", "_type": "country", "name": "Vietnam", "code": "VN", "flagUrl": "https://flagcdn.com/h120/vn.png", "flagIconUrl": "https://flagcdn.com/h24/vn.png"}
+{"_id": "country.TH", "_type": "country", "name": "Thailand", "code": "TH", "flagUrl": "https://flagcdn.com/h120/th.png", "flagIconUrl": "https://flagcdn.com/h24/th.png"}
+{"_id": "country.MY", "_type": "country", "name": "Malaysia", "code": "MY", "flagUrl": "https://flagcdn.com/h120/my.png", "flagIconUrl": "https://flagcdn.com/h24/my.png"}
+{"_id": "country.IN", "_type": "country", "name": "India", "code": "IN", "flagUrl": "https://flagcdn.com/h120/in.png", "flagIconUrl": "https://flagcdn.com/h24/in.png"}
+{"_id": "country.BR", "_type": "country", "name": "Brazil", "code": "BR", "flagUrl": "https://flagcdn.com/h120/br.png", "flagIconUrl": "https://flagcdn.com/h24/br.png"} 

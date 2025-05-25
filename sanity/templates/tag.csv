@@ -1,0 +1,20 @@
+name,type,description
+Electronics,product_category,Electronic devices and components
+Textiles,product_category
+Automobiles,product_category,Cars and automotive parts
+Manufacturing,industry,Manufacturing sector products
+Consumer Goods,industry
+USA,country
+China,country,Products from or affected by China
+Premium,attribute
+Budget,attribute
+Cell Phones & Accessories,product_category
+Laptops,product_category
+Wearables,product_category
+Apple,attribute
+On Sale,attribute
+United States,country
+South Korea,country
+Electronics,industry
+Automotive,industry
+Agriculture,industry 

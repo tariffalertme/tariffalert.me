@@ -1,0 +1,86 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Quick Change Commands
+
+Use these commands in your messages to trigger specific behaviors:
+
+## Simple Commands
+- `!change` - Start a change process
+- `!verify` - Run verification checks
+- `!rollback` - Generate rollback plan
+- `!docs` - Update documentation
+
+## Combined Commands
+- `!change+verify` - Make change and verify
+- `!full` - Complete process (change+verify+docs)
+
+## Examples
+```typescript
+// Example usage in chat:
+"!change Update TariffMetric loading state"
+"!verify TariffMetric changes"
+"!full Add error handling to TariffMetric"
+```
+
+## Template Structure
+When using !change or !full, include:
+
+```markdown
+!change Component Name
+---
+SCOPE:
+- What's being changed
+- Files affected
+
+CHANGES:
+- [ ] Change 1
+- [ ] Change 2
+
+RISKS:
+- Potential issues
+- Breaking changes
+
+VERIFICATION:
+- [ ] Test case 1
+- [ ] Test case 2
+```
+
+## Quick Reference
+- Add `+backup` to any command to create backups
+- Add `+docs` to auto-update documentation
+- Add `+test` to include test cases
+- Add `+deps` to check dependencies
+
+## Examples with Context
+```markdown
+!full TariffMetric
+---
+SCOPE:
+- Add loading state
+- components/features/TariffMetric.tsx
+
+CHANGES:
+- [ ] Add isLoading prop
+- [ ] Add skeleton UI
+- [ ] Update types
+
+RISKS:
+- Breaking: New required prop
+- Existing implementations need update
+
+VERIFICATION:
+- [ ] Test loading state
+- [ ] Verify existing uses
+```
+
+## Response Format
+The AI will:
+1. Acknowledge the command
+2. List planned changes
+3. Show verification steps
+4. Provide rollback plan
+5. Update documentation
+6. Create backups if requested

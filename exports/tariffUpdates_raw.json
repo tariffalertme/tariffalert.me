@@ -1,0 +1,161 @@
+[
+  {
+    "newRate": 25,
+    "affectedCategories": [
+      {
+        "_ref": "3abf556c-ed8c-491c-964b-675262070d1e",
+        "_key": "qfxIwmYzELPAMqkvXzjHpc"
+      }
+    ],
+    "history": null,
+    "_id": "drafts.tariff.20180706.us-cn-round1",
+    "imposingCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBk9j"
+    },
+    "impactedCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBkNu"
+    },
+    "effectiveDate": "2018-07-06",
+    "type": "new"
+  },
+  {
+    "imposingCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBk9j"
+    },
+    "impactedCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBkNu"
+    },
+    "effectiveDate": "2018-07-06",
+    "type": "new",
+    "newRate": 25,
+    "affectedCategories": [
+      {
+        "_ref": "3abf556c-ed8c-491c-964b-675262070d1e"
+      }
+    ],
+    "history": null,
+    "_id": "tariff.20180706.us-cn-round1"
+  },
+  {
+    "impactedCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBkNu"
+    },
+    "effectiveDate": "2018-08-23",
+    "type": "modification",
+    "newRate": 25,
+    "affectedCategories": [
+      {
+        "_ref": "3abf556c-ed8c-491c-964b-675262070d1e"
+      }
+    ],
+    "history": null,
+    "_id": "tariff.20180823.us-cn-round2",
+    "imposingCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBk9j"
+    }
+  },
+  {
+    "affectedCategories": [
+      {
+        "_ref": "3abf556c-ed8c-491c-964b-675262070d1e"
+      }
+    ],
+    "history": null,
+    "_id": "tariff.20180924.us-cn-round3",
+    "imposingCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBk9j"
+    },
+    "impactedCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBkNu"
+    },
+    "effectiveDate": "2018-09-24",
+    "type": "modification",
+    "newRate": 10
+  },
+  {
+    "impactedCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBkNu"
+    },
+    "effectiveDate": "2019-05-10",
+    "type": "modification",
+    "newRate": 25,
+    "affectedCategories": [
+      {
+        "_ref": "3abf556c-ed8c-491c-964b-675262070d1e"
+      }
+    ],
+    "history": null,
+    "_id": "tariff.20190510.us-cn-round3-hike",
+    "imposingCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBk9j"
+    }
+  },
+  {
+    "impactedCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBkNu"
+    },
+    "effectiveDate": "2019-09-01",
+    "type": "modification",
+    "newRate": 15,
+    "affectedCategories": [
+      {
+        "_ref": "3abf556c-ed8c-491c-964b-675262070d1e"
+      }
+    ],
+    "history": null,
+    "_id": "tariff.20190901.us-cn-round4",
+    "imposingCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBk9j"
+    }
+  },
+  {
+    "newRate": 7.5,
+    "affectedCategories": [
+      {
+        "_ref": "3abf556c-ed8c-491c-964b-675262070d1e"
+      }
+    ],
+    "history": null,
+    "_id": "tariff.20200214.us-cn-phase1",
+    "imposingCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBk9j"
+    },
+    "impactedCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBkNu"
+    },
+    "effectiveDate": "2020-02-14",
+    "type": "modification"
+  },
+  {
+    "newRate": 0,
+    "affectedCategories": [],
+    "history": null,
+    "_id": "tariff.20250410.us-eu-delay.DE",
+    "imposingCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBk9j"
+    },
+    "impactedCountry": {
+      "_ref": "country.DE"
+    },
+    "effectiveDate": "2025-04-10",
+    "type": "modification"
+  },
+  {
+    "impactedCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBkNu"
+    },
+    "effectiveDate": "2025-04-11",
+    "type": "modification",
+    "newRate": 145,
+    "affectedCategories": [
+      {
+        "_ref": "3abf556c-ed8c-491c-964b-675262070d1e"
+      }
+    ],
+    "history": null,
+    "_id": "tariff.20250411.us-cn-hike",
+    "imposingCountry": {
+      "_ref": "KC6KRTtNL6jVBSHZqXBk9j"
+    }
+  }
+]

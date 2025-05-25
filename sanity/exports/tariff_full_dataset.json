@@ -1,0 +1,232 @@
+{
+  "countries": [
+    {
+      "_id": "country.US",
+      "name": "United States",
+      "code": "US",
+      "flagUrl": "https://flagcdn.com/h120/us.png",
+      "flagIconUrl": "https://flagcdn.com/h24/us.png"
+    },
+    {
+      "_id": "country.CN",
+      "name": "China",
+      "code": "CN",
+      "flagUrl": "https://flagcdn.com/h120/cn.png",
+      "flagIconUrl": "https://flagcdn.com/h24/cn.png"
+    },
+    {
+      "_id": "country.DE",
+      "name": "Germany",
+      "code": "DE",
+      "flagUrl": "https://flagcdn.com/h120/de.png",
+      "flagIconUrl": "https://flagcdn.com/h24/de.png"
+    },
+    {
+      "_id": "country.FR",
+      "name": "France",
+      "code": "FR",
+      "flagUrl": "https://flagcdn.com/h120/fr.png",
+      "flagIconUrl": "https://flagcdn.com/h24/fr.png"
+    },
+    {
+      "_id": "country.IT",
+      "name": "Italy",
+      "code": "IT",
+      "flagUrl": "https://flagcdn.com/h120/it.png",
+      "flagIconUrl": "https://flagcdn.com/h24/it.png"
+    },
+    {
+      "_id": "country.JP",
+      "name": "Japan",
+      "code": "JP",
+      "flagUrl": "https://flagcdn.com/h120/jp.png",
+      "flagIconUrl": "https://flagcdn.com/h24/jp.png"
+    },
+    {
+      "_id": "country.KR",
+      "name": "South Korea",
+      "code": "KR",
+      "flagUrl": "https://flagcdn.com/h120/kr.png",
+      "flagIconUrl": "https://flagcdn.com/h24/kr.png"
+    },
+    {
+      "_id": "country.VN",
+      "name": "Vietnam",
+      "code": "VN",
+      "flagUrl": "https://flagcdn.com/h120/vn.png",
+      "flagIconUrl": "https://flagcdn.com/h24/vn.png"
+    },
+    {
+      "_id": "country.TH",
+      "name": "Thailand",
+      "code": "TH",
+      "flagUrl": "https://flagcdn.com/h120/th.png",
+      "flagIconUrl": "https://flagcdn.com/h24/th.png"
+    },
+    {
+      "_id": "country.MY",
+      "name": "Malaysia",
+      "code": "MY",
+      "flagUrl": "https://flagcdn.com/h120/my.png",
+      "flagIconUrl": "https://flagcdn.com/h24/my.png"
+    },
+    {
+      "_id": "country.IN",
+      "name": "India",
+      "code": "IN",
+      "flagUrl": "https://flagcdn.com/h120/in.png",
+      "flagIconUrl": "https://flagcdn.com/h24/in.png"
+    },
+    {
+      "_id": "country.BR",
+      "name": "Brazil",
+      "code": "BR",
+      "flagUrl": "https://flagcdn.com/h120/br.png",
+      "flagIconUrl": "https://flagcdn.com/h24/br.png"
+    }
+  ],
+  "tags": [
+    {
+      "_id": "3abf556c-ed8c-491c-964b-675262070d1e",
+      "name": "Electronics",
+      "type": "product_category"
+    },
+    {
+      "_id": "e3b22fc4-8bf1-44b6-9acc-81b034b4c195",
+      "name": "Electronics Industry",
+      "type": "industry"
+    },
+    {
+      "_id": "41e9f325-baf2-4320-bbe8-d645343af187",
+      "name": "Medications",
+      "type": "product_category"
+    },
+    {
+      "_id": "cfd60cfc-e9c6-47b9-b69f-31c1d050d51d",
+      "name": "Pharmaceuticals",
+      "type": "industry"
+    },
+    {
+      "_id": "f0937c3f-f22b-447a-9cd5-086a6fcff6e0",
+      "name": "Cell Phones & Accessories",
+      "type": "product_category"
+    },
+    {
+      "_id": "11111111-aaaa-bbbb-cccc-222222222222",
+      "name": "Samsung",
+      "type": "attribute"
+    },
+    {
+      "_id": "33333333-aaaa-bbbb-cccc-444444444444",
+      "name": "Braun",
+      "type": "attribute"
+    },
+    {
+      "_id": "55555555-aaaa-bbbb-cccc-666666666666",
+      "name": "Dualit",
+      "type": "attribute"
+    },
+    {
+      "_id": "77777777-aaaa-bbbb-cccc-888888888888",
+      "name": "Luxury Goods",
+      "type": "product_category"
+    },
+    {
+      "_id": "99999999-aaaa-bbbb-cccc-000000000000",
+      "name": "Generic Drugs",
+      "type": "product_category"
+    }
+  ],
+  "tariffUpdates": [
+    {
+      "_id": "tariff.20250410.us-eu-delay.DE",
+      "imposingCountry": {
+        "_id": "KC6KRTtNL6jVBSHZqXBk9j"
+      },
+      "impactedCountry": {
+        "_id": "country.DE"
+      },
+      "effectiveDate": "2025-04-10",
+      "type": "modification",
+      "newRate": 0,
+      "affectedCategories": []
+    },
+    {
+      "_id": "tariff.20250411.us-cn-hike",
+      "imposingCountry": {
+        "_id": "KC6KRTtNL6jVBSHZqXBk9j"
+      },
+      "impactedCountry": {
+        "_id": "KC6KRTtNL6jVBSHZqXBkNu"
+      },
+      "effectiveDate": "2025-04-11",
+      "type": "modification",
+      "newRate": 145,
+      "affectedCategories": [
+        {
+          "_id": "3abf556c-ed8c-491c-964b-675262070d1e"
+        },
+        {
+          "_id": "aeb89943-99b1-499e-b287-fd800b229c03"
+        }
+      ]
+    }
+  ],
+  "products": [
+    {
+      "_id": "prod.0001",
+      "name": "Apple AirTag (4-Pack)",
+      "affiliateUrl": "https://amzn.to/airtag4pack",
+      "productCategories": [
+        {
+          "_ref": "f0937c3f-f22b-447a-9cd5-086a6fcff6e0"
+        }
+      ],
+      "attributes": [],
+      "relatedTariffUpdates": [
+        {
+          "_ref": "tariff.20250411.us-cn-hike"
+        }
+      ]
+    },
+    {
+      "_id": "prod.0002",
+      "name": "Anker 733 Power Bank",
+      "affiliateUrl": "https://amzn.to/anker733",
+      "productCategories": [
+        {
+          "_ref": "3abf556c-ed8c-491c-964b-675262070d1e"
+        }
+      ],
+      "attributes": [],
+      "relatedTariffUpdates": [
+        {
+          "_ref": "tariff.20250411.us-cn-hike"
+        }
+      ]
+    },
+    {
+      "_id": "prod.0003",
+      "name": "Braun Series 9 Electric Shaver",
+      "affiliateUrl": "https://amzn.to/braunseries9",
+      "productCategories": [
+        {
+          "_ref": "3abf556c-ed8c-491c-964b-675262070d1e"
+        },
+        {
+          "_ref": "77777777-aaaa-bbbb-cccc-888888888888"
+        }
+      ],
+      "attributes": [
+        {
+          "_ref": "33333333-aaaa-bbbb-cccc-444444444444"
+        }
+      ],
+      "relatedTariffUpdates": [
+        {
+          "_ref": "tariff.20250428.eu-us-hike"
+        }
+      ]
+    }
+  ]
+}

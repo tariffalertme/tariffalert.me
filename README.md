@@ -572,7 +572,7 @@ Can you show me the complexity report in a more readable format?
 
 # TariffAlert.me
 
-A real-time tariff monitoring and alert system that helps users stay informed about international trade policies and tariff changes.
+A web platform that helps consumers stay informed about tariff changes and their impact on product prices.
 
 ## Project Overview
 
@@ -619,3 +619,47 @@ Contributions are welcome! Please read our contributing guidelines before submit
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Component Tracking System
+
+To maintain code quality and prevent accidental modifications, we use a strict component tracking system:
+
+### 1. Completed Components Registry
+- Located in `.cursor/rules/completed_components.mdc`
+- Lists all completed and verified components
+- Includes component paths, features, and dependencies
+- Components listed here should NOT be modified without explicit permission
+
+### 2. Component Status Tracking
+- Located in `tasks/component_status.json`
+- Tracks the status of all components:
+  - `completed`: Fully implemented and tested
+  - `in_progress`: Currently being worked on
+  - `pending`: Not yet started
+- Includes test status and documentation status
+- Lists component dependencies
+
+### 3. Modification Guidelines
+- Get explicit permission before modifying completed components
+- Document all changes in CHANGELOG.md
+- Update component status after modifications
+- Run full test suite before marking as complete
+
+### 4. Current Component Status
+
+#### Completed Components ✅
+- Header (`app/components/layout/Header.tsx`)
+- Twitter Feed (`app/components/layout/TwitterFeed.tsx`)
+- Footer (`app/components/layout/Footer.tsx`)
+- Breaking News Carousel (`app/components/home/BreakingNewsCarousel.tsx`)
+- Country Impact Analysis (`app/components/analysis/CountryImpactAnalysis.tsx`)
+
+#### In Progress Components 🚧
+- Home Page (`app/page.tsx`)
+- Product Showcase (`app/components/home/ProductShowcase.tsx`)
+
+#### Pending Components ⏳
+- News Page (`app/news/page.tsx`)
+- Products Page (`app/products/page.tsx`)
+- Countries Page (`app/countries/page.tsx`)
+- About Page (`app/about/page.tsx`)

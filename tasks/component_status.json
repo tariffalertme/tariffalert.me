@@ -1,0 +1,84 @@
+{
+  "lastUpdated": "2024-03-14",
+  "components": {
+    "layout": {
+      "Header": {
+        "status": "completed",
+        "path": "app/components/layout/Header.tsx",
+        "lastVerified": "2024-03-14",
+        "tests": true,
+        "documentation": true,
+        "dependencies": ["next/link", "lucide-react"]
+      },
+      "TwitterFeed": {
+        "status": "completed",
+        "path": "app/components/layout/TwitterFeed.tsx",
+        "lastVerified": "2024-03-14",
+        "tests": true,
+        "documentation": true,
+        "dependencies": ["twitter-api-v2"]
+      },
+      "Footer": {
+        "status": "completed",
+        "path": "app/components/layout/Footer.tsx",
+        "lastVerified": "2024-03-14",
+        "tests": true,
+        "documentation": true,
+        "dependencies": ["next/link"]
+      }
+    },
+    "home": {
+      "BreakingNewsCarousel": {
+        "status": "completed",
+        "path": "app/components/home/BreakingNewsCarousel.tsx",
+        "lastVerified": "2024-03-14",
+        "tests": true,
+        "documentation": true,
+        "dependencies": ["next-sanity", "react-query"]
+      },
+      "ProductShowcase": {
+        "status": "pending",
+        "path": "app/components/home/ProductShowcase.tsx",
+        "dependencies": ["next-sanity", "react-query"]
+      }
+    },
+    "analysis": {
+      "CountryImpactAnalysis": {
+        "status": "completed",
+        "path": "app/components/analysis/CountryImpactAnalysis.tsx",
+        "lastVerified": "2024-03-14",
+        "tests": true,
+        "documentation": true,
+        "dependencies": ["chart.js", "react-chartjs-2"]
+      }
+    },
+    "pages": {
+      "Home": {
+        "status": "in_progress",
+        "path": "app/page.tsx",
+        "dependencies": [
+          "BreakingNewsCarousel",
+          "TwitterFeed",
+          "ProductShowcase",
+          "CountryImpactAnalysis"
+        ]
+      },
+      "News": {
+        "status": "pending",
+        "path": "app/news/page.tsx"
+      },
+      "Products": {
+        "status": "pending",
+        "path": "app/products/page.tsx"
+      },
+      "Countries": {
+        "status": "pending",
+        "path": "app/countries/page.tsx"
+      },
+      "About": {
+        "status": "completed",
+        "path": "app/about/page.tsx"
+      }
+    }
+  }
+} 

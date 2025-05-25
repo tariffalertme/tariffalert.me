@@ -1,0 +1,3 @@
+imposing_country_ref,impacted_country_ref,effective_date,type,affected_categories,new_rate,history_dates,history_rates,history_notes,details
+"8257b533-b22c-43d7-b51d-53eea9ba7fb8","5ce39ed5-8aad-4568-96de-847593b8481f","2024-06-01","new","Electronics,Cell Phones & Accessories",25,"2024-03-20,2024-06-01","20,25","Initial announcement,Rate effective","[{\"_type\":\"block\",\"children\":[{\"_type\":\"span\",\"text\":\"New tariffs on electronics imports\"}]}]"
+"5ce39ed5-8aad-4568-96de-847593b8481f","8257b533-b22c-43d7-b51d-53eea9ba7fb8","2024-07-01","modification","Electronics",30,"2024-06-15","30","Rate increase","[{\"_type\":\"block\",\"children\":[{\"_type\":\"span\",\"text\":\"Increased tariffs in response\"}]}]" 

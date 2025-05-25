@@ -1,0 +1,88 @@
+{
+  "components": {
+    "TariffNewsFeed": {
+      "status": "failed",
+      "issues": [
+        "Missing 'use client' directive",
+        "Unchecked React hooks usage",
+        "No build verification"
+      ],
+      "requirements": {
+        "client_side": true,
+        "data_fetching": true,
+        "state_management": true
+      },
+      "dependencies": [],
+      "checklist": {
+        "classification": false,
+        "build_verified": false,
+        "tests_added": false,
+        "documentation": false
+      }
+    },
+    "Auth": {
+      "status": "needs_review",
+      "issues": [
+        "Client/server classification needed",
+        "Build verification required"
+      ],
+      "requirements": {
+        "client_side": true,
+        "authentication": true,
+        "state_management": true
+      },
+      "dependencies": [],
+      "checklist": {
+        "classification": false,
+        "build_verified": false,
+        "tests_added": false,
+        "documentation": false
+      }
+    },
+    "CountryImpactAnalysis": {
+      "status": "needs_review",
+      "issues": [
+        "Client/server classification needed",
+        "Data fetching strategy undefined"
+      ],
+      "requirements": {
+        "data_visualization": true,
+        "real_time_updates": false,
+        "static_rendering": true
+      },
+      "dependencies": [],
+      "checklist": {
+        "classification": false,
+        "build_verified": false,
+        "tests_added": false,
+        "documentation": false
+      }
+    }
+  },
+  "global_tasks": [
+    {
+      "id": "setup-001",
+      "title": "Setup Next.js component guidelines",
+      "status": "in_progress",
+      "priority": "high",
+      "checklist": [
+        "Create component classification guide",
+        "Setup build verification process",
+        "Document testing requirements",
+        "Create component templates"
+      ]
+    },
+    {
+      "id": "verify-001",
+      "title": "Verify all existing components",
+      "status": "pending",
+      "priority": "high",
+      "checklist": [
+        "Audit client/server requirements",
+        "Check build process",
+        "Update component documentation",
+        "Add missing tests"
+      ]
+    }
+  ]
+} 

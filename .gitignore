@@ -34,6 +34,9 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.development
+.env.test
+.env.production
 
 # vercel
 .vercel
@@ -72,3 +75,25 @@ Thumbs.db
 
 # Redis dump file
 dump.rdb
+
+# Sanity
+/sanity/dist
+.sanity
+*.sanity.cli.json
+
+# Environment
+.env.*
+!.env.example
+
+# Build
+/dist
+/build
+
+# Test coverage
+/coverage
+
+# Sanity
+/sanity/node_modules/
+/sanity/.env
+/sanity/.env.*
+/sanity/dist/

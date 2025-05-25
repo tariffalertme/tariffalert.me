@@ -1,0 +1,40 @@
+name,type
+"Outdoor Furniture",product_category
+"Canada",country
+"Apple",attribute
+"Laptops",product_category
+"Automotive Parts",product_category
+"Electronics",product_category
+"Automotive",industry
+"Medications",product_category
+"Books",product_category
+"United States",country
+"Brazil",country
+"Power Tools",product_category
+"Cars",product_category
+"China",country
+"United Arab Emirates",country
+"Agriculture",industry
+"Japan",country
+"On Sale",attribute
+"Furniture",product_category
+"Toys",product_category
+"Electrical Machinery and Equipment",industry
+"Fashion",product_category
+"Mexico",country
+"Apparel",industry
+"Kitchenware",product_category
+"South Korea",country
+"Apparel and Footwear",product_category
+"Pharmaceuticals",industry
+"Plastics",industry
+"Aluminum",industry
+"Semiconductor",industry
+"Wearables",product_category
+"Electronics",industry
+"Steel",industry
+"Cell Phones & Accessories",product_category
+"Energy",industry
+"Fertilizer",product_category
+"Home Goods",product_category
+"Cookware",product_category 
