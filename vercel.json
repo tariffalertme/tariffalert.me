@@ -30,6 +30,12 @@
     }
   ],
   "env": {
-    "NEXT_PUBLIC_SANITY_DATASET": "production"
+    "NEXT_PUBLIC_SANITY_DATASET": "production",
+    "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
+  },
+  "build": {
+    "env": {
+      "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
+    }
   }
 } 
