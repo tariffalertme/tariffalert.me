@@ -37,6 +37,7 @@
     "sanity/sanity/backups/20250418_163956_backup",
     "sanity/sanity/.DS_Store",
     "sanity/tariffalert/.DS_Store",
-    "sanity/.DS_Store"
+    "sanity/.DS_Store",
+    "scripts/populate-country-data.ts"
   ]
 }
