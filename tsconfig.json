@@ -29,6 +29,7 @@
     "sanity/sanity.cli.ts",
     "sanity/sanity.config.ts",
     "sanity/schemaTypes",
-    "sanity/schemas"
+    "sanity/schemas",
+    "sanity/tariffalert/sanity.cli.ts"
   ]
 }
