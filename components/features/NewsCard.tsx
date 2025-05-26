@@ -22,7 +22,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ article, highestRate, effectiveDate
     <article className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col">
       {article.mainImage?.url && (
         <Link href={`/news/${article.slug.current}`} className="block aspect-video relative">
-          <Image src={imageUrl} alt={imageAlt} layout="fill" objectFit="cover" priority={priority} />
+          <Image src={imageUrl} alt={imageAlt} fill priority={priority} style={{ objectFit: 'cover' }} />
         </Link>
       )}
       <div className="p-4 flex-grow flex flex-col justify-between">
