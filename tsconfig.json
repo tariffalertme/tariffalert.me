@@ -27,6 +27,8 @@
     ".next",
     "sanity/backups",
     "sanity/sanity.cli.ts",
-    "sanity/sanity.config.ts"
+    "sanity/sanity.config.ts",
+    "sanity/schemaTypes",
+    "sanity/schemas"
   ]
 }
