@@ -66,7 +66,19 @@ export default function TwitterFeed() {
         const res = await fetch('/api/twitter-feed')
         if (!res.ok) throw new Error('Failed to fetch tweets')
         const data = await res.json()
-        setTweets(data.length > 0 ? data : mockTweets)
+        // Map Twitter API response to expected tweet structure
+        const tweets = (data.tweets || []).map((t: any) => ({
+          id: t.id,
+          text: t.text,
+          author: {
+            name: t.author_id || 'Unknown',
+            handle: t.author_id || 'unknown',
+            image: '/placeholder-avatar.png', // Twitter API v2: need to map from includes.users
+            verified: false
+          },
+          created_at: t.created_at
+        }))
+        setTweets(tweets.length > 0 ? tweets : mockTweets)
       } catch (e: any) {
         setError('Could not load Twitter feed. Showing sample tweets.')
         setTweets(mockTweets)
