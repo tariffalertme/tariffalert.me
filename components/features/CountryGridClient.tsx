@@ -29,14 +29,21 @@ export default function CountryGridClient({ countries, showTitle = true, limit }
       setModalLoading(true)
       setSelectedCountry(country)
       setIsModalOpen(true)
-      const [products, historyData] = await Promise.all([
-        getProductsByCountry(country.code),
-        getCountryTariffHistory(country.code)
+      // Fetch from API routes instead of direct Sanity queries
+      const [productsRes, historyRes] = await Promise.all([
+        fetch(`/api/products-by-country?code=${encodeURIComponent(country.code)}`),
+        fetch(`/api/country-tariff-history?code=${encodeURIComponent(country.code)}`)
       ])
+      if (!productsRes.ok) throw new Error('Failed to fetch products')
+      if (!historyRes.ok) throw new Error('Failed to fetch tariff history')
+      const products = await productsRes.json()
+      const historyData = await historyRes.json()
       setSelectedCountryProducts(products)
       setSelectedCountryHistory(historyData)
     } catch (err) {
-      // Optionally handle error
+      console.error('Error loading country modal data:', err)
+      setSelectedCountryProducts([])
+      setSelectedCountryHistory([])
     } finally {
       setModalLoading(false)
     }
