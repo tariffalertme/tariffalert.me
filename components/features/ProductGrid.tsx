@@ -332,15 +332,16 @@ export default function ProductGrid({ products: initialProducts, showViewAll = t
                           const impactedCountryCodes = Array.from(new Set(product.relatedTariffUpdates.map(u => u.impactedCountry?.code).filter(Boolean)))
                           console.debug('Grid: countries array', countries)
                           console.debug('Grid: impactedCountryCodes', impactedCountryCodes)
-                          const impactedCountries = impactedCountryCodes.map(code => {
-                            if (!code) return undefined; // skip undefined codes
-                            const found = countries.find(c => c.code && code && c.code.toLowerCase() === code.toLowerCase())
-                            if (!found) {
-                              // Instead of just logging, render a fallback
-                              return { code, name: code, flagIconUrl: '', flagUrl: '', _id: code };
-                            }
-                            return found
-                          }).filter(Boolean)
+                          const impactedCountries = impactedCountryCodes
+                            .map(code => {
+                              if (!code) return undefined;
+                              const found = countries.find(c => c.code && code && c.code.toLowerCase() === code.toLowerCase());
+                              if (!found) {
+                                return { code, name: code, flagIconUrl: '', flagUrl: '', _id: code };
+                              }
+                              return found;
+                            })
+                            .filter((c): c is typeof countries[number] => !!c);
                           return latest ? (
                             <div className="mt-4">
                               <div className="flex items-center gap-2 text-sm text-gray-600">
