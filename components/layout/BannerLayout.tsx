@@ -9,10 +9,10 @@ interface BannerLayoutProps {
 export default function BannerLayout({ children }: BannerLayoutProps) {
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // @ts-ignore
+      // @ts-expect-error
       if (window.adsbygoogle) {
         try {
-          // @ts-ignore
+          // @ts-expect-error
           (window.adsbygoogle = window.adsbygoogle || []).push({});
         } catch (e) {}
       }
