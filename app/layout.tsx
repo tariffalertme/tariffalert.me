@@ -26,6 +26,14 @@ export default function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3704612965635562"
           crossOrigin="anonymous"
         ></script>
+        {/* Google Analytics (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KD9CZD16K"></script>
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-2KD9CZD16K');
+        ` }} />
       </head>
       <body className={inter.className}>
         <div className="flex flex-col min-h-screen">
