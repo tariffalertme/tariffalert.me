@@ -32,9 +32,18 @@ export default async function CountriesPage() {
 
   try {
     const countries = await getAllCountries()
-    
-    if (!countries || !Array.isArray(countries)) {
-      return <ErrorState message="Failed to fetch countries or invalid data format" />
+    if (!countries || !Array.isArray(countries) || countries.length === 0) {
+      console.warn('No country data available at build time.');
+      return (
+        <main className="min-h-screen">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-4">No country data available</h2>
+              <p className="text-gray-500">Please check your Sanity dataset and environment variables.</p>
+            </div>
+          </div>
+        </main>
+      )
     }
 
     return (

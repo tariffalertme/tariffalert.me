@@ -132,15 +132,22 @@ export default function DrilldownTable({ products, onRowClick }: DrilldownTableP
                           {product.relatedTariffUpdates?.map((update) => (
                             <div key={update._id} className="flex items-center space-x-4 text-sm">
                               <div className="flex items-center space-x-2">
-                                {update.country?.code && (
+                                {update.country?.code ? (
                                   <Image
                                     src={`https://flagcdn.com/24x18/${update.country.code.toLowerCase()}.png`}
-                                    alt={`${update.country.name} flag`}
+                                    alt={`${update.country.name || update.country.code} flag`}
                                     width={24}
                                     height={18}
                                     className="rounded-sm"
                                     unoptimized
+                                    onError={(e) => {
+                                      e.currentTarget.onerror = null;
+                                      e.currentTarget.src = '/images/placeholder-flag.png';
+                                      e.currentTarget.className += ' border-red-500';
+                                    }}
                                   />
+                                ) : (
+                                  <span className="inline-block h-6 w-6 bg-yellow-200 border border-yellow-500 rounded-sm text-xs flex items-center justify-center" title="Country not found">{update.country?.code || '??'}</span>
                                 )}
                                 <span className="font-medium">{update.country?.name}</span>
                               </div>

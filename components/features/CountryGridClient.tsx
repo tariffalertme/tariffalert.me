@@ -76,6 +76,11 @@ export default function CountryGridClient({ countries, showTitle = true, limit }
                     fill
                     className="object-contain"
                     unoptimized
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/images/placeholder-flag.png';
+                      e.currentTarget.className += ' border-red-500';
+                    }}
                   />
                 </div>
                 <div className="flex-1 flex flex-col justify-end">

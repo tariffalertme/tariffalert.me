@@ -334,9 +334,10 @@ export default function ProductGrid({ products: initialProducts, showViewAll = t
                           console.debug('Grid: impactedCountryCodes', impactedCountryCodes)
                           const impactedCountries = impactedCountryCodes.map(code => {
                             if (!code) return undefined; // skip undefined codes
-                            const found = countries.find(c => c.code.toLowerCase() === code.toLowerCase())
+                            const found = countries.find(c => c.code && code && c.code.toLowerCase() === code.toLowerCase())
                             if (!found) {
-                              console.warn('Grid: No country found for code', code, 'Available codes:', countries.map(c => c.code))
+                              // Instead of just logging, render a fallback
+                              return { code, name: code, flagIconUrl: '', flagUrl: '', _id: code };
                             }
                             return found
                           }).filter(Boolean)
@@ -349,13 +350,8 @@ export default function ProductGrid({ products: initialProducts, showViewAll = t
                                 {impactedCountries.length > 0 && (
                                   <span className="flex items-center gap-1 ml-2">
                                     {impactedCountries.map(countryObj => {
-                                      if (countryObj) {
+                                      if (countryObj.flagIconUrl || countryObj.flagUrl) {
                                         const flagUrl = countryObj.flagIconUrl || countryObj.flagUrl || ''
-                                        console.debug('Grid: Rendering flag', {
-                                          code: countryObj.code,
-                                          name: countryObj.name,
-                                          flagUrl
-                                        })
                                         return flagUrl ? (
                                           <img
                                             key={countryObj.code || Math.random()}
@@ -373,7 +369,8 @@ export default function ProductGrid({ products: initialProducts, showViewAll = t
                                           <span key={countryObj.code || Math.random()} className="inline-block h-6 w-6 bg-red-200 border border-red-500 rounded-sm" title="No flag available" />
                                         )
                                       } else {
-                                        return <span key={Math.random()} className="inline-block h-6 w-6 bg-gray-200 border border-gray-400 rounded-sm" title="No flag available" />
+                                        // Fallback for missing country
+                                        return <span key={countryObj.code || Math.random()} className="inline-block h-6 w-6 bg-yellow-200 border border-yellow-500 rounded-sm text-xs flex items-center justify-center" title="Country not found">{countryObj.code}</span>
                                       }
                                     })}
                                   </span>

@@ -28,6 +28,11 @@ export default function TestTariffMetric() {
     }
   ]
 
+  if (process.env.NODE_ENV === 'production') {
+    // Remove or disable this page in production
+    return null;
+  }
+
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-2xl font-bold mb-8">TariffMetric Component Test</h1>
