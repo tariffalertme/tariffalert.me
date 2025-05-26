@@ -183,6 +183,8 @@ export default function ProductGrid({ products: initialProducts, showViewAll = t
   // Helper to get country by code
   const getCountryByCode = (code: string) => countries.find(c => c.code === code)
 
+  console.log('ProductGrid countries:', countries);
+
   if (!Array.isArray(initialProducts)) {
     console.error('Products is not an array:', initialProducts)
     return null
@@ -337,11 +339,16 @@ export default function ProductGrid({ products: initialProducts, showViewAll = t
                               if (!code) return undefined;
                               const found = countries.find(c => c.code && code && c.code.toLowerCase() === code.toLowerCase());
                               if (!found) {
+                                console.warn('ProductGrid: No country found for code', code, 'Available codes:', countries.map(c => c.code));
                                 return { code, name: code, flagIconUrl: '', flagUrl: '', _id: code };
+                              }
+                              if (!found.flagIconUrl && !found.flagUrl) {
+                                console.warn('ProductGrid: Country found but missing flag URLs for code', code, found);
                               }
                               return found;
                             })
                             .filter((c): c is typeof countries[number] => !!c);
+                          console.log('ProductGrid impactedCountries:', impactedCountries);
                           return latest ? (
                             <div className="mt-4">
                               <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -351,9 +358,9 @@ export default function ProductGrid({ products: initialProducts, showViewAll = t
                                 {impactedCountries.length > 0 && (
                                   <span className="flex items-center gap-1 ml-2">
                                     {impactedCountries.map(countryObj => {
-                                      if (countryObj.flagIconUrl || countryObj.flagUrl) {
-                                        const flagUrl = countryObj.flagIconUrl || countryObj.flagUrl || ''
-                                        return flagUrl ? (
+                                      const flagUrl = countryObj.flagIconUrl || countryObj.flagUrl || '';
+                                      if (flagUrl) {
+                                        return (
                                           <img
                                             key={countryObj.code || Math.random()}
                                             src={flagUrl}
@@ -366,13 +373,10 @@ export default function ProductGrid({ products: initialProducts, showViewAll = t
                                               e.currentTarget.className += ' border-red-500';
                                             }}
                                           />
-                                        ) : (
-                                          <span key={countryObj.code || Math.random()} className="inline-block h-6 w-6 bg-red-200 border border-red-500 rounded-sm" title="No flag available" />
-                                        )
-                                      } else {
-                                        // Fallback for missing country
-                                        return <span key={countryObj.code || Math.random()} className="inline-block h-6 w-6 bg-yellow-200 border border-yellow-500 rounded-sm text-xs flex items-center justify-center" title="Country not found">{countryObj.code}</span>
+                                        );
                                       }
+                                      // Fallback for missing flag
+                                      return <span key={countryObj.code || Math.random()} className="inline-block h-6 w-6 bg-yellow-200 border border-yellow-500 rounded-sm text-xs flex items-center justify-center" title="Country not found or missing flag">{countryObj.code}</span>;
                                     })}
                                   </span>
                                 )}

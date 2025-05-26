@@ -83,14 +83,19 @@ export default function ProductModal({
   // Gather all unique impacted countries
   const impactedCountryCodes = Array.from(new Set(product.relatedTariffUpdates?.map(u => u.impactedCountry?.code).filter(Boolean)))
   console.debug('Modal: impactedCountryCodes', impactedCountryCodes)
+  console.log('ProductModal countries:', countries);
   const impactedCountries = impactedCountryCodes.map(code => {
     const found = countries.find(c => c.code && code && c.code.toLowerCase() === code.toLowerCase())
     if (!found) {
-      // Instead of just logging, render a fallback
+      console.warn('ProductModal: No country found for code', code, 'Available codes:', countries.map(c => c.code));
       return { code, name: code, flagIconUrl: '', flagUrl: '', _id: code };
+    }
+    if (!found.flagIconUrl && !found.flagUrl) {
+      console.warn('ProductModal: Country found but missing flag URLs for code', code, found);
     }
     return found
   }).filter(Boolean)
+  console.log('ProductModal impactedCountries:', impactedCountries);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -165,9 +170,9 @@ export default function ProductModal({
                 {impactedCountries.length > 0 && (
                   <span className="flex items-center gap-1 ml-3">
                     {impactedCountries.map(countryObj => {
-                      if (countryObj.flagIconUrl || countryObj.flagUrl) {
-                        const flagUrl = countryObj.flagIconUrl || countryObj.flagUrl || ''
-                        return flagUrl ? (
+                      const flagUrl = countryObj.flagIconUrl || countryObj.flagUrl || '';
+                      if (flagUrl) {
+                        return (
                           <img
                             key={countryObj.code}
                             src={flagUrl}
@@ -180,13 +185,10 @@ export default function ProductModal({
                               e.currentTarget.className += ' border-red-500';
                             }}
                           />
-                        ) : (
-                          <span key={countryObj.code} className="inline-block h-6 w-6 bg-red-200 border border-red-500 rounded-sm" title="No flag available" />
-                        )
-                      } else {
-                        // Fallback for missing country
-                        return <span key={countryObj.code} className="inline-block h-6 w-6 bg-yellow-200 border border-yellow-500 rounded-sm text-xs flex items-center justify-center" title="Country not found">{countryObj.code}</span>
+                        );
                       }
+                      // Fallback for missing flag
+                      return <span key={countryObj.code} className="inline-block h-6 w-6 bg-yellow-200 border border-yellow-500 rounded-sm text-xs flex items-center justify-center" title="Country not found or missing flag">{countryObj.code}</span>;
                     })}
                   </span>
                 )}

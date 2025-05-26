@@ -32,6 +32,8 @@ export default function DrilldownTable({ products, onRowClick }: DrilldownTableP
     return latestUpdate?.newRate || 0
   }
 
+  console.log('DrilldownTable products:', products);
+
   if (!products?.length) {
     return (
       <div className="text-center py-8 text-gray-500">
@@ -129,34 +131,41 @@ export default function DrilldownTable({ products, onRowClick }: DrilldownTableP
                       <div className="space-y-4">
                         <h4 className="text-sm font-medium text-gray-900">Tariff History</h4>
                         <div className="space-y-2">
-                          {product.relatedTariffUpdates?.map((update) => (
-                            <div key={update._id} className="flex items-center space-x-4 text-sm">
-                              <div className="flex items-center space-x-2">
-                                {update.country?.code ? (
-                                  <Image
-                                    src={`https://flagcdn.com/24x18/${update.country.code.toLowerCase()}.png`}
-                                    alt={`${update.country.name || update.country.code} flag`}
-                                    width={24}
-                                    height={18}
-                                    className="rounded-sm"
-                                    unoptimized
-                                    onError={(e) => {
-                                      e.currentTarget.onerror = null;
-                                      e.currentTarget.src = '/images/placeholder-flag.png';
-                                      e.currentTarget.className += ' border-red-500';
-                                    }}
-                                  />
-                                ) : (
-                                  <span className="inline-block h-6 w-6 bg-yellow-200 border border-yellow-500 rounded-sm text-xs flex items-center justify-center" title="Country not found">{update.country?.code || '??'}</span>
-                                )}
-                                <span className="font-medium">{update.country?.name}</span>
+                          {product.relatedTariffUpdates?.map((update) => {
+                            if (!update.country || !update.country.code) {
+                              console.warn('DrilldownTable: Missing country or code in update', update);
+                            }
+                            const flagUrl = update.country?.code ? `https://flagcdn.com/24x18/${update.country.code.toLowerCase()}.png` : '';
+                            return (
+                              <div key={update._id} className="flex items-center space-x-4 text-sm">
+                                <div className="flex items-center space-x-2">
+                                  {flagUrl ? (
+                                    <Image
+                                      src={flagUrl}
+                                      alt={`${update.country?.name || update.country?.code} flag`}
+                                      width={24}
+                                      height={18}
+                                      className="rounded-sm"
+                                      unoptimized
+                                      onError={(e) => {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = '/images/placeholder-flag.png';
+                                        e.currentTarget.className += ' border-red-500';
+                                        console.warn('DrilldownTable: Flag image failed to load for', update.country?.code);
+                                      }}
+                                    />
+                                  ) : (
+                                    <span className="inline-block h-6 w-6 bg-yellow-200 border border-yellow-500 rounded-sm text-xs flex items-center justify-center" title="Country not found or missing flag">{update.country?.code || '??'}</span>
+                                  )}
+                                  <span className="font-medium">{update.country?.name}</span>
+                                </div>
+                                <span className="text-gray-500">
+                                  {format(new Date(update.effectiveDate), 'MMM d, yyyy')}
+                                </span>
+                                <span className="font-medium text-blue-600">{update.newRate}%</span>
                               </div>
-                              <span className="text-gray-500">
-                                {format(new Date(update.effectiveDate), 'MMM d, yyyy')}
-                              </span>
-                              <span className="font-medium text-blue-600">{update.newRate}%</span>
-                            </div>
-                          ))}
+                            )
+                          })}
                         </div>
                       </div>
                     </td>

@@ -58,6 +58,14 @@ export default function CountryModal({
     ? [...new Set(historyData.map(h => h.countryName).filter(Boolean))]
     : []
 
+  console.log('CountryModal country:', country, 'products:', products, 'historyData:', historyData);
+  if (!products || products.length === 0) {
+    console.warn('CountryModal: No products found for country', country?.code);
+  }
+  if (!historyData || historyData.length === 0) {
+    console.warn('CountryModal: No tariff history found for country', country?.code);
+  }
+
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
@@ -138,6 +146,11 @@ export default function CountryModal({
                     {/* Products Carousel Section */}
                     <div className="mt-8">
                       <h4 className="text-lg font-medium mb-4">Products Imported From This Country</h4>
+                      {(!products || products.length === 0) && (
+                        <div className="p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 mb-4 rounded">
+                          <strong>No products found for this country.</strong> Please check your data source or try again later.
+                        </div>
+                      )}
                       {products.length === 0 ? (
                         <div className="text-gray-500 italic">No products found for this country.</div>
                       ) : (
@@ -227,6 +240,11 @@ export default function CountryModal({
                       <div>
                         <h4 className="text-sm font-medium text-gray-500 mb-2">Tariff Rate History</h4>
                         <div className="w-full min-h-[180px]">
+                          {(!historyData || historyData.length === 0) && (
+                            <div className="p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 mb-4 rounded">
+                              <strong>No valid tariff history data available.</strong> Please check your data source or try again later.
+                            </div>
+                          )}
                           {historyData && historyData.length > 0 ? (
                             <SparklineChart data={historyData} height={180} showTooltip />
                           ) : (
