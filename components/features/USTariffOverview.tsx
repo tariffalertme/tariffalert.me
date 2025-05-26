@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { RateHistoryPoint } from '@/lib/sanity/queries'
+import { RateHistoryPoint as BaseRateHistoryPoint } from '@/lib/sanity/queries'
 import { getCountryTariffHistory, getUSTariffImpactStats } from '@/lib/sanity/queries'
 import { ResponsiveContainer, LineChart, Line, Tooltip, YAxis, XAxis, Legend } from 'recharts'
 import { format } from 'date-fns'
@@ -30,6 +30,11 @@ const CHART_COLORS = [
   '#4f46e5', // indigo-600
   '#be123c', // rose-600
 ]
+
+// Extend RateHistoryPoint to include isFilled for chart logic
+interface RateHistoryPoint extends BaseRateHistoryPoint {
+  isFilled?: boolean;
+}
 
 export default function USTariffOverview() {
   const [tariffData, setTariffData] = useState<RateHistoryPoint[]>([])
@@ -106,7 +111,7 @@ export default function USTariffOverview() {
     const extendedData = allDates.map(date => {
       if (dataByDate[date]) {
         lastRate = dataByDate[date].rate
-        return { ...dataByDate[date] }
+        return { ...dataByDate[date], isFilled: false }
       } else if (lastRate !== null) {
         // Fill with last known rate
         return {
@@ -114,15 +119,21 @@ export default function USTariffOverview() {
           date,
           rate: lastRate,
           countryCode: code,
-          countryName: group.name
+          countryName: group.name,
+          isFilled: true
         }
       } else {
         return null
       }
     }).filter(Boolean)
+    // Split into real and filled segments for visual distinction
+    const realData = (extendedData as RateHistoryPoint[]).filter(pt => pt && !pt.isFilled)
+    const filledData = (extendedData as RateHistoryPoint[]).filter(pt => pt && pt.isFilled)
     return {
       ...group,
       data: extendedData,
+      realData,
+      filledData,
       color: CHART_COLORS[idx % CHART_COLORS.length]
     }
   })
@@ -136,10 +147,13 @@ export default function USTariffOverview() {
   // Custom tooltip with flag
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      // Only show real data points (not filled)
+      const realEntries = payload.filter((entry: any) => entry.payload && !entry.payload.isFilled)
+      if (!realEntries.length) return null
       return (
         <div className="bg-white px-3 py-2 shadow-lg rounded-lg border">
           <p className="font-medium mb-1">{format(new Date(label), 'MMM d, yyyy')}</p>
-          {payload.map((entry: any, index: number) => (
+          {realEntries.map((entry: any, index: number) => (
             <div key={index} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
               {entry.payload && entry.payload.countryCode && flagMap[entry.payload.countryCode] && (
@@ -222,11 +236,12 @@ export default function USTariffOverview() {
             />
             <Tooltip content={<CustomTooltip />} />
             {/* No <Legend /> */}
-            {extendedCountryGroups.map((group, index) => (
+            {extendedCountryGroups.map((group, index) => [
+              // Real data: solid line
               <Line
-                key={group.code}
+                key={group.code + '-real'}
                 type="monotone"
-                data={group.data}
+                data={group.realData}
                 name={group.name}
                 dataKey="rate"
                 stroke={group.color}
@@ -234,8 +249,21 @@ export default function USTariffOverview() {
                 dot={false}
                 activeDot={{ r: 4 }}
                 isAnimationActive={false}
+              />,
+              // Filled data: dashed line
+              <Line
+                key={group.code + '-filled'}
+                type="monotone"
+                data={group.filledData}
+                name={group.name}
+                dataKey="rate"
+                stroke={group.color}
+                strokeWidth={1.5}
+                dot={false}
+                isAnimationActive={false}
+                strokeDasharray="6 4"
               />
-            ))}
+            ])}
           </LineChart>
         </ResponsiveContainer>
         {/* Render flag icons at the end of each line, stacked vertically */}
