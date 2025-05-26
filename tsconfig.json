@@ -26,6 +26,7 @@
     "node_modules",
     ".next",
     "sanity/backups",
-    "sanity/sanity.cli.ts"
+    "sanity/sanity.cli.ts",
+    "sanity/sanity.config.ts"
   ]
 }
