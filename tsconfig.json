@@ -30,6 +30,13 @@
     "sanity/sanity.config.ts",
     "sanity/schemaTypes",
     "sanity/schemas",
-    "sanity/tariffalert/sanity.cli.ts"
+    "sanity/tariffalert/sanity.cli.ts",
+    "sanity/tariffalert/sanity.config.ts",
+    "sanity/tariffalert/schemaTypes",
+    "sanity/sanity/backups",
+    "sanity/sanity/backups/20250418_163956_backup",
+    "sanity/sanity/.DS_Store",
+    "sanity/tariffalert/.DS_Store",
+    "sanity/.DS_Store"
   ]
 }
