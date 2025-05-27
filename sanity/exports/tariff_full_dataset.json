@@ -83,6 +83,41 @@
       "code": "BR",
       "flagUrl": "https://flagcdn.com/h120/br.png",
       "flagIconUrl": "https://flagcdn.com/h24/br.png"
+    },
+    {
+      "_id": "country.MX",
+      "name": "Mexico",
+      "code": "MX",
+      "flagUrl": "https://flagcdn.com/h120/mx.png",
+      "flagIconUrl": "https://flagcdn.com/h24/mx.png"
+    },
+    {
+      "_id": "country.CA",
+      "name": "Canada",
+      "code": "CA",
+      "flagUrl": "https://flagcdn.com/h120/ca.png",
+      "flagIconUrl": "https://flagcdn.com/h24/ca.png"
+    },
+    {
+      "_id": "country.GB",
+      "name": "United Kingdom",
+      "code": "GB",
+      "flagUrl": "https://flagcdn.com/h120/gb.png",
+      "flagIconUrl": "https://flagcdn.com/h24/gb.png"
+    },
+    {
+      "_id": "country.RU",
+      "name": "Russia",
+      "code": "RU",
+      "flagUrl": "https://flagcdn.com/h120/ru.png",
+      "flagIconUrl": "https://flagcdn.com/h24/ru.png"
+    },
+    {
+      "_id": "country.TR",
+      "name": "Turkey",
+      "code": "TR",
+      "flagUrl": "https://flagcdn.com/h120/tr.png",
+      "flagIconUrl": "https://flagcdn.com/h24/tr.png"
     }
   ],
   "tags": [
