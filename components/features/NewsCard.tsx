@@ -14,14 +14,15 @@ interface NewsCardProps {
   priority?: boolean;
   highlight?: boolean;
   showLatestLabel?: boolean;
+  partial?: boolean;
 }
 
-const NewsCard: React.FC<NewsCardProps> = ({ article, highestRate, effectiveDate, priority, highlight, showLatestLabel }) => {
+const NewsCard: React.FC<NewsCardProps> = ({ article, highestRate, effectiveDate, priority, highlight, showLatestLabel, partial }) => {
   const imageUrl = article.mainImage?.url || '/images/placeholder-news.jpg';
   const imageAlt = article.mainImage?.alt || article.title;
 
   return (
-    <article className={`bg-white rounded-lg shadow-md overflow-hidden border flex flex-col ${highlight ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'}`}>
+    <article className={`bg-white rounded-lg shadow-md overflow-hidden border flex flex-col ${highlight ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'} ${partial ? 'opacity-60' : ''}`}>
       {article.mainImage?.url && (
         <Link href={`/news/${article.slug.current}`} className="block aspect-video relative">
           <Image src={imageUrl} alt={imageAlt} fill priority={priority} style={{ objectFit: 'cover' }} />
