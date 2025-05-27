@@ -12,17 +12,22 @@ interface NewsCardProps {
   highestRate?: number;
   effectiveDate?: string;
   priority?: boolean;
+  highlight?: boolean;
+  showLatestLabel?: boolean;
 }
 
-const NewsCard: React.FC<NewsCardProps> = ({ article, highestRate, effectiveDate, priority }) => {
+const NewsCard: React.FC<NewsCardProps> = ({ article, highestRate, effectiveDate, priority, highlight, showLatestLabel }) => {
   const imageUrl = article.mainImage?.url || '/images/placeholder-news.jpg';
   const imageAlt = article.mainImage?.alt || article.title;
 
   return (
-    <article className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col">
+    <article className={`bg-white rounded-lg shadow-md overflow-hidden border flex flex-col ${highlight ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'}`}>
       {article.mainImage?.url && (
         <Link href={`/news/${article.slug.current}`} className="block aspect-video relative">
           <Image src={imageUrl} alt={imageAlt} fill priority={priority} style={{ objectFit: 'cover' }} />
+          {showLatestLabel && (
+            <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded shadow">Latest Post</span>
+          )}
         </Link>
       )}
       <div className="p-4 flex-grow flex flex-col justify-between">

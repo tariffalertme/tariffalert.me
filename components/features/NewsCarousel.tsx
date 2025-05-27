@@ -34,11 +34,19 @@ export default function NewsCarousel({ latestNews, containerClassName }: NewsCar
     <div className={`relative ${containerClassName ?? ''}`}>
       <div className="overflow-x-auto" ref={emblaRef}>
         <div className="flex justify-start" style={{ gap: '1rem' }}>
-          {latestNews.map((article, idx) => (
-            <div key={article._id} className="min-w-0 flex-[0_0_100%] max-w-[100%] sm:flex-[0_0_50%] sm:max-w-[50%] lg:flex-[0_0_auto] lg:max-w-none lg:w-[320px]">
-              <NewsCard article={article} priority={idx === 0} />
-            </div>
-          ))}
+          {latestNews.map((article, idx) => {
+            // Center (latest) is idx 0, left are idx > 0, right are idx < 0
+            const isLatest = idx === 0;
+            const isLeft = idx > 0;
+            return (
+              <div
+                key={article._id}
+                className={`min-w-0 flex-[0_0_100%] max-w-[100%] sm:flex-[0_0_50%] sm:max-w-[50%] lg:flex-[0_0_auto] lg:max-w-none lg:w-[320px] ${isLeft ? 'opacity-60' : ''}`}
+              >
+                <NewsCard article={article} priority={isLatest} highlight={isLatest} showLatestLabel={isLatest} />
+              </div>
+            );
+          })}
         </div>
       </div>
       {/* Carousel Controls */}
