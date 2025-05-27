@@ -9,10 +9,10 @@ interface BannerLayoutProps {
 export default function BannerLayout({ children }: BannerLayoutProps) {
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // @ts-expect-error
+      // @ts-expect-error: AdSense global may not be typed
       if (window.adsbygoogle) {
         try {
-          // @ts-expect-error
+          // @ts-expect-error: AdSense push method is not typed
           (window.adsbygoogle = window.adsbygoogle || []).push({});
         } catch (e) {}
       }
