@@ -104,7 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
     // Deduplicate by account (username), keep only the most recent tweet per account
     const seen = new Set()
-    tweets = tweets.filter((tweet) => {
+    tweets = tweets.filter((tweet: any) => {
       if (seen.has(tweet.author.handle)) return false
       seen.add(tweet.author.handle)
       return true
