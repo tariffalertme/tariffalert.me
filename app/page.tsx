@@ -30,9 +30,9 @@ export default async function Home() {
         </div>
         {/* Main Content */}
         <div>
-          <div className="mx-auto w-full px-4">
+          <div className="mx-auto w-full px-4 pt-24">
             {/* News Section */}
-            <div className="pt-4">
+            <div>
               <div className="px-4">
                 <h2 className="text-2xl font-bold text-gray-900 mb-8">Latest News</h2>
               </div>

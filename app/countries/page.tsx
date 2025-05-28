@@ -56,7 +56,7 @@ export default async function CountriesPage() {
           {/* Main Content */}
           <div>
             <BannerLayout>
-              <div className="w-full px-4 pt-4">
+              <div className="w-full px-4 pt-24">
                 <div className="mb-8">
                   <h1 className="text-3xl font-bold text-gray-900">Global Trade Impact</h1>
                   <p className="text-gray-600 mt-2">

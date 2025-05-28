@@ -50,7 +50,7 @@ export default async function AboutPage() {
 
   return (
     <main className="min-h-screen bg-white" role="main">
-      <section className="py-16 bg-gradient-to-b from-primary-50 to-white animate-fadeIn">
+      <section className="pt-24 pb-16 bg-gradient-to-b from-primary-50 to-white animate-fadeIn">
         <div className="container mx-auto px-4 max-w-3xl">
           <h1 className="text-4xl font-bold text-center text-primary-800 mb-8">
             {pageContent?.title || 'About TariffAlert.me'}
