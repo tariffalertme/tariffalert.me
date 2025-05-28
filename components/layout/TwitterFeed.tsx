@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import { formatDistanceToNowStrict, parseISO } from 'date-fns'
 
 // Mock data for initial development
 const mockTweets = [
@@ -66,19 +67,8 @@ export default function TwitterFeed() {
         const res = await fetch('/api/twitter-feed')
         if (!res.ok) throw new Error('Failed to fetch tweets')
         const data = await res.json()
-        // Map Twitter API response to expected tweet structure
-        const tweets = (data.tweets || []).map((t: any) => ({
-          id: t.id,
-          text: t.text,
-          author: {
-            name: t.author_id || 'Unknown',
-            handle: t.author_id || 'unknown',
-            image: '/placeholder-avatar.png', // Twitter API v2: need to map from includes.users
-            verified: false
-          },
-          created_at: t.created_at
-        }))
-        setTweets(tweets.length > 0 ? tweets : mockTweets)
+        // Use API structure directly
+        setTweets(data.tweets && data.tweets.length > 0 ? data.tweets : mockTweets)
       } catch (e: any) {
         setError('Could not load Twitter feed. Showing sample tweets.')
         setTweets(mockTweets)
@@ -142,38 +132,59 @@ export default function TwitterFeed() {
         ref={scrollRef}
         className="flex whitespace-nowrap py-1.5 overflow-x-hidden"
       >
-        {tweets.map((tweet, index) => (
-          <div
-            key={`${tweet.id || tweet.created_at}-${index}`}
-            className="inline-flex items-center space-x-2 px-4 min-w-max"
-          >
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 rounded-full overflow-hidden bg-gray-200">
-                <Image
-                  src={tweet.author?.image || '/placeholder-avatar.png'}
-                  alt={`${tweet.author?.name || tweet.handle}'s avatar`}
-                  width={24}
-                  height={24}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex items-center space-x-1.5">
-                <div className="flex items-center">
-                  <span className="font-bold text-gray-900 text-xs">{tweet.author?.name || tweet.handle}</span>
-                  {tweet.author?.verified && (
-                    <svg className="w-2.5 h-2.5 ml-0.5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z" />
-                    </svg>
-                  )}
+        {tweets.map((tweet, index) => {
+          // Compute relative time
+          let relTime = ''
+          if (tweet.created_at) {
+            try {
+              relTime = formatDistanceToNowStrict(parseISO(tweet.created_at), { addSuffix: true })
+            } catch {}
+          }
+          // Badge icon
+          let badgeIcon = null
+          if (tweet.author?.badge === 'blue') {
+            badgeIcon = (
+              <svg className="w-3 h-3 ml-1 text-blue-500 inline" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path fill="#fff" d="M10.5 15.5l-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4z"/></svg>
+            )
+          } else if (tweet.author?.badge === 'yellow') {
+            badgeIcon = (
+              <svg className="w-3 h-3 ml-1 text-yellow-400 inline" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path fill="#fff" d="M10.5 15.5l-3-3 1.4-1.4 1.6 1.6 3.6-3.6 1.4 1.4z"/></svg>
+            )
+          }
+          return (
+            <a
+              key={`${tweet.id || tweet.created_at}-${index}`}
+              href={tweet.url || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-start space-x-2 px-4 min-w-[380px] max-w-sm py-2 bg-white rounded-lg shadow border border-gray-100 mx-2 hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+              style={{ height: 'auto', alignSelf: 'flex-start', textDecoration: 'none' }}
+              aria-label={`View tweet by @${tweet.author?.handle}`}
+            >
+              <div className="flex flex-col items-center pt-1">
+                <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200">
+                  <Image
+                    src={tweet.author?.image || '/placeholder-avatar.png'}
+                    alt={`${tweet.author?.name || tweet.handle}'s avatar`}
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <span className="text-gray-500 text-xs">@{tweet.author?.handle || tweet.handle}</span>
-                <span className="text-gray-500 text-xs">·</span>
-                <span className="text-gray-500 text-xs">{tweet.timestamp || (tweet.created_at ? new Date(tweet.created_at).toLocaleString() : '')}</span>
               </div>
-            </div>
-            <p className="text-gray-800 text-xs">{tweet.text}</p>
-          </div>
-        ))}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-1.5 mb-0.5">
+                  <span className="font-bold text-gray-900 text-xs truncate">{tweet.author?.name || tweet.handle}</span>
+                  {badgeIcon}
+                  <span className="text-gray-500 text-xs truncate">@{tweet.author?.handle || tweet.handle}</span>
+                  <span className="text-gray-400 text-xs">·</span>
+                  <span className="text-gray-500 text-xs truncate">{relTime || tweet.timestamp || (tweet.created_at ? new Date(tweet.created_at).toLocaleString() : '')}</span>
+                </div>
+                <p className="text-gray-800 text-sm whitespace-pre-line break-words leading-snug line-clamp-3" style={{ wordBreak: 'break-word' }}>{tweet.text}</p>
+              </div>
+            </a>
+          )
+        })}
       </div>
     </div>
   )

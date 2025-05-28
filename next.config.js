@@ -17,6 +17,10 @@ const nextConfig = {
     minimumCacheTTL: 3600,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    domains: [
+      'pbs.twimg.com',
+      // add any other domains you use for images
+    ],
   },
   // Enable React strict mode for better development experience
   reactStrictMode: true,

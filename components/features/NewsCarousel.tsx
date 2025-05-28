@@ -16,14 +16,16 @@ export default function NewsCarousel({ latestNews, containerClassName }: NewsCar
 
   useEffect(() => {
     if (!emblaApi) return
-    const onSelect = () => {
+    const onSlidesInView = () => {
       if (!emblaApi) return
-      setVisibleSlides(emblaApi.slidesInView(true))
+      const inView = emblaApi.slidesInView()
+      setVisibleSlides(inView.length === 0 ? [0] : inView)
     }
-    emblaApi.on('select', onSelect)
-    onSelect()
+    emblaApi.on('slidesInView', onSlidesInView)
+    // Fallback: set initial state on mount
+    onSlidesInView()
     return () => {
-      if (emblaApi) emblaApi.off('select', onSelect)
+      if (emblaApi) emblaApi.off('slidesInView', onSlidesInView)
     }
   }, [emblaApi])
 
@@ -39,7 +41,7 @@ export default function NewsCarousel({ latestNews, containerClassName }: NewsCar
             return (
               <div
                 key={article._id}
-                className={`relative transition-transform duration-300 ${isLatest ? 'scale-110 z-10' : 'scale-100'} ${isPartial ? 'opacity-60' : 'opacity-100'} min-w-[22%] max-w-[22%] ${isFirst ? 'ml-6' : ''} ${isLast ? 'mr-6' : ''}`}
+                className={`relative transition-transform duration-300 ${isLatest ? 'scale-110 z-10' : 'scale-100'} ${isPartial ? 'opacity-60' : 'opacity-100'} min-w-full max-w-full sm:min-w-[50%] sm:max-w-[50%] md:min-w-[33%] md:max-w-[33%] lg:min-w-[22%] lg:max-w-[22%] ${isFirst ? 'ml-2 sm:ml-6' : ''} ${isLast ? 'mr-2 sm:mr-6' : ''}`}
               >
                 <NewsCard article={article} priority={isLatest} highlight={isLatest} showLatestLabel={isLatest} partial={isPartial} />
               </div>

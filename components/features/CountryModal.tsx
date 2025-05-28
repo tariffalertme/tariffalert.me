@@ -93,7 +93,8 @@ export default function CountryModal({
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl sm:p-6">
-                <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
+                {/* Close button: always visible, top right */}
+                <div className="absolute right-2 top-2 z-20">
                   <button
                     type="button"
                     className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -155,12 +156,12 @@ export default function CountryModal({
                         <div className="text-gray-500 italic">No products found for this country.</div>
                       ) : (
                         <div className="relative">
-                          <div className="overflow-hidden" ref={emblaRef}>
-                            <div className="flex" style={{ gap: '1rem' }}>
+                          <div className="overflow-x-auto" ref={emblaRef}>
+                            <div className="flex flex-nowrap" style={{ gap: '1rem' }}>
                               {products.map((product) => {
                                 const card = (
-                                  <div className="flex flex-col items-center border rounded-lg p-4 bg-white h-full">
-                                    <div className="relative h-24 w-24 mb-2">
+                                  <div className="flex-shrink-0 flex flex-col items-center border rounded-lg p-4 bg-white h-full w-32 sm:w-40 overflow-hidden">
+                                    <div className="relative h-20 w-20 sm:h-24 sm:w-24 mb-2 overflow-hidden">
                                       <Image
                                         src={product.image.asset.url}
                                         alt={product.name}
@@ -179,7 +180,7 @@ export default function CountryModal({
                                       href={product.affiliateUrl}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="min-w-0 flex-[0_0_25%] max-w-[25%] p-2"
+                                      className="flex-shrink-0 w-32 sm:w-40 p-2"
                                     >
                                       {card}
                                     </a>
@@ -189,7 +190,7 @@ export default function CountryModal({
                                     <Link
                                       key={product._id}
                                       href={`/products/${product.slug.current}`}
-                                      className="min-w-0 flex-[0_0_25%] max-w-[25%] p-2"
+                                      className="flex-shrink-0 w-32 sm:w-40 p-2"
                                     >
                                       {card}
                                     </Link>

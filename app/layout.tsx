@@ -39,6 +39,7 @@ export default function RootLayout({
             <TwitterFeed />
           </div>
           <main className="mt-32 flex-1">
+            {/* Add extra top padding so content is not hidden behind Twitter feed */}
             {children}
           </main>
           <Footer />
