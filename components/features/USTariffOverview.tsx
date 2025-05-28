@@ -104,8 +104,8 @@ export default function USTariffOverview() {
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
   // 4. Build the wide-format array
-  let lastRates: Record<string, number | null> = {};
-  let lastReal: Record<string, boolean> = {};
+  const lastRates: Record<string, number | null> = {};
+  const lastReal: Record<string, boolean> = {};
   countryCodes.forEach(code => { lastRates[code] = null; lastReal[code] = false; });
   const wideData = allDates.map(date => {
     const row: Record<string, any> = { date, real: {} };
