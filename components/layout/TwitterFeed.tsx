@@ -67,11 +67,32 @@ export default function TwitterFeed() {
         const res = await fetch('/api/twitter-feed')
         if (!res.ok) throw new Error('Failed to fetch tweets')
         const data = await res.json()
-        // Use API structure directly
-        setTweets(data.tweets && data.tweets.length > 0 ? data.tweets : mockTweets)
+        let newTweets = data.tweets && data.tweets.length > 0 ? data.tweets : mockTweets
+        // Merge with localStorage tweets, dedupe by id, keep 15 most recent
+        let cached = []
+        try {
+          cached = JSON.parse(localStorage.getItem('twitterFeedCache') || '[]')
+        } catch {}
+        const allTweets = [...newTweets, ...cached]
+        const seen = new Set()
+        const deduped = []
+        for (const t of allTweets) {
+          if (!seen.has(t.id)) {
+            deduped.push(t)
+            seen.add(t.id)
+          }
+          if (deduped.length >= 15) break
+        }
+        localStorage.setItem('twitterFeedCache', JSON.stringify(deduped))
+        setTweets(deduped)
       } catch (e: any) {
         setError('Could not load Twitter feed. Showing sample tweets.')
-        setTweets(mockTweets)
+        // Try to load from cache
+        let cached = []
+        try {
+          cached = JSON.parse(localStorage.getItem('twitterFeedCache') || '[]')
+        } catch {}
+        setTweets(cached.length ? cached : mockTweets)
       } finally {
         setLoading(false)
       }
@@ -86,7 +107,7 @@ export default function TwitterFeed() {
     let animationFrameId: number
     let lastTimestamp: number | null = null
     let lastScrollLeft: number = scrollContainer.scrollLeft
-    const scrollSpeed = 0.15 // px per ms (slower)
+    const scrollSpeed = 0.075 // px per ms (50% slower)
 
     const animate = (timestamp: number) => {
       if (!lastTimestamp) lastTimestamp = timestamp
@@ -100,10 +121,10 @@ export default function TwitterFeed() {
       const delta = timestamp - lastTimestamp
       lastTimestamp = timestamp
       scrollContainer.scrollLeft += scrollSpeed * delta
-      // If we've scrolled past the first full set, reset to start
+      // Infinite loop: if we've scrolled past the full set, reset to 0
       const listWidth = scrollContainer.scrollWidth / 2
       if (scrollContainer.scrollLeft >= listWidth) {
-        scrollContainer.scrollLeft -= listWidth
+        scrollContainer.scrollLeft = 0
       }
       animationFrameId = requestAnimationFrame(animate)
     }
