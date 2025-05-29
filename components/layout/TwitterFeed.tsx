@@ -86,7 +86,7 @@ export default function TwitterFeed() {
     let animationFrameId: number
     let lastTimestamp: number | null = null
     let lastScrollLeft: number = scrollContainer.scrollLeft
-    const scrollSpeed = 0.5 // px per ms
+    const scrollSpeed = 0.15 // px per ms (slower)
 
     const animate = (timestamp: number) => {
       if (!lastTimestamp) lastTimestamp = timestamp
@@ -113,6 +113,58 @@ export default function TwitterFeed() {
     }
   }, [isPaused, tweets])
 
+  // --- Drag and wheel scroll logic ---
+  const isDragging = useRef(false)
+  const dragStartX = useRef(0)
+  const dragStartScroll = useRef(0)
+
+  // Mouse events
+  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    isDragging.current = true
+    dragStartX.current = e.clientX
+    dragStartScroll.current = scrollRef.current?.scrollLeft || 0
+    setIsPaused(true)
+    document.body.style.cursor = 'grabbing'
+  }
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging.current || !scrollRef.current) return
+    const dx = e.clientX - dragStartX.current
+    scrollRef.current.scrollLeft = dragStartScroll.current - dx
+  }
+  const onMouseUp = () => {
+    if (isDragging.current) {
+      isDragging.current = false
+      setIsPaused(false)
+      document.body.style.cursor = ''
+    }
+  }
+  const onMouseLeave = () => {
+    if (isDragging.current) {
+      isDragging.current = false
+      setIsPaused(false)
+      document.body.style.cursor = ''
+    }
+  }
+  // Wheel event for horizontal scroll
+  const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (scrollRef.current) {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        scrollRef.current.scrollLeft += e.deltaX
+      } else if (e.shiftKey) {
+        scrollRef.current.scrollLeft += e.deltaY
+      }
+    }
+  }
+  // Attach mouseup to window for drag end outside
+  useEffect(() => {
+    window.addEventListener('mouseup', onMouseUp)
+    window.addEventListener('mouseleave', onMouseLeave)
+    return () => {
+      window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('mouseleave', onMouseLeave)
+    }
+  }, [])
+
   if (loading) {
     return (
       <div className="w-full bg-primary-50 border-y border-primary-100 overflow-hidden shadow-md sticky top-[64px] z-10 text-center py-2">
@@ -133,6 +185,12 @@ export default function TwitterFeed() {
       <div 
         ref={scrollRef}
         className="flex whitespace-nowrap py-1.5 overflow-x-hidden"
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseLeave}
+        onWheel={onWheel}
+        style={{ cursor: isDragging.current ? 'grabbing' : 'grab', userSelect: isDragging.current ? 'none' : 'auto' }}
       >
         {/* Duplicate the tweet list for seamless looping */}
         {[...tweets, ...tweets].map((tweet, index) => {
