@@ -326,9 +326,9 @@ export async function getProductsWithTariffs(limit?: number): Promise<Product[]>
   }
 }
 
-// Fetch a single product by ID with full details
-export async function getProductById(productId: string): Promise<Product> {
-  const query = groq`*[_type == "product" && _id == $productId][0] {
+// Fetch a single product by slug with full details
+export async function getProductById(slug: string): Promise<Product> {
+  const query = groq`*[_type == "product" && slug.current == $slug][0] {
     _id,
     name,
     "slug": { "current": slug.current },
@@ -367,12 +367,10 @@ export async function getProductById(productId: string): Promise<Product> {
     }
   }`
 
-  const product = await client.fetch(query, { productId })
-  
+  const product = await client.fetch(query, { slug })
   if (!product) {
     throw new Error('Product not found')
   }
-
   return product
 }
 
