@@ -84,28 +84,30 @@ export default function TwitterFeed() {
     if (!scrollContainer) return
 
     let animationFrameId: number
-    let startTime: number
+    let lastTimestamp: number | null = null
+    let lastScrollLeft: number = scrollContainer.scrollLeft
+    const scrollSpeed = 0.5 // px per ms
 
     const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp
-      if (!scrollContainer || isPaused) {
+      if (!lastTimestamp) lastTimestamp = timestamp
+      if (!scrollContainer) return
+      if (isPaused) {
+        lastTimestamp = timestamp
+        lastScrollLeft = scrollContainer.scrollLeft
         animationFrameId = requestAnimationFrame(animate)
         return
       }
-
-      const progress = timestamp - startTime
-      scrollContainer.scrollLeft = (progress * 0.05) % (scrollContainer.scrollWidth / 2)
-
-      if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-        startTime = timestamp
-        scrollContainer.scrollLeft = 0
+      const delta = timestamp - lastTimestamp
+      lastTimestamp = timestamp
+      scrollContainer.scrollLeft += scrollSpeed * delta
+      // If we've scrolled past the first full set, reset to start
+      const listWidth = scrollContainer.scrollWidth / 2
+      if (scrollContainer.scrollLeft >= listWidth) {
+        scrollContainer.scrollLeft -= listWidth
       }
-
       animationFrameId = requestAnimationFrame(animate)
     }
-
     animationFrameId = requestAnimationFrame(animate)
-
     return () => {
       cancelAnimationFrame(animationFrameId)
     }
@@ -132,7 +134,8 @@ export default function TwitterFeed() {
         ref={scrollRef}
         className="flex whitespace-nowrap py-1.5 overflow-x-hidden"
       >
-        {tweets.map((tweet, index) => {
+        {/* Duplicate the tweet list for seamless looping */}
+        {[...tweets, ...tweets].map((tweet, index) => {
           // Compute relative time
           let relTime = ''
           if (tweet.created_at) {

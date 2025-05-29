@@ -9,7 +9,7 @@ const ACCOUNTS = [
   'FoxNews',
   'DonaldJTrumpJr',
 ]
-const KEYWORDS = ['Tariff', '#Tariff', '#tariffs']
+const KEYWORDS = ['tariff', '#tariff', '#tariffs']
 const QUERY = `(${ACCOUNTS.map(a => `from:${a}`).join(' OR ')}) (${KEYWORDS.join(' OR ')})`
 const MAX_RESULTS = 10
 const CACHE_DURATION = 15 * 60 * 1000 // 15 minutes
@@ -102,6 +102,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         url: `https://x.com/${user.username}/status/${t.id}`,
       }
     })
+    // Filter tweets for required keywords (case-insensitive)
+    tweets = tweets.filter((tweet: any) => KEYWORDS.some(kw => tweet.text.toLowerCase().includes(kw)))
     // Deduplicate by account (username), keep only the most recent tweet per account
     const seen = new Set()
     tweets = tweets.filter((tweet: any) => {
@@ -114,7 +116,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (cache.tweets.length) {
         return res.status(200).json({ tweets: cache.tweets })
       }
-      return res.status(200).json({ tweets: MOCK_TWEETS })
+      // Filter mock tweets for keywords
+      const filteredMock = MOCK_TWEETS.filter(t => KEYWORDS.some(kw => t.text.toLowerCase().includes(kw)))
+      return res.status(200).json({ tweets: filteredMock })
     }
     cache = { tweets, timestamp: Date.now() }
     return res.status(200).json({ tweets })
