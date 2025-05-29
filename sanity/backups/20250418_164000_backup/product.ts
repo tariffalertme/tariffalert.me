@@ -19,7 +19,8 @@ export default defineType({
         source: 'name',
         maxLength: 96
       },
-      validation: (Rule) => Rule.required()
+      validation: (Rule) => Rule.required(),
+      readOnly: true
     }),
     defineField({
       name: 'description',
