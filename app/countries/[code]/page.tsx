@@ -40,38 +40,63 @@ export default async function CountryDetailPage({ params }: { params: { code: st
           ) : (
             <div className="flex gap-6 overflow-x-auto pb-4 snap-x">
               {products.map((product: any) => (
-                <div key={product._id} className="flex-shrink-0 w-48 sm:w-56 bg-white border rounded-xl shadow p-4 flex flex-col items-center snap-center transition-transform hover:scale-105">
-                  <div className="relative w-28 h-28 mb-2 overflow-hidden flex items-center justify-center bg-gray-100 rounded">
-                    <Image src={product.image.asset.url} alt={product.name} width={112} height={112} className="object-contain rounded max-w-full max-h-full" />
-                  </div>
-                  <h5 className="font-semibold text-base text-center line-clamp-2 mb-1">{product.name}</h5>
-                  <p className="text-xs text-gray-500 line-clamp-2 text-center">{product.description}</p>
-                </div>
+                product.slug && product.slug.current ? (
+                  <a
+                    key={product._id}
+                    href={`/products/${product.slug.current}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-shrink-0 w-48 sm:w-56 bg-white border rounded-xl shadow p-4 flex flex-col items-center snap-center transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <div className="relative w-28 h-28 mb-2 overflow-hidden flex items-center justify-center bg-gray-100 rounded">
+                      <Image src={product.image.asset.url} alt={product.name} width={112} height={112} className="object-contain rounded max-w-full max-h-full" />
+                    </div>
+                    <h5 className="font-semibold text-base text-center line-clamp-2 mb-1">{product.name}</h5>
+                    <p className="text-xs text-gray-500 line-clamp-2 text-center">{product.description}</p>
+                  </a>
+                ) : (
+                  <a
+                    key={product._id}
+                    href={`/products?country=${country.code}`}
+                    className="flex-shrink-0 w-48 sm:w-56 bg-white border rounded-xl shadow p-4 flex flex-col items-center snap-center transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <div className="relative w-28 h-28 mb-2 overflow-hidden flex items-center justify-center bg-gray-100 rounded">
+                      <Image src={product.image.asset.url} alt={product.name} width={112} height={112} className="object-contain rounded max-w-full max-h-full" />
+                    </div>
+                    <h5 className="font-semibold text-base text-center line-clamp-2 mb-1">{product.name}</h5>
+                    <p className="text-xs text-gray-500 line-clamp-2 text-center">{product.description}</p>
+                  </a>
+                )
               ))}
             </div>
           )}
         </div>
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Major Exports</h2>
-          {country.majorExports && country.majorExports.length > 0 ? (
-            <ul className="list-disc ml-8 text-base text-gray-700">
-              {country.majorExports.map((exp: any) => (
-                <li key={exp._id}>{exp.name}</li>
-              ))}
-            </ul>
-          ) : (
-            <div className="text-gray-500 italic">No major exports listed.</div>
-          )}
+        <div className="mb-12 flex flex-col md:flex-row gap-8">
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Major Exports</h2>
+            {country.majorExports && country.majorExports.length > 0 ? (
+              <ul className="list-disc ml-8 text-base text-gray-700">
+                {country.majorExports.map((exp: any) => (
+                  <li key={exp._id}>{exp.name}</li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-gray-500 italic">No major exports listed.</div>
+            )}
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Tariff Rate History</h2>
+            {historyData.length > 0 ? (
+              <div className="max-w-xl">
+                <SparklineChart data={historyData} width={400} height={200} showTooltip color="#2563eb" />
+              </div>
+            ) : (
+              <div className="text-gray-500 italic">No tariff history available.</div>
+            )}
+          </div>
         </div>
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Tariff Rate History</h2>
-          {historyData.length > 0 ? (
-            <div className="max-w-xl">
-              <SparklineChart data={historyData} width={400} height={80} showTooltip color="#2563eb" />
-            </div>
-          ) : (
-            <div className="text-gray-500 italic">No tariff history available.</div>
-          )}
+        <div className="flex justify-center mt-8">
+          <a href="/countries" className="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition">Back to Countries</a>
         </div>
       </div>
     </main>

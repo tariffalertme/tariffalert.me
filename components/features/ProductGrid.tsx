@@ -52,6 +52,15 @@ export default function ProductGrid({ products: initialProducts, showViewAll = t
   const [selectedProductHistory, setSelectedProductHistory] = useState<RateHistoryPoint[]>([])
   const [countries, setCountries] = useState<Country[]>([])
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const countryParam = params.get('country');
+    if (countryParam && countryParam !== selectedCountry) {
+      setSelectedCountry(countryParam);
+    }
+  }, []);
+
   // Memoize calculations for filter options and getting latest tariff
   const { availableCountries, availableCategories } = useMemo(() => {
     const countries = new Set<string>()
