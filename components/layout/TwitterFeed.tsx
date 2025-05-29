@@ -67,7 +67,7 @@ export default function TwitterFeed() {
         const res = await fetch('/api/twitter-feed')
         if (!res.ok) throw new Error('Failed to fetch tweets')
         const data = await res.json()
-        let newTweets = data.tweets && data.tweets.length > 0 ? data.tweets : mockTweets
+        const newTweets = data.tweets && data.tweets.length > 0 ? data.tweets : mockTweets
         // Merge with localStorage tweets, dedupe by id, keep 15 most recent
         let cached = []
         try {
