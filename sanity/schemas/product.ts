@@ -66,6 +66,17 @@ export default {
       title: 'Last Price Check',
       type: 'datetime',
       initialValue: () => new Date().toISOString(),
+    },
+    {
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {
+        source: 'name',
+        maxLength: 96
+      },
+      validation: (Rule: any) => Rule.required(),
+      readOnly: true
     }
   ],
   preview: {
